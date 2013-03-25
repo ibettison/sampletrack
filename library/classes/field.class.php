@@ -105,14 +105,14 @@ class radio extends fields {
 		 $prt = "";
 		 foreach($this->field_list as $list) {
 			if($this->field_selected == $list) {
-				 $prt .= "<input id='".$this->field_name."' class='".$this->field_class."' type='$type' name='$this->field_name' value='$list' checked tabindex='".$this->field_index."' /> <span class='".$this->text_class."'>".$list."</span>"; 
+				 $prt .= "&nbsp;<input id='".$this->field_name."' class='".$this->field_class."' type='$type' name='$this->field_name' value='$list' checked tabindex='".$this->field_index."' /> <span class='".$this->text_class."'>".$list."</span>"; 
 			}else{
-				 $prt .= "<input id='".$this->field_name."' class='".$this->field_class."' type='$type' name='$this->field_name' value='$list' tabindex='".$this->field_index."' /> <span class='".$this->text_class."'>".$list."</span>";
+				 $prt .= "&nbsp;<input id='".$this->field_name."' class='".$this->field_class."' type='$type' name='$this->field_name' value='$list' tabindex='".$this->field_index."' /> <span class='".$this->text_class."'>".$list."</span>";
 			}
 			if( $this->field_orientation == "Horizontal" ) {
-				 $prt .= "&nbsp;";
+				 $prt .= "";
 			}else{ 
-				 $prt .= "<br />&nbsp;<span class='".$this->layout_class."'> </span>";
+				 $prt .= "<br /><span class='".$this->layout_class."'> </span>";
 			}
 		}
 		return $prt;

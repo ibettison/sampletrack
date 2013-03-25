@@ -798,16 +798,24 @@ if($_POST["func"] == "showTemplateValues") {
 	$field = new fields("Barcode Prefix", "text", "greyInput", "15", $selected[0]["pbs_prefix"], "bcPrefix");
 	echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
 	echo "<span class='form_field'>".$field->show_field()."</span><BR>";
-	$field = new fields("Barcode Number", "text", "greyInput", "20", $selected[0]["pbs_number"], "bcNumber");
+	$field = new fields("Last Barcode Printed", "text", "greyInput", "20", $selected[0]["pbs_number"], "bcNumber");
 	echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
 	echo "<span class='form_field'>".$field->show_field()."</span><BR>";
 	$field = new fields("Barcode Suffix", "text", "greyInput", "15",$selected[0]["pbs_suffix"], "bcSuffix");
 	echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
 	echo "<span class='form_field'>".$field->show_field()."</span><BR>";
+	
+	if($_POST["option"]!=='re-print') {
+		?>
+		<script>
+		$("#bcNumber").prop('disabled', true);
+		</script>
+		<?php
+	}	
+	
 	?>
 	<script>
 	$("#bcPrefix").prop('disabled', true);
-	$("#bcNumber").prop('disabled', true);
 	$("#bcSuffix").prop('disabled', true);
 	</script>
 	<?php
@@ -826,8 +834,8 @@ if($_POST["func"] == "calculatePrints") {
 	$sql = "select * from print_template join print_barcode_settings on (barcode_settings_id=pbs_id)
 	where template_name ='".$_POST["selTemplate"]."'";
 	$selected = dl::getQuery($sql);
-	$strLen = strlen($selected[0]["pbs_number"]);
-	$labels = $selected[0]["pbs_number"];
+	$strLen = strlen($_POST["barcodeNo"]);
+	$labels = $_POST["barcodeNo"];
 	$lastVal = (int)$labels + $_POST["noPrints"];
 	$len = strlen($lastVal);	
 	for($i=$len; $i<$strLen; $i++) {
@@ -887,4 +895,27 @@ if($_POST["func"] == "print_labels") {
 	$pdf->Output();
 }
 
+if($_POST["func"] == "findCustomer") {
+	$customer = dl::select("customers", "c_name = \"".$_POST["customer"]."\"");
+	$cust_id = $customer[0]["c_id"];
+	$sql = "select * from contact_details join contact_types on (contact_type_id=ct_id) 
+	where customers_id = ".$cust_id;
+	$customerDetails = dl::getQuery($sql);
+	if(!empty($customerDetails)) {
+		foreach( $customerDetails as $cd ){
+			switch($cd["ct_type"]) {
+				case "email":
+					$jsEmail = $cd["cd_detail"];
+					break;
+				case "Contact Name":
+					$jscontact = $cd["cd_detail"];
+					break;
+				case "Phone":
+					$jsPhone = $cd["cd_detail"];
+					break;
+			}
+		}
+		echo json_encode(array("email"=>$jsEmail, "ContactName"=>$jscontact, "Phone"=>$jsPhone));
+	}
+}
 ?>

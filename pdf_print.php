@@ -38,8 +38,8 @@ require("fpdf.php");
 	//------------------ end of Setup ---------------------------------//
 	//echo $labelWidth, $labelHeight, $x, $y;
 	$pdf = new FPDF('P', 'mm', array($labelWidth,$labelHeight));
-	$strLen = strlen($selected[0]["pbs_number"]);
-	$labels = $selected[0]["pbs_number"];
+	$strLen = strlen($_GET["barcode"]);
+	$labels = $_GET["barcode"];
 	$firstVal = $labels;	
 	for($p=1; $p<=$_GET["noPrints"]; $p++){
 		$lastVal = (int)$labels + $p;

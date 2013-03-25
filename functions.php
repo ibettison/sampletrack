@@ -39,7 +39,7 @@ function dropdown_loginForm(){
 					if($_SESSION["notConfirmed"]) {
 						echo "Confirm Login <span> &#x25BC </span>";
 					}else{
-						echo "<img src='../images/loginIconRed.png' align='middle' /> System Login <span> &#x25BC </span>";
+						echo "<img src='images/loginIconRed.png' align='middle' /> System Login <span> &#x25BC </span>";
 					}
 				echo "</a>";
 				echo "<div id='login-content'>";
@@ -88,7 +88,7 @@ function dropdown_loginForm(){
 		echo "<ul id='loggedin-ul'>";
 			echo "<li id='loggedin'>";
 				echo "<a id='loggedin-trigger' href='#'>";
-					echo "<img src='../images/loginIconGreen.png' align='middle' /> ". $_SESSION["user_name"]."<span> &#x25BC </span>";
+					echo "<img src='images/loginIconGreen.png' align='middle' /> ". $_SESSION["user_name"]."<span> &#x25BC </span>";
 				echo "</a>";
 				echo "<div id='loggedin-content'>";
 						if( check_permissions("Add Users") ) {
@@ -148,16 +148,16 @@ function show_frontpage() {
 				manage deliveries, create and re-freeze or process transportation of Aliquots. The system will record the complete lifecycle of the sample, recording where it came from, its location, 
 				any Aliquot creations and their storage locations; recording all requests and deliveries against all samples. Finally the system will record publication, invention events regarding samples that have been stored in the 
 				Biobank.</div>";
-				echo "<div id='front-left-bottom'><img src='../images/mobile-scanning.png' style='max-width:100%; height: auto;'></div>";
+				echo "<div id='front-left-bottom'><img src='images/mobile-scanning.png' style='max-width:100%; height: auto;'></div>";
 			echo "</div>";
 			echo "<div id='front-right'>";
-				echo "<div id='front-right-top'><img src='../images/Freezers.png' style='max-width:100%; height: auto;'></div>";
+				echo "<div id='front-right-top'><img src='images/Freezers.png' style='max-width:100%; height: auto;'></div>";
 				echo "<div id='front-right-bottom-right'><B>SCANNING</B><BR><BR>
 				The SAMPLE TRACKING SYSTEM uses mobile technology to scan items into and out of the Newcastle Biobank. The system works in real time and stores the sample in containers. Containers can be anything, 
 				from the room, the freezer, the shelf or the phial the sample resides in. All containers are linked so scanning a container identifies where it is and what it is automatically, you can even tell where it has been 
 				and when it was moved. The system is centrally controlled by a built-in Audit system so every movement is monitored and can be traced back to date and time of the action and the individual performing the action.
 				</div>";
-				echo "<div id='front-right-bottom'><img src='../images/parcels.png' style='max-width:100%; height: auto;'></div>";
+				echo "<div id='front-right-bottom'><img src='images/parcels.png' style='max-width:100%; height: auto;'></div>";
 			echo "</div>";
 		echo "</div>"; // end of container
 	echo "</front_page>";
@@ -167,9 +167,9 @@ function show_homePage(){
 	echo "<main><div id='container-main'>";
 			echo "<home_page>";
 				echo "<fieldset>";
-					echo "<legend>Recent Registration</legend>"; 
+					echo "<legend><div id='legend_colour'>Recent Registration</div></legend>"; 
 					echo "<p>Listed are the recent Registrations showing the expected delivery information.</p>";
-					echo "<div id='titles-image'><img src='../images/registrations_icon.png' style='max-width: 100%; max-height: auto;'></div>";
+					echo "<div id='titles-image'><img src='images/registrations_icon.png' style='max-width: 100%; max-height: auto;'></div>";
 					echo "<div id='titles-registration'>Customer<BR><BR></div>";
 					echo "<div id='titles'>Expected<BR> Delivery</div>";
 					echo "<div id='titles'>No. of <BR>Samples</div>";
@@ -181,9 +181,9 @@ function show_homePage(){
 			echo "</home_page>";
 			echo "<home_page>";
 				echo "<fieldset>";
-					echo "<legend>Outstanding Lists</legend>"; 
+					echo "<legend><div id='legend_colour'>Outstanding Lists</div></legend>"; 
 					echo "<p>The Samples list have been uploaded and are awaiting the sample delivery.</p>";
-					echo "<div id='titles-image'><img src='../images/lists_icon.png' style='max-width: 100%; height: auto;'></div>";
+					echo "<div id='titles-image'><img src='images/lists_icon.png' style='max-width: 100%; height: auto;'></div>";
 					echo "<div id='titles-lists'>Customer<BR><BR></div>";
 					echo "<div id='titles'>Date<BR>uploaded</div>";
 					echo "<hr id='line'>";
@@ -194,9 +194,9 @@ function show_homePage(){
 			echo "</home_page>";
 			echo "<home_page>";
 				echo "<fieldset>";
-					echo "<legend>Outstanding Requests</legend>"; 
+					echo "<legend><div id='legend_colour'>Outstanding Requests</div></legend>"; 
 					echo "<p>Below is a list of the most recent requests for sample removals/creations.</p>";
-					echo "<div id='titles-image' style='max-width: 100%; height: auto;'><img src='../images/requests_icon.png' style='max-width: 100%; height: auto;'></div>";
+					echo "<div id='titles-image' style='max-width: 100%; height: auto;'><img src='images/requests_icon.png' style='max-width: 100%; height: auto;'></div>";
 					echo "<div id='titles-requests'>Customer<BR><BR></div>";
 					echo "<div id='titles'>Request<BR>made</div>";
 					echo "<div id='titles'>Destination<BR><BR></div>";
@@ -208,9 +208,9 @@ function show_homePage(){
 			echo "</home_page>";
 			echo "<home_page>";
 				echo "<fieldset>";
-					echo "<legend>Recent Transfers</legend>"; 
+					echo "<legend><div id='legend_colour'>Recent Transfers</div></legend>"; 
 					echo "<p>The most recent despatches to our customers. Select a transfer to edit its status.</p>";
-					echo "<div id='titles-image' style='max-width: 100%; height: auto;'><img src='../images/transfers_icon.png' style='max-width: 100%; height: auto;'></div>";
+					echo "<div id='titles-image' style='max-width: 100%; height: auto;'><img src='images/transfers_icon.png' style='max-width: 100%; height: auto;'></div>";
 					echo "<div id='titles-transfers'>Customer<BR><BR></div>";
 					echo "<div id='titles'>Despatch<BR>Date</div>";
 					echo "<hr id='line'>";
@@ -336,7 +336,7 @@ function checkTransfers() {
 
 function upload_excel() {
 		echo "<fieldset>";
-			echo "<legend>Upload Spreadsheet</legend>"; 
+			echo "<legend><div id='legend_colour'>Upload Spreadsheet</div></legend>"; 
 			echo "<p>Enter the file to upload and extract the sample information from. Make sure there are no empty columns before the headings start.</p>";
 			echo "<form ENCTYPE='multipart/form-data' id='upload_form' method='post' action='index.php?func=uploadFile'>";
 				$field = new fields("Select File", "file", "greyInput", "30", "", "frmFile");
@@ -351,7 +351,7 @@ function upload_excel() {
 				}
 				$field = new selection("Customer", "text", "greyInput", "40", "", "customer_list", $custs, "", "0");
 				echo "<span class='form_prompt'>".$field->show_prompt()." </span>";
-				echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='custClick'><img class='gi-img' src='../images/dropdown.png'></span><BR /><br />";
+				echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='custClick'><img class='gi-img' src='images/dropdown.png'></span><BR /><br />";
 			$button = new fields("submit Button", "submit", "bluebutton", 10, "Upload File","submit");
 			echo $button->show_field();
 			echo "</form>";
@@ -702,6 +702,20 @@ echo "<div class='menuArea'>";
 			echo "</li>";
 		echo "</ul>";
 	echo "</menu>";
+	
+	echo "</div>";
+	echo "<form id='searchbox' action=''>";
+    echo "<input id='search' type='text' size='40' placeholder='Search...'>";
+	echo "</form>";
+	$searches = array("Find Samples", "View container history","Find aliquots from sample","Customer Samples");
+	echo "<div id='search_list' style='display:none;'>";
+		echo "<div id='search_cancel'><img src='images/black-cancel.png' /></div>";
+		$selection = new radio("","radio", "greyInput", "20", "" , "sampleSearch", "", "", $searches, "", "Verticle");
+		echo "<span class='form_field'>".$selection->show_field()."</span><BR />";
+		$field = new checkbox("Search additional information?", "checkbox", "greyInput", "40", "", "additional");
+		echo "<span class='form_field'>".$field->show_field()."</span> Search additional information ?<BR /><BR/>";
+		$button = new fields("submit Button", "submit", "blackbutton", 10, "Search","searchButton");
+		echo $button->show_field();
 	echo "</div>";
 	?>
 	<script>
@@ -746,6 +760,21 @@ echo "<div class='menuArea'>";
 			});
 		});
 		$("#container").css("background-color", "#333");
+		 $( "#search" ).click(function() {
+				$('#search_list').show("slide", {
+					direction: "up"
+				}, 500);
+			});
+		$( "#search_cancel" ).click(function() {
+			$('#search_list').hide("slide", {
+				direction: "up"
+			}, 500);
+		});
+		$("#searchButton").live("click", function () {
+			var search_term = $("#search").val();
+			var which_search = $("input:radio[name=sampleSearch][checked]").val();
+			var additional = $("#additional").is(":checked");
+		})
 	});
 	</script>
 	<?php
@@ -870,7 +899,7 @@ function validate_fieldName($index) {
 }
 function add_registration() {
 		echo "<fieldset>";
-		echo "<legend>New Registration</legend>";
+		echo "<legend><div id='legend_colour'>New Registration</div></legend>";
 		$field = new dates("Contact Date", "text", "greyInput", "20", "", "contact_date", "contact_date");
 		echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
 		echo "<span class='form_field'>".$field->show_field()."</span><BR />";
@@ -880,14 +909,28 @@ function add_registration() {
 		}
 		$field = new selection("Existing Customer", "text", "greyInput", "40", "", "customer", $customer_list, "", "0");
 		echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-		echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='custClick'><img class='gi-img' src='../images/dropdown.png'></span><BR />";
+		echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='custClick'><img class='gi-img' src='images/dropdown.png'></span><BR />";
 		// the jQuery script checks for a click on the select graphic and then focuses to the field and the drop down box appears.
 		?>
 		<script type="text/javascript">
 				$("#custClick").live("click", function () {
 					$("#customer").focus();	
 				});
-
+				$("#customer").on("autocompletechange", function(event, ui) { 
+				var func = "findCustomer";
+				$.post(
+					"ajax.php",
+					{ func: func,
+					customer: $("#customer").val()
+					},
+					function (data)
+					{
+					var json = $.parseJSON(data);
+					$('#contact_name').val(json.ContactName);
+					$('#contact_email').val(json.email);
+					$('#contact_phone').val(json.Phone);
+				});
+		});
 		</script>
 		<?php
 		$field = new fields("Contact Name", "text", "greyInput", "40", "", "contact_name");
@@ -914,7 +957,7 @@ function add_registration() {
 		echo "<span class='form_field'>".$selection->show_field()."</span><BR />";
 		echo "</fieldset>";
 		echo "<fieldset>";
-		echo "<legend>Sample Information</legend>";
+		echo "<legend><div id='legend_colour'>Sample Information</div></legend>";
 
 		$field = new fields("Number of Samples", "text", "greyInput", "10", "", "sample_no");
 		echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
@@ -925,7 +968,7 @@ function add_registration() {
 		}
 		$field = new selection("Sample Type", "text", "greyInput", "40", "", "sample_type", $sample_types, "", "0");
 		echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-		echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='typeClick'><img class='gi-img' src='../images/dropdown.png'></span><BR>";
+		echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='typeClick'><img class='gi-img' src='images/dropdown.png'></span><BR>";
 		?>
 		<script type="text/javascript">
 				$("#typeClick").live("click", function () {
@@ -940,7 +983,7 @@ function add_registration() {
 		}
 		$field = new selection("Containers", "text", "greyInput", "40", "", "sample_container", $container_list,"","0");
 		echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-		echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='containerClick'><img class='gi-img' src='../images/dropdown.png'></span><BR>";
+		echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='containerClick'><img class='gi-img' src='images/dropdown.png'></span><BR>";
 		?>
 		<script type="text/javascript">
 				$("#containerClick").live("click", function () {
@@ -1011,8 +1054,8 @@ function add_registration() {
 						sample_container: $("#sample_container").val(),
 						boxes: $("#boxes").is(":checked"),
 						sample_boxsize: $("#sample_boxsize").val(),
-						sample_temperature: $("#sample_temperature").val(),
-						samples_catalogued: $("#samples_catalogued").val(),
+						sample_temperature: $("input:radio[name=sample_temperature][checked]").val(),
+						samples_catalogued: $("input:radio[name=samples_catalogued][checked]").val(),
 						sample_info: $("#sample_info").val(),
 						services: checked,
 						ids: ids
@@ -1058,7 +1101,7 @@ function add_registration() {
 
 function new_container_template () {
 	echo "<fieldset>";
-		echo "<legend>New Container template</legend>";
+		echo "<legend><div id='legend_colour'>New Container template</div></legend>";
 		$field = new fields("Template Name", "text", "greyInput", "40", "", "con_temp_name");
 		echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
 		echo "<span class='form_field'>".$field->show_field()."</span><BR>";
@@ -1068,7 +1111,7 @@ function new_container_template () {
 		}
 		$field = new selection("Container Type", "text", "greyInput", "40", "", "container_type", $container_names, "", "0");
 		echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-		echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='containerClick'><img class='gi-img' src='../images/dropdown.png'></span><BR />";
+		echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='containerClick'><img class='gi-img' src='images/dropdown.png'></span><BR />";
 		// the jQuery script checks for a click on the select graphic and then focuses to the field and the drop down box appears.
 		?>
 		<script type="text/javascript">
@@ -1086,7 +1129,7 @@ function new_container_template () {
 		$list = array("Alpha", "Numeric");
 		$field = new selection("Row Type", "text", "greyInput", "20", "", "row_type", $list, "", "0");
 		echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-		echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='rowClick'><img class='gi-img' src='../images/dropdown.png'></span><BR />";
+		echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='rowClick'><img class='gi-img' src='images/dropdown.png'></span><BR />";
 		// the jQuery script checks for a click on the select graphic and then focuses to the field and the drop down box appears.
 		?>
 		<script type="text/javascript">
@@ -1097,7 +1140,7 @@ function new_container_template () {
 		<?php
 		$field = new selection("Column Type", "text", "greyInput", "20", "", "column_type", $list, "", "0");
 		echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-		echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='columnClick'><img class='gi-img' src='../images/dropdown.png'></span><BR /><BR/>";
+		echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='columnClick'><img class='gi-img' src='images/dropdown.png'></span><BR /><BR/>";
 		// the jQuery script checks for a click on the select graphic and then focuses to the field and the drop down box appears.
 		?>
 		<script type="text/javascript">
@@ -1144,7 +1187,7 @@ function new_container_template () {
 
 function new_container_type() {
 	echo "<fieldset>";
-		echo "<legend>New Container Type</legend>";
+		echo "<legend><div id='legend_colour'>New Container Type</div></legend>";
 		$field = new fields("Container Type Name", "text", "greyInput", "50", "", "con_type_name");
 		echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
 		echo "<span class='form_field'>".$field->show_field()."</span><BR>";
@@ -1210,7 +1253,7 @@ function new_container_type() {
 
 function new_container() {
 	echo "<fieldset>";
-		echo "<legend>New Container</legend>";
+		echo "<legend><div id='legend_colour'>New Container</div></legend>";
 		$field = new fields("Container Name", "text", "greyInput", "50", "", "con_name");
 		echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
 		echo "<span class='form_field'>".$field->show_field()."</span><BR>";
@@ -1220,7 +1263,7 @@ function new_container() {
 		}
 		$field = new selection("Template Type", "text", "greyInput", "50", "", "template_type", $template_names, "", "0");
 		echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-		echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='templateClick'><img class='gi-img' src='../images/dropdown.png'></span><BR />";
+		echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='templateClick'><img class='gi-img' src='images/dropdown.png'></span><BR />";
 		// the jQuery script checks for a click on the select graphic and then focuses to the field and the drop down box appears.
 		?>
 		<script type="text/javascript">
@@ -1268,7 +1311,7 @@ function new_container() {
 
 function new_customer() {
 		echo "<fieldset>";
-		echo "<legend>New Customer</legend>";
+		echo "<legend><div id='legend_colour'>New Customer</div></legend>";
 		$field = new fields("Customer Name", "text", "greyInput", "50", "", "cust_name");
 		echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
 		echo "<span class='form_field'>".$field->show_field()."</span><BR>";
@@ -1286,7 +1329,7 @@ function new_customer() {
 		}
 		$field = new selection("Contact Type", "text", "greyInput", "50", "", "contact_type", $type_names, "", "0");
 		echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-		echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='contactClick'><img class='gi-img' src='../images/dropdown.png'></span><BR />";
+		echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='contactClick'><img class='gi-img' src='images/dropdown.png'></span><BR />";
 		// the jQuery script checks for a click on the select graphic and then focuses to the field and the drop down box appears.
 	
 		$field = new textArea("Contact Detail", "text", "greyInput", "50", "", "con_detail", 49, 3);
@@ -1356,7 +1399,7 @@ function new_customer() {
 function accept_samples(){
 	echo "<samples>";
 	echo "<fieldset>";
-		echo "<legend>Sample Information</legend>";
+		echo "<legend><div id='legend_colour'>Sample Information</div></legend>";
 		echo "<div style='width: 50%; float:left;'>";
 			$field = new fields("Container Barcode", "text", "greyInput", "45", "", "container_bc");
 			echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
@@ -1373,7 +1416,7 @@ function accept_samples(){
 			}
 			$field = new selection("Samples List", "text", "greyInput", "50", "", "sample_listing", $lists, "", "0");
 			echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-			echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='samplesClick'><img class='gi-img' src='../images/dropdown.png'></span><span class='bluebutton' id='showSamples' style='float:none; margin-left: 2.75em;'>View Samples</span><BR />";
+			echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='samplesClick'><img class='gi-img' src='images/dropdown.png'></span><span class='bluebutton' id='showSamples' style='float:none; margin-left: 2.75em;'>View Samples</span><BR />";
 			echo "<div id='show_samples'></div>";
 			$button = new fields("submit Button", "submit", "bluebutton", 10, "Save Sample Locations","save_samples");
 			echo $button->show_field();
@@ -1471,7 +1514,7 @@ function accept_samples(){
 
 function scan_container($action) {
 	echo "<fieldset>";
-		echo "<legend>Scan Containers</legend>";
+		echo "<legend><div id='legend_colour'>Scan Containers</div></legend>";
 			$field = new fields("Place this Container", "text", "greyInput", "45", "", "container_move");
 			echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
 			echo "<span class='form_field'>".$field->show_field()."</span><span class='bluebutton' id='getBarcode1' style='float:none;'>Get</span><BR>";
@@ -1522,7 +1565,6 @@ function scan_container($action) {
 		$("#store_con").live("click", function () {
 			var container1 = $("#container_move").val();
 			var container2 = $("#container_to").val();
-			alert("click");
 			var func = "moveContainer";
 			$.post(
 				"ajax.php",
@@ -1547,7 +1589,7 @@ function scan_container($action) {
 
 function barcode_settings() {
 	echo "<fieldset>";
-		echo "<legend>Barcode Settings</legend>";
+		echo "<legend><div id='legend_colour'>Barcode Settings</div></legend>";
 			$field = new fields("Barcode Prefix", "text", "greyInput", "15", "", "bc_prefix");
 			echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
 			echo "<span class='form_field'>".$field->show_field()."</span><BR>";
@@ -1595,7 +1637,7 @@ function barcode_settings() {
 
 function printer_template() {
 	echo "<fieldset>";
-		echo "<legend>Create Print Template</legend>";
+		echo "<legend><div id='legend_colour'>Create Print Template</div></legend>";
 			$field = new fields("Position-x", "text", "greyInput", "5", "", "posx");
 			echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
 			echo "<span class='form_field'>".$field->show_field()."</span>";
@@ -1627,7 +1669,7 @@ function printer_template() {
 			
 			$field = new selection("Barcode Type", "text", "greyInput", "50", "", "bc_type", $type_names, "", "0");
 			echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-			echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='bcTypeClick'><img class='gi-img' src='../images/dropdown.png'></span><BR />";
+			echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='bcTypeClick'><img class='gi-img' src='images/dropdown.png'></span><BR />";
 			
 			$settings = dl::select("print_barcode_settings");
 			foreach($settings as $setting) {
@@ -1636,7 +1678,7 @@ function printer_template() {
 			
 			$field = new selection("Barcode Settings", "text", "greyInput", "50", "", "bc_settings", $setting_names, "", "0");
 			echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-			echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='bcSettingsClick'><img class='gi-img' src='../images/dropdown.png'></span><BR />";
+			echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='bcSettingsClick'><img class='gi-img' src='images/dropdown.png'></span><BR />";
 			
 			$field = new fields("Template Name", "text", "greyInput", "50", "", "print_template_name");
 			echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
@@ -1690,9 +1732,9 @@ function printer_template() {
 function print_barcodes($option) {
 	echo "<fieldset>";
 		if($option == "re-print") {
-			echo "<legend>Re-print labels</legend>";
+			echo "<legend><div id='legend_colour'>Re-print labels</div></legend>";
 		}else{
-			echo "<legend>Print new labels</legend>";
+			echo "<legend><div id='legend_colour'>Print new labels</div></legend>";
 		}
 		
 			$templates = dl::select("print_template");
@@ -1702,7 +1744,7 @@ function print_barcodes($option) {
 			
 			$field = new selection("Select Print Template", "text", "greyInput", "50", "", "print_template", $temp_names, "", "0");
 			echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-			echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='templateClick'><img class='gi-img' src='../images/dropdown.png'></span>";
+			echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='templateClick'><img class='gi-img' src='images/dropdown.png'></span>";
 			echo "<div id='show_selected'></div>";
 			
 			$field = new fields("How many to print?", "text", "greyInput", "5", "", "how_many");
@@ -1738,6 +1780,7 @@ function print_barcodes($option) {
 			$.post(
 				"ajax.php",
 				{ func: func,
+				  barcodeNo: $("#bcNumber").val(),
 				  noPrints: $("#how_many").val(),
 				  selTemplate: $("#print_template").val()
 				},
@@ -1759,7 +1802,7 @@ function print_barcodes($option) {
 				{
 				$('#barcodeMessage').html(data);
 			});
-			window.open("pdf_print.php?noPrints="+$("#how_many").val()+"&selTemplate="+$("#print_template").val());
+			window.open("pdf_print.php?barcode="+$("#bcNumber").val()+"&noPrints="+$("#how_many").val()+"&selTemplate="+$("#print_template").val());
 		});
 	});
 
