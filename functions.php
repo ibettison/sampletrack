@@ -705,14 +705,14 @@ echo "<div class='menuArea'>";
 	
 	echo "</div>";
 	echo "<form id='searchbox' action=''>";
-    echo "<input id='search' type='text' size='40' placeholder='Search...'>";
+    echo "<input id='search' type='text' size='40' placeholder='Search...'><div id='search_barcode'></div>";
 	echo "</form>";
 	$searches = array("Find Samples", "View container history","Find aliquots from sample","Customer Samples");
 	echo "<div id='search_list' style='display:none;'>";
 		echo "<div id='search_cancel'><img src='images/black-cancel.png' /></div>";
-		$selection = new radio("","radio", "greyInput", "20", "" , "sampleSearch", "", "", $searches, "", "Verticle");
+		$selection = new radio("","radio", "", "20", "" , "sampleSearch", "", "", $searches, "", "Verticle");
 		echo "<span class='form_field'>".$selection->show_field()."</span><BR />";
-		$field = new checkbox("Search additional information?", "checkbox", "greyInput", "40", "", "additional");
+		$field = new checkbox("Search additional information?", "checkbox", "", "40", "", "additional");
 		echo "<span class='form_field'>".$field->show_field()."</span> Search additional information ?<BR /><BR/>";
 		$button = new fields("submit Button", "submit", "blackbutton", 10, "Search","searchButton");
 		echo $button->show_field();
@@ -774,7 +774,18 @@ echo "<div class='menuArea'>";
 			var search_term = $("#search").val();
 			var which_search = $("input:radio[name=sampleSearch][checked]").val();
 			var additional = $("#additional").is(":checked");
-		})
+			$('#search_list').hide("slide", {
+				direction: "up"
+			}, 500);
+			$("#search").val("");
+		});
+		$("#search_barcode").live("click", function () {
+			var barcode = $("#barcode").val();
+			$("#search").val(barcode);
+			$('#search_list').show("slide", {
+					direction: "up"
+				}, 500);			
+		});
 	});
 	</script>
 	<?php
@@ -1185,12 +1196,50 @@ function new_container_template () {
 		<?php
 }
 
-function new_container_type() {
+function new_container_type($option) {
 	echo "<fieldset>";
-		echo "<legend><div id='legend_colour'>New Container Type</div></legend>";
-		$field = new fields("Container Type Name", "text", "greyInput", "50", "", "con_type_name");
-		echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-		echo "<span class='form_field'>".$field->show_field()."</span><BR>";
+		if($option == "new") {
+			echo "<legend><div id='legend_colour'>New Container Type</div></legend>";
+			$field = new fields("Container Type Name", "text", "greyInput", "50", "", "con_type_name");
+			echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
+			echo "<span class='form_field'>".$field->show_field()."</span><BR>";
+		}else{
+			$containers = dl::select("container_types");
+			foreach($containers as $container) {
+				$container_names[]= $container["ct_name"];
+			}
+			echo "<legend><div id='legend_colour'>Edit Container Type</div></legend>";
+			$field = new selection("Container Type Name", "text", "greyInput", "50", "", "con_type_name", $container_names, "", "0");
+			echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
+			echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='typeClick'><img class='gi-img' src='images/dropdown.png'></span><BR />";
+			// the jQuery script checks for a click on the select graphic and then focuses to the field and the drop down box appears.
+			?>
+			<script type="text/javascript">
+					$("#typeClick").live("click", function () {
+						$("#con_type_name").focus();	
+					});
+					$("#con_type_name").on("autocompletechange", function(event, ui) { 
+					var func = "getContainerTypeValues";
+					$.post(
+						"ajax.php",
+						{ func: func,
+						con_type: $("#con_type_name").val()
+						},
+						function (data)
+						{
+							var json = $.parseJSON(data);
+							var description = json.container_desc;
+							var manufacturer = json.manufacturer;
+							var allowed_containers = json.allowed_containers;
+							$('#container_info').val(description);
+							$('#con_type_manufacturer').val(manufacturer);
+							$('#allowed_types').val(allowed_containers);
+							$("#allowed_types").multiselect("refresh");
+						});
+					});
+			</script>
+			<?php
+		}
 		$selection = new textArea("Container Description","text", "greyInput", "20", "" , "container_info", 49, 3);
 		echo "<span class='form_prompt'>".$selection->show_prompt()."</span>";
 		echo "<span class='form_field'>".$selection->show_field()."</span><BR />";
@@ -1217,9 +1266,14 @@ function new_container_type() {
 			});
 		});
 		</script>
-		
+
 		<?php
-		$button = new fields("submit Button", "submit", "bluebutton", 10, "Add Container Type","container_type");
+		if($option == "new") {
+			$buttonValue = "Add Container Type";
+		}else{
+			$buttonValue = "Edit Container Type";
+		}
+		$button = new fields("submit Button", "submit", "bluebutton", 10, $buttonValue,"container_type");
 		echo $button->show_field();
 		echo "<div id='container_type_div'></div>";
 	echo "</fieldset>";
@@ -1230,6 +1284,7 @@ function new_container_type() {
 					$.post(
 						"ajax.php",
 						{ func: func,
+							option: '<?php echo $option ?>',
 							typeName: $('#con_type_name').val(),
 							conDescription: $('#container_info').val(),
 							conManufacturer: $('#con_type_manufacturer').val(),
@@ -1251,12 +1306,48 @@ function new_container_type() {
 		<?php
 }
 
-function new_container() {
+function new_container($function) {
 	echo "<fieldset>";
-		echo "<legend><div id='legend_colour'>New Container</div></legend>";
-		$field = new fields("Container Name", "text", "greyInput", "50", "", "con_name");
-		echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-		echo "<span class='form_field'>".$field->show_field()."</span><BR>";
+		if($function == "new") {
+			echo "<legend><div id='legend_colour'>New Container</div></legend>";
+			$field = new fields("Container Name", "text", "greyInput", "50", "", "con_name");
+			echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
+			echo "<span class='form_field'>".$field->show_field()."</span><BR>";
+		}else{
+			echo "<legend><div id='legend_colour'>Edit Containers</div></legend>";
+			$container_names = dl::select("containers");
+			foreach($container_names as $cn) {
+				$arrContainer[] = $cn["c_container_name"]." - ". $cn["c_container_barcode"]; 
+			}
+			$field = new selection("Container Name", "text", "greyInput", "50", "", "con_name", $arrContainer, "", "0");
+			echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
+			echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='containerClick'><img class='gi-img' src='images/dropdown.png'></span><BR />";
+			?>
+		<script type="text/javascript">
+				$("#containerClick").live("click", function () {
+					$("#con_name").focus();	
+				});
+				$("#con_name").on("autocompletechange", function(event, ui) { 
+				var func = "getContainerValues";
+				$.post(
+					"ajax.php",
+					{ func: func,
+					container: $("#con_name").val()
+					},
+					function (data)
+					{
+						var json = $.parseJSON(data);
+						var barcode = json.barcode;
+						var template = json.template_name;
+						var container = json.container;
+						$('#template_type').val(template);
+						$('#con_barcode').val(barcode);
+						$('#con_name').val(container);
+					});
+				});
+		</script>
+		<?php
+		}
 		$templates = dl::select("container_templates");
 		foreach($templates as $template){
 			$template_names[]= $template["ct_template_name"];
@@ -1275,7 +1366,12 @@ function new_container() {
 		$field = new fields("Container Barcode", "text", "greyInput", "50", "", "con_barcode");
 		echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
 		echo "<span class='form_field'>".$field->show_field()."</span><span class='bluebutton' id='getBarcode' style='float:none;'>Get</span><BR/>";
-		$button = new fields("submit Button", "submit", "bluebutton", 10, "Add New Container","container_new");
+		if( $function == "new" ) {
+			$buttonval = "Add New Container";
+		}else{
+			$buttonval = "Edit Container";
+		}
+		$button = new fields("submit Button", "submit", "bluebutton", 10, $buttonval,"container_new");
 		echo $button->show_field();
 		echo "<div id='container_div'></div>";
 	echo "</fieldset>";
@@ -1290,18 +1386,28 @@ function new_container() {
 			$.post(
 				"ajax.php",
 				{ func: func,
+					option: "<?php echo $function ?>",
 					conName: $('#con_name').val(),
 					conTemplate: $('#template_type').val(),
 					conBarcode: $('#con_barcode').val()
 				},
 				function (data)
 				{
-					$('#container_div').html(data);
+					var json = $.parseJSON(data);
+					var list = json.list;
+					var message = json.message;
+					$('#container_div').html(message);
 					$("#con_name").val("");
 					$('#template_type').val("");
 					$('#con_barcode').val("");
 					$('#container_div').delay(200).fadeOut(2000);
 					$('#container_div').show();
+					$("#con_name").autocomplete({
+					source: list,
+					minLength: 0 
+				}).focus(function() {
+					$("#con_name").autocomplete("search", "");
+				});
 			});
 
 		});

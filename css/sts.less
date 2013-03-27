@@ -20,6 +20,7 @@ LESS file - sts.less
 @page-min-width: 64em;
 @lightondark: #d6dee4;
 @media-font-size: 1em;
+@search-box-width: 16em;
 
 body, html {
 	margin: @page-margin;
@@ -35,44 +36,67 @@ body, html {
 /* MEDIA SETTINGS _____________________________
 */
 @media screen and (max-width:2000px) {
-
-	@media-font-size: 0.8em;
 	
+	@media-font-size: 0.8em;
 	fieldset {
 		font-size:@media-font-size;
 	}
-	
+	menu #links, #links2, #links3, #links4, #links5, #links6, #menu-item, #menu-item2, #menu-item3, #menu-item4, #menu-item5, #menu-item6 {
+	  height: 2em;
+	  line-height: 2em;
+	  font-size: 1em;
+	}
 }
 
 @media screen and (max-width:1440px) {
-
+	
 	@media-font-size: 0.75em;
 	fieldset {
 		font-size:@media-font-size;
 	}
+	menu #links, #links2, #links3, #links4, #links5, #links6, #menu-item, #menu-item2, #menu-item3, #menu-item4, #menu-item5, #menu-item6 {
+	  height: 2em;
+	  line-height: 2em;
+	  font-size: 1em;
+	}
 }
 
 @media screen and (max-width:1300px) {
-
+	
 	@media-font-size: 0.7em;
 	fieldset {
 		font-size:@media-font-size;
 	}
+	menu #links, #links2, #links3, #links4, #links5, #links6, #menu-item, #menu-item2, #menu-item3, #menu-item4, #menu-item5, #menu-item6 {
+	 height: 2em;
+	  line-height: 2em;
+	  font-size: 1em;
+	}
 }
 
 @media screen and (max-width:1200px) {
-
-	@media-font-size: 0.6em;
+	
+	@media-font-size: 0.5em;	
 	fieldset {
 		font-size:@media-font-size;
+	}
+	menu #links, #links2, #links3, #links4, #links5, #links6, #menu-item, #menu-item2, #menu-item3, #menu-item4, #menu-item5, #menu-item6 {
+	  height: 2em;
+	  line-height: 2em;
+	  font-size: 1em;
 	}
 }
 
 @media screen and (max-width:1100px) {
-
+	
 	@media-font-size: 0.5em;
 	fieldset {
 		font-size:@media-font-size;
+	}
+	menu #links, #links2, #links3, #links4, #links5, #links6, #menu-item, #menu-item2, #menu-item3, #menu-item4, #menu-item5, #menu-item6 {
+	  height: 2em;
+	  line-height: 2em;
+	  font-size: 1em;
 	}
 }
 
@@ -94,7 +118,7 @@ body, html {
 	}
 }
 
-@media screen and (max-height:1025px) {
+@media screen and (max-height:1049px) {
 	main #container-main {
 		height: 42.5em;
 	}
@@ -105,19 +129,19 @@ body, html {
 
 @media screen and (max-height:901px) {
 	main #container-main {
-		height: 44em;
+		height: 34em;
 	}
 	front_page #container {
-		height: 44em;
+		height: 34em;
 	}
 }
 
-@media screen and (max-height:768px) {
+@media screen and (max-height:800px) {
 	main #container-main {
-		height: 35em;
+		height: 34em;
 	}
 	front_page #container {
-		height: 35em;
+		height: 34em;
 	}
 }
 
@@ -310,10 +334,7 @@ menu #links, #links2, #links3, #links4, #links5, #links6, #menu-item, #menu-item
   display: inline-block;
   *display: inline;
   *zoom: 1;
-  height: 2em;
-  line-height: 2em;
   font-weight: bold;
-  font-size: 1em;
   padding: 4px 20px;
   text-decoration: none;
   color: @lightondark;
@@ -1200,14 +1221,14 @@ bottom: 170px;
 
 #search {
 	position:absolute;
-	top: 5em;
-	right: 1.5em;
+	top: 1.625em;
+	right: 20.5em;
+	width: 16em;
+	font: bold 12px Arial,Helvetica,Sans-serif;
     background: url('../images/search-dark.png') no-repeat 10px 6px #333;
     border: 0 none;
-    font: bold 12px Arial,Helvetica,Sans-serif;
     color: #777;
-    width: 300px;
-    padding: 6px 15px 6px 35px;
+    padding: 6px 35px 6px 35px;
     -webkit-border-radius: 20px;
     -moz-border-radius: 20px;
     border-radius: 20px;
@@ -1224,12 +1245,12 @@ bottom: 170px;
 	
 #search_list {
 	position: absolute;
-	top: 7.4em;
-	right: 1.75em;
-	width:285px;
+	top: 4em;
+	right: 20.5em;
+	width: 20.5em;
+	font: bold 12px Arial,Helvetica,Sans-serif;
 	background-color: #333;
-	padding: 6px 15px 6px 35px;
-	 font: bold 12px Arial,Helvetica,Sans-serif;
+	padding: 6px 3px 6px 3px;
 	color: #777;
     text-shadow: 0 2px 2px rgba(0, 0, 0, 0.3);
     -moz-box-shadow: 2px 2px 4px 1px rgba(0,0,0,.9);
@@ -1242,4 +1263,13 @@ bottom: 170px;
 	float: right;
 	width: 20px;
 	cursor: pointer;
+}
+#search_barcode {
+	position: absolute;
+	top: 1.4em;
+	right: 15.75em;
+	 background: url('../images/black-barcode.png') no-repeat top right #333;
+	 width: 20px;
+	 height: 20px;
+	 cursor: pointer;
 }

@@ -182,7 +182,7 @@ class selection extends fields {
 		}else{
 			?>
 			<script language="JavaScript">		
-			$(document).ready(function() {			
+			$(document).ready(function() {		
 				$("#<?php echo $this->field_name ?>").autocomplete({
 					source: [<?php echo $list?>]
 				});

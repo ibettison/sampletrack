@@ -254,12 +254,22 @@ if( $_SESSION["loggedIn"] == "true") {
 		echo "</main>";
 	}elseif( $_GET["func"] == "new_container_type"){
 		echo "<main><div id='container-main'>";
-		new_container_type();
+		new_container_type("new");
+		echo "</div>";
+		echo "</main>";
+	}elseif( $_GET["func"] == "edit_container_types"){
+		echo "<main><div id='container-main'>";
+		new_container_type("edit");
 		echo "</div>";
 		echo "</main>";
 	}elseif( $_GET["func"] == "new_container"){
 		echo "<main><div id='container-main'>";
-		new_container();
+		new_container("new");
+		echo "</div>";
+		echo "</main>";
+	}elseif( $_GET["func"] == "edit_containers"){
+		echo "<main><div id='container-main'>";
+		new_container("edit");
 		echo "</div>";
 		echo "</main>";
 	}elseif( $_GET["func"] == "new_customer"){

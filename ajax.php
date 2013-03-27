@@ -238,14 +238,21 @@ if( $_POST["func"] == "new_container_type") {
 	$fields = array("ct_name", "ct_detail", "ct_manufacturer");
 	$values = array($_POST["typeName"],$_POST["conDescription"],$_POST["conManufacturer"]);
 	$combine = array_combine($fields, $values);
-	dl::insert("container_types", $combine);
-	$newId = dl::getId();
-	echo "New container type has been created";
+	if($_POST["option"]== "new"){
+		dl::insert("container_types", $combine);
+		$newId = dl::getId();
+		echo "New container type has been created";
+	}else{
+		dl::update("container_types", $combine, "ct_id = ",$_SESSION["containerTypeID"]);
+		$newId = $_SESSION["containerTypeID"];
+		echo "Container Type has been amended";
+		dl::delete("allowed_containers", "types_id = ".$newId); //remove existing allowed containers as you do not know if a container has been deselected
+	}
 	if(!empty($_POST["allowedContainers"])) {
 		foreach($_POST["allowedContainers"] as $container){
 			$c_id = dl::select("container_types", "ct_name = '".$container."'");
 			if(!empty($c_id)) {
-				dl::insert("allowed_containers", array("allowed_ids"=>$newId, "types_id"=>$c_id[0]["ct_id"]));
+				dl::insert("allowed_containers", array("allowed_ids"=>$c_id[0]["ct_id"], "types_id"=>$newId));
 			}
 		}
 	}
@@ -263,17 +270,52 @@ if( $_POST["func"] == "new_container_template") {
 if( $_POST["func"] == "new_container") {	
 	//check if the container already exists
 	$containers = dl::select("containers", "c_container_barcode ='".$_POST["conBarcode"]."'");
-	if(empty($containers)) {
+	if($_POST["option"] == "new") {
+		if(empty($containers)) {
+			$templates = dl::select("container_templates", "ct_template_name = '".$_POST["conTemplate"]."'");
+			$fields = array("container_templates_id", "c_container_name", "c_container_barcode");
+			$values = array($templates[0]["ct_id"],$_POST["conName"],$_POST["conBarcode"]);
+			$combine = array_combine($fields, $values);
+			dl::insert("containers", $combine);
+			echo json_encode(array("message"=>'New container has been created'));
+		}else{
+			echo json_encode(array("message"=>'This barcoded container already exists, not created'));
+		}
+	}else{ //this is an edit
 		$templates = dl::select("container_templates", "ct_template_name = '".$_POST["conTemplate"]."'");
 		$fields = array("container_templates_id", "c_container_name", "c_container_barcode");
 		$values = array($templates[0]["ct_id"],$_POST["conName"],$_POST["conBarcode"]);
 		$combine = array_combine($fields, $values);
-		dl::insert("containers", $combine);
-		echo "New container has been created";
-	}else{
-		echo "This barcoded container already exists, not created.";
+		dl::update("containers", $combine, "c_id = ". $_SESSION["containerID"]);
+		$containers = dl::select("containers");
+		foreach($containers as $c){
+			$list[]= $c["c_container_name"]." - ".$c["c_container_barcode"];
+		}
+		echo json_encode(array("list"=>$list,"message"=>'Container was changed'));
 	}
 }
+
+if( $_POST["func"] == "getContainerValues") {	
+	$pos = strpos($_POST["container"], "-")+2; //add 2 to this as there is a space after the minus (-) sign
+	$container = substr($_POST["container"], 0, $pos-3);
+	$barcode = substr($_POST["container"], $pos, strlen($_POST["container"]));
+	$templateId = dl::select("containers", "c_container_barcode = \"".$barcode."\"");
+	$template_name = dl::select("container_templates", "ct_id = ". $templateId[0]["container_templates_id"]);
+	$_SESSION["containerID"]=$templateId[0]["c_id"]; //this needs to be set as bothe the barcode and container description could be changed so is required to identify the record.
+	echo json_encode(array("template_name"=>$template_name[0]["ct_template_name"], "barcode"=>$barcode, "container"=>$container));
+}
+
+if( $_POST["func"] == "getContainerTypeValues") {	
+	$typeId = dl::select("container_types", "ct_name = \"".$_POST["con_type"]."\"");
+	$_SESSION["containerTypeID"]=$typeId[0]["ct_id"]; //this needs to be set as bothe the barcode and container description could be changed so is required to identify the record.
+	$allowed = dl::select("allowed_containers", "types_id = ".$typeId[0]["ct_id"]);
+	foreach($allowed as $allow) {
+		$ct = dl::select("container_types", "ct_id = ".$allow["allowed_ids"]);
+		$allowed_containers[]=$ct[0]["ct_name"];
+	}
+	echo json_encode(array("container_desc"=>$typeId[0]["ct_detail"], "manufacturer"=>$typeId[0]["ct_manufacturer"], "allowed_containers"=>$allowed_containers));
+}
+
 
 if( $_POST["func"] == "new_registration") {	
 	//check if the container already exists
@@ -597,7 +639,7 @@ if($_POST["func"] == "add_sample") {
 	container_templates as ct on (c.container_templates_id=ct.ct_id) join 
 	container_types as cty on (ct.container_types_id=cty.ct_id) left outer join 
 	allowed_containers as ac on (cty.ct_id=ac.types_id) 
-	where ac.allowed_ids = ".$containerStore." and ac.types_id = ".$containerIN;
+	where ac.allowed_ids = ".$containerIN." and ac.types_id = ".$containerStore;
 	$container_allowed = dl::getQuery($sql);
 	if(!empty($container_allowed)) { //this container is allowed to be placed in the type of container
 		if($sample_id!="") {
