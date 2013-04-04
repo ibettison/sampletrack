@@ -274,7 +274,12 @@ if( $_SESSION["loggedIn"] == "true") {
 		echo "</main>";
 	}elseif( $_GET["func"] == "new_customer"){
 		echo "<main><div id='container-main'>";
-		new_customer();
+		new_customer("new");
+		echo "</div>";
+		echo "</main>";
+	}elseif( $_GET["func"] == "edit_customer"){
+		echo "<main><div id='container-main'>";
+		new_customer("edit");
 		echo "</div>";
 		echo "</main>";
 	}elseif( $_GET["func"] == "accept_samples"){

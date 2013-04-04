@@ -1415,12 +1415,103 @@ function new_container($function) {
 		<?php
 }
 
-function new_customer() {
+function new_customer($option) {
 		echo "<fieldset>";
-		echo "<legend><div id='legend_colour'>New Customer</div></legend>";
-		$field = new fields("Customer Name", "text", "greyInput", "50", "", "cust_name");
-		echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-		echo "<span class='form_field'>".$field->show_field()."</span><BR>";
+		?>
+		<script>
+		globalValues = {};
+		</script>
+		<?php
+		if($option == "new") {
+			echo "<legend><div id='legend_colour'>New Customer</div></legend>";
+			$field = new fields("Customer Name", "text", "greyInput", "50", "", "cust_name");
+			echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
+			echo "<span class='form_field'>".$field->show_field()."</span><BR>";
+			?>
+			<script>
+			globalValues.customer_id = 0;
+			</script>
+			<?php
+		}else{
+			echo "<legend><div id='legend_colour'>Edit Customer</div></legend>";
+			$customer_names = dl::select("customers");
+			foreach($customer_names as $cn) {
+				$arrCustomer[] = $cn["c_name"]; 
+			}
+			$field = new selection("Customer Name", "text", "greyInput", "50", "", "cust_name", $arrCustomer, "", "0");
+			echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
+			echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='customerClick'><img class='gi-img' src='images/dropdown.png'></span><BR />";
+			?>
+		<script type="text/javascript">
+				
+				$("#customerClick").live("click", function () {
+					$("#cust_name").focus();	
+				});
+				$("#cust_name").on("autocompletechange", function(event, ui) { 
+				var func = "getCustomerValues";
+				if($('#showContactDetails').is(':visible')) {
+					$('#showContactDetails').hide();
+				}
+				$.post(
+					"ajax.php",
+					{ func: func,
+					customer: $("#cust_name").val()
+					},
+					function (data)
+					{	var json = $.parseJSON(data);
+						globalValues.customer_id = json.customerId;
+						var business = json.business;
+						var registration = json.registration;
+						var contacts = json.contacts;
+						var html_show = "";
+						var line="";
+						if(jQuery.isEmptyObject(contacts) == false) {
+							$.each(contacts, function(index, value) {
+								var str = value;
+								var pos = str.search(",");
+								var type = str.substr(0,pos);
+								var str2 = str.substr(pos+1,str.length);
+								var pos = str2.search(",");
+								var detail = str2.substr(0,pos);
+								var id = str2.substr(pos+1, str2.length);
+								html_show = "<list-content><div id='content-container'><div id='content-header'>"+type+"</div><div id='content' style='width:15em;'>"+detail+"</div><div id='content'><a href='#' id='button"+id+"' border='0'><img src='images/DeleteRed.png' /></a></div></div></list-content>";
+								line = line.concat(html_show);
+								$("#button"+id).live("click", function (){
+									var func = "del_contact_details";
+									$.post(
+										"ajax.php",
+										{ func: func,
+											option: '<?php echo $option ?>',
+											customer_id: globalValues.customer_id,
+											conId: id
+										},
+										function (data)
+										{
+											$('#showContactDetails').html(data);
+											$("#con_detail").val("");
+											$('#contact_type').val("");
+									});
+								});
+							});
+							$('#showContactDetails').html(line);
+							if($('#showContactDetails').is(':hidden')) {
+								$('#showContactDetails').show("slide", {
+									direction: "up"
+								}, 500);
+							}
+						}
+						
+						$('#business').val(business);
+						$('#cust_reg').val(registration);
+						
+						$("#con_detail").val("");
+						$('#contact_type').val("");
+					});
+				});
+		</script>
+		<?php
+		}
+		
 		$field = new fields("Type of Business", "text", "greyInput", "50", "", "business");
 		echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
 		echo "<span class='form_field'>".$field->show_field()."</span><BR>";
@@ -1458,6 +1549,8 @@ function new_customer() {
 					$.post(
 						"ajax.php",
 						{ func: func,
+							option: '<?php $option ?>',
+							customer_id: globalValues.customer_id,
 							conType: $('#contact_type').val(),
 							conDetail: $('#con_detail').val()
 						},
@@ -1469,6 +1562,7 @@ function new_customer() {
 								}, 500);
 							};
 							$('#showContactDetails').html(data);
+							$('#showContact_div').html("New Contact Details added, please save to add to the Current Customer.");
 							$("#con_detail").val("");
 							$('#contact_type').val("");
 					});
@@ -1478,6 +1572,8 @@ function new_customer() {
 					$.post(
 						"ajax.php",
 						{ func: func,
+							option: '<?php echo $option ?>',
+							customer_id: globalValues.customer_id,
 							conCust: $('#cust_name').val(),
 							conBus: $('#business').val(),
 							conReg: $('#cust_reg').val()
@@ -1523,6 +1619,13 @@ function accept_samples(){
 			$field = new selection("Samples List", "text", "greyInput", "50", "", "sample_listing", $lists, "", "0");
 			echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
 			echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='samplesClick'><img class='gi-img' src='images/dropdown.png'></span><span class='bluebutton' id='showSamples' style='float:none; margin-left: 2.75em;'>View Samples</span><BR />";
+			?>
+			<script>
+				$("#samplesClick").live("click", function () {
+				$("#sample_listing").focus();	
+				});
+			</script>
+			<?php
 			echo "<div id='show_samples'></div>";
 			$button = new fields("submit Button", "submit", "bluebutton", 10, "Save Sample Locations","save_samples");
 			echo $button->show_field();

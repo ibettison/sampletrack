@@ -316,6 +316,20 @@ if( $_POST["func"] == "getContainerTypeValues") {
 	echo json_encode(array("container_desc"=>$typeId[0]["ct_detail"], "manufacturer"=>$typeId[0]["ct_manufacturer"], "allowed_containers"=>$allowed_containers));
 }
 
+if( $_POST["func"] == "getCustomerValues") {	
+	$customerId = dl::select("customers", "c_name = \"".$_POST["customer"]."\"");
+	$cust_id = $customerId[0]["c_id"];
+	$business =$customerId[0]["c_type_of_business"];
+	$registration = $customerId[0]["c_registration_no"];
+	$contacts = dl::select("contact_details", "customers_id = ". $customerId[0]["c_id"]);
+	if(!empty($contacts)) {
+		foreach($contacts as $contact) {
+			$type = dl::select("contact_types", "ct_id = ".$contact["contact_type_id"]);
+			$contact_array[]= $type[0]["ct_type"].",".nl2br($contact["cd_detail"].",".$contact["cd_id"]);
+		}
+	}
+	echo json_encode(array("customerId"=>$cust_id, "business"=>$business, "registration"=>$registration, "contacts"=>$contact_array));
+}
 
 if( $_POST["func"] == "new_registration") {	
 	//check if the container already exists
@@ -357,12 +371,15 @@ if($_POST["func"] == "new_contact_details") {
 	$contact_types = dl::select("contact_types", "ct_type = \"".$_POST["conType"]."\"");
 	//add new details
 	dl::insert("contact_details", array("contact_type_id"=>$contact_types[0]["ct_id"], "cd_detail"=>$_POST["conDetail"]));
-	$details = dl::select("contact_details", "customers_id=0", "cd_id ASC"); //if no customer id is set then the details haven't been properly saved yet
+	if($_POST["option"] == "new"){
+		$details = dl::select("contact_details", "customers_id=0", "cd_id ASC"); //if no customer id is set then the details haven't been properly saved yet
+	}else{
+		$details = dl::select("contact_details", "customers_id=0 or customers_id =".$_POST["customer_id"], "cd_id ASC");
+	}
 	if(!empty($details)) {
-		echo "<list-header><div id='header-container'><div id='heading'>Type</div><div id='heading'>Detail</div></div></list-header>";
 		foreach($details as $detail) {
 			$types = dl::select("contact_types", "ct_id=".$detail["contact_type_id"] );
-			echo "<list-content><div id='content-container'><div id='content-header'>".$types[0]["ct_type"]."</div><div id='content' style='width:15em;'>".nl2br($detail["cd_detail"])."</div><div id='content'><a href='#' id='button".$detail["cd_id"]."' border='0'><img src='../images/DeleteRed.png' /></a></div></div></list-content>";
+			echo "<list-content><div id='content-container'><div id='content-header'>".$types[0]["ct_type"]."</div><div id='content' style='width:15em;'>".nl2br($detail["cd_detail"])."</div><div id='content'><a href='#' id='button".$detail["cd_id"]."' border='0'><img src='images/DeleteRed.png' /></a></div></div></list-content>";
 		}
 		echo "<br />";
 		//now setup the delete function for the buttons passed back by the above jQuery
@@ -374,6 +391,8 @@ if($_POST["func"] == "new_contact_details") {
 						$.post(
 							"ajax.php",
 							{ func: func,
+								option: '<?php echo $_POST["option"] ?>',
+								customer_id: <?php echo $_POST["customer_id"] ?>,
 								conId: <?php echo $d["cd_id"]?>
 							},
 							function (data)
@@ -390,20 +409,28 @@ if($_POST["func"] == "new_contact_details") {
 }
 if($_POST["func"] == "del_contact_details") {
 	dl::delete("contact_details", "cd_id= ".$_POST["conId"]);
-	$details = dl::select("contact_details", "customers_id=0", "cd_id ASC"); //if no customer id is set then the details haven't been properly saved yet
+	if($_POST["option"]== 'new') {
+		$details = dl::select("contact_details", "customers_id=0", "cd_id ASC"); //if no customer id is set then the details haven't been properly saved yet
+	}else{
+		$details = dl::select("contact_details", "customers_id=0 or customers_id=".$_POST["customer_id"], "cd_id ASC");
+	}
 	if(!empty($details)) {
-		echo "<list-header><div id='header-container'><div id='heading'>Type</div><div id='heading'>Detail</div></div></list-header>";
 		foreach($details as $detail) {
 			$types = dl::select("contact_types", "ct_id=".$detail["contact_type_id"] );
-			echo "<list-content><div id='content-container'><div id='content-header'>".$types[0]["ct_type"]."</div><div id='content' style='width:15em;'>".nl2br($detail["cd_detail"])."</div><div id='content'><a href='#' id='button".$detail["cd_id"]."' border='0'><img src='../images/DeleteRed.png' /></a></div></div></list-content>";
+			echo "<list-content><div id='content-container'><div id='content-header'>".$types[0]["ct_type"]."</div><div id='content' style='width:15em;'>".nl2br($detail["cd_detail"])."</div><div id='content'><a href='#' id='button".$detail["cd_id"]."' border='0'><img src='images/DeleteRed.png' /></a></div></div></list-content>";
 		}
 		echo "<br />";
 	}
 }
 if($_POST["func"] == "save_contact_details") {
-	dl::insert("customers", array("c_name"=>$_POST["conCust"], "c_type_of_business"=>$_POST["conBus"], "c_registration_no"=>$_POST["conReg"]));
-	$cust_id = dl::getId();
-	dl::update("contact_details", array("customers_id"=>$cust_id), "customers_id=0");
+	if($_POST["option"] == "new"){
+		dl::insert("customers", array("c_name"=>$_POST["conCust"], "c_type_of_business"=>$_POST["conBus"], "c_registration_no"=>$_POST["conReg"]));
+		$cust_id = dl::getId();
+		dl::update("contact_details", array("customers_id"=>$cust_id), "customers_id=0");
+	}else{
+		dl::update("customers", array("c_name"=>$_POST["conCust"], "c_type_of_business"=>$_POST["conBus"], "c_registration_no"=>$_POST["conReg"]), "c_id = ".$_POST["customer_id"]);
+		dl::update("contact_details", array("customers_id"=>$_POST["customer_id"]), "customers_id=0");
+	}
 	echo "Customer Details have been saved...";
 }
 
@@ -768,7 +795,7 @@ function show_samples() {
 			//check samples table for this sample there may be a record but will show up if the status is 'Removed'
 			$check_sample = dl::select("samples", "samples_list_items_id = ". $sample["sli_id"]." and s_status = 'Stored'");
 			if(empty($check_sample)) {
-				echo "<li id='sampleId-".$sample["sli_id"]."' style='list-style-type:none; padding:0.25em; height: 2em; margin: -0.5em 0; cursor:pointer;' class='ui-state-default'><div style='width: 100px; overflow:hidden; float:left; white-space:nowrap;'>".$sample["sli_customer_identifier"]."</div><div style='width: 230px; overflow:hidden; float:left; white-space:nowrap;'>".$sample["sli_description"]."</div><div style='width: 100px; overflow:hidden; float:left;'>".$sample["sli_pathology_no"]."</div><div style='width: 100px; overflow:hidden; float:left;'>".$sample["sli_SNOMED_code"]."</div></li><BR>";
+				echo "<li id='sampleId-".$sample["sli_id"]."' style='list-style-type:none; padding:0.25em; height: 2em; margin: -0.5em 0; cursor:pointer; width:150%' class='ui-state-default'><div style='width: 100px; overflow:hidden; float:left; white-space:nowrap;'>".$sample["sli_customer_identifier"]."</div><div style='width: 230px; overflow:hidden; float:left; white-space:nowrap; margin-right:0.25em;'>".$sample["sli_description"]."</div><div style='width: 100px; overflow:hidden; float:left;'>".$sample["sli_pathology_no"]."</div><div style='width: 100px; overflow:hidden; float:left;'>".$sample["sli_SNOMED_code"]."</div></li><BR>";
 				?>
 					<script>
 					$("#sampleId-<?php echo $sample["sli_id"]?>").selectable({
