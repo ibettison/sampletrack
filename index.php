@@ -31,6 +31,7 @@ define( "JAVAPATH", 				"library/js/");
 require(LIBRARYPATH.			'mysqli_datalayer.php');
 require('Classes/'.						'PHPExcel.php');
 require(CLASSPATH.				'field.class.php');
+require(CLASSPATH.				'audit.class.php');
 require(CLASSPATH.				'permission.class.php');
 include(									'connection.php');
 require(CLASSPATH.				'login.class.php');
@@ -48,9 +49,12 @@ require(CLASSPATH.				'phpmailer/class.phpmailer.php');
 include(									"functions.php");
 
 if($_GET["func"] == "logoff") {
+	$audit = new audit("SECURITY", "LOGOUT", array($_SESSION["userId"], $_SESSION["user_name"]));
 	session_destroy();
 	session_start();
 	$_SESSION["loggedIn"] = "";
+	//audit who has logged in
+	
 }
 
 echo "<head>";
@@ -70,6 +74,10 @@ echo "<SCRIPT src='".JAVAPATH."less/less-1.3.0.min.js'></SCRIPT>";
 
 echo "<link REL='SHORTCUT ICON' HREF='".LOCALIMAGEPATH."favicon.ico'>"; 
 echo "</head>";
+/*testing Audit
+$audit = new audit("SECURITY", "RECORD ADDED", array("janStoddart@ncl.ac.uk", "Jan Stoddart"), "Users, Security");
+audit::create_action(array("table"=>"audit_action", "values"=>array("field1"=>"value1","field2"=>"value2","field3"=>"value3","field4"=>"value4")), 5);
+die();*/
 $_SESSION["notConfirmed"] = false;
 if(!isset($_SESSION["loggedIn"])) {
 	$_SESSION["loggedIn"] = "";
@@ -94,7 +102,11 @@ if($_GET["func"] == "login") { // attempt to login
 			$_SESSION["user_name"] 	= $id[0]["user_name"];
 			$_SESSION["user_email"] 		= $id[0]["user_email_address"];
 			$_SESSION["loggedInTime"] 	= date("d-m-Y H:i:s");
+			//audit who has logged in
+			$audit = new audit("SECURITY", "LOGIN", array($_SESSION["userId"], $_SESSION["user_name"]));
 		}
+	}else{
+			$audit = new audit("SECURITY", "FAILED LOGIN", array(0, $email));
 	}
 }	
 if($_GET["func"] == "confirm") { // security confirmation
@@ -117,6 +129,8 @@ if($_GET["func"] == "confirm") { // security confirmation
 		$_SESSION["user_name"] 		= $id[0]["user_name"];
 		$_SESSION["user_email"] 			= $id[0]["user_email_address"];
 		$_SESSION["loggedInTime"] 		= date("d-m-Y H:i:s");
+		//audit who has logged in
+		$audit = new audit("SECURITY", "LOGIN", array($_SESSION["userId"], $_SESSION["user_name"]));
 		$message 			  					= new message("ian.bettison@ncl.ac.uk");
 		$subject 			  						= "Sample Tracking System - Account Confirmation";
 		$body    			  						= "<div style='font-family: arial; font-size: small;'>Dear ".$id[0]["user_name"]."<P>
@@ -317,6 +331,13 @@ if( $_SESSION["loggedIn"] == "true") {
 		print_barcodes("re-print");
 		echo "</div>";
 		echo "</main>";
+	}elseif( $_GET["func"] == "audit_report"){
+		$nofooter = true;
+		$nosidepanel = true;
+		echo "<audit><div id='container-main'>";
+		audit_report();
+		echo "</div>";
+		echo "</audit>";
 	}else{
 		if($_GET["func"]   == "new") {
 			unset($_SESSION["Patient_No"] );
@@ -324,10 +345,12 @@ if( $_SESSION["loggedIn"] == "true") {
 		show_homePage();
 		
 	}
-	echo "<div id='sidepanel'>";	
-	echo "</div>";
-	echo "<div id='sidepanelIcon'>";
-	echo "</div>";	
+	if(empty($nosidepanel)) {
+		echo "<div id='sidepanel'>";	
+		echo "</div>";
+		echo "<div id='sidepanelIcon'>";
+		echo "</div>";	
+	}
 }
 
 ?>
@@ -379,18 +402,20 @@ function checkBarcode(){
 		
 </script>
 <?php
-//start of footer
-echo "<div class='footer'>";
-	echo "<div class='footer-left'>";
-		echo "Newcastle Biomedicine Biobank<BR>";
-		echo "Sample Tracking System";
-	echo "</div>";
-	echo "<div class='footer-right'></div>";
-	
-echo "</div>"; //end of footer div
-echo "<div class='footer-copyright'>";
-	echo "Copyright &copy 2012 Newcastle University";
-	echo "</div>";
+if(empty($nofooter)) {
+	//start of footer
+	echo "<div class='footer'>";
+		echo "<div class='footer-left'>";
+			echo "Newcastle Biomedicine Biobank<BR>";
+			echo "Sample Tracking System";
+		echo "</div>";
+		echo "<div class='footer-right'></div>";
+		
+	echo "</div>"; //end of footer div
+	echo "<div class='footer-copyright'>";
+		echo "Copyright &copy 2012 Newcastle University";
+		echo "</div>";
+}
 echo "</body>";
 echo "</html>";
 //lets remove the connection to the database here as it is connecting everytime anyway

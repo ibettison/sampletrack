@@ -101,6 +101,11 @@ function dropdown_loginForm(){
 							echo "List Management";
 							echo "</a>";
 						}
+						if( check_permissions("View Audit") ) {
+							echo "<a id='login-menu' href='index.php?func=audit_report'>";
+							echo "View Audit Report";
+							echo "</a>";
+						}
 						echo "<a id='login-menu' href='index.php?func=logoff'>";
 							echo "Log Out";
 						echo "</a>";
@@ -1627,8 +1632,14 @@ function accept_samples(){
 			</script>
 			<?php
 			echo "<div id='show_samples'></div>";
+			echo "<BR><BR>";
+			$field = new checkbox("Save Uncatalogued?", "checkbox", "greyInput", "40", "", "uncat", "");
+			echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
+			echo "<span class='form_field'>".$field->show_field()."</span><BR>(Select a samples list and it will be associated with the selected container.)<BR><BR>";
 			$button = new fields("submit Button", "submit", "bluebutton", 10, "Save Sample Locations","save_samples");
 			echo $button->show_field();
+			
+			
 			echo "<div id='showContact_div'></div>";
 		echo "</div>";
 		echo "<div style='width:50%; float:right;'>";
@@ -1712,6 +1723,20 @@ function accept_samples(){
 						height: "32em",
 						width:	"42em"
 					});
+				}
+			);
+		});
+		$("#save_samples").click(function() { 
+			$.post(
+				"ajax.php",
+				{ func: "save_sample_locations",
+					uncatalogued: $("#uncat").is(":checked"),
+					container: $("#container_bc").val(),
+					sampleVal: $("#sample_listing").val()
+				},
+				function (data)
+				{
+					$('#showContact_div').html(data);
 				}
 			);
 		});
@@ -2018,4 +2043,167 @@ function print_barcodes($option) {
 	</script>
 	<?php
 }
+
+function audit_report(){
+	if( !check_permissions("View Audit") ) {
+		die("Sorry but you do not have access to the Audit Reporting function.");				
+	}
+	echo "<div id='filter'>";
+	echo "<div id='filter-title'>Audit Report Filter</div>";
+	$field = new dates("Timestamp From:", "text", "greyInput", "20", "", "from", "from");
+	echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
+	echo "<span class='form_field'>".$field->show_field()."</span><BR />";
+	$field = new dates("Timestamp To:", "text", "greyInput", "20", "", "to", "to");
+	echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
+	echo "<span class='form_field'>".$field->show_field()."</span><BR />";
+	$users = dl::select("user", "confirmed = 1");
+	foreach($users as $u) {
+		$user[] =  $u["user_name"];
+	}
+	$field = new selection("User", "text", "greyInput", "35", "", "user", $user, "", "0");
+	echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
+	echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='userClick'><img class='gi-img' src='images/dropdown.png'></span>";
+	$actions = dl::select("audit_actions");
+	foreach($actions as $ac) {
+		$action[] = $ac["aa_list"];
+	}
+	$field = new selection("Actions", "text", "greyInput", "35", "", "actions", $action, "", "0");
+	echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
+	echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='actionsClick'><img class='gi-img' src='images/dropdown.png'></span>";
+	$sql = "select table_name, engine
+	from information_schema.tables
+	where table_type = 'BASE TABLE' and table_schema = 'nsample'";
+	$tables = dl::getQuery($sql);
+	foreach($tables as $t) {
+		$table[] = $t["table_name"];
+	}
+	$field = new selection("Tables", "text", "greyInput", "35", "", "table_list", $table, "", "0");
+	echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
+	echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='tablesClick'><img class='gi-img' src='images/dropdown.png'></span><BR>";
+	$field = new fields("Record Id", "text", "greyInput", "20", "", "recId");
+	echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
+	echo "<span class='form_field'>".$field->show_field()."</span><BR>";
+	$button = new fields("submit Button", "submit", "bluebutton", 10, "Set Filter","set_filter");
+	echo $button->show_field();
+	$button = new fields("submit Button", "submit", "bluebutton", 10, "Clear","clear_filter");
+	echo $button->show_field();
+	echo "<div id='FilterMessage'></div>";
+	echo "</div>";
+	$actions = dl::select("audit_action");	
+	echo "<div id='main_display'>";
+	audit_report_body($actions);
+	echo "</div>";
+	?>
+	<script>
+	$(document).ready(function() {
+		$("#userClick").live("click", function () {
+			$("#user").focus();	
+		});
+		$("#actionsClick").live("click", function () {
+			$("#actions").focus();	
+		});
+		$("#tablesClick").live("click", function () {
+			$("#table_list").focus();	
+		});
+		$("#clear_filter").live("click", function () {
+				$("#from").val("");
+				$("#to").val("");
+				$("#user").val("");
+				$("#actions").val("");
+				$("#table_list").val("");
+				$("#recId").val("");
+		});
+		$("#set_filter").live("click", function () {
+			var func = "audit_filter";
+			$.post(
+				"ajax.php",
+				{ func: func,
+				from: $("#from").val(),
+				to: $("#to").val(),
+				user: $("#user").val(),
+				action: $("#actions").val(),
+				record: $("#recId").val(),
+				table: $("#table_list").val()
+				},
+				function (data)
+				{
+				$('#main_display').html(data);
+			});
+		});
+	});
+	</script>
+	<?php 
+}
+
+function audit_report_body($actions) {
+	$row_count 						= 0;
+	$checkKey						= ""; // used to check that the returned detail is not repeated for each field in the record
+	foreach($actions as $act) { // this checks if the field aa_id is not the same as the previous record and if not adds the record to $arr (array) 
+		if($checkKey !== $act["aa_id"]) {
+			$arr[]=$act;
+			$checkKey = $act["aa_id"];
+		}
+	}
+	$actions = $arr; //$actions has been cleansed of duplicate records and is now reassigned to continue the journey
+	foreach( $actions as $action ) {
+			$action_desc 			= dl::select("audit_actions", "aa_id = ". $action["audit_actions_id"]);
+			$types_desc 			= dl::select("audit_action_types", "aat_id = ".$action_desc["audit_action_types_id"]);
+			$typeDescription 		= $types_desc[0]["aat_list"];
+			$actionDescription 	= $action_desc[0]["aa_list"];
+			$response 				= getResponse($actionDescription);
+			$id 							= dl::select("audit_identification", "ai_id = ".$action["audit_identification_id"]);
+			$ts 							= dl::select("audit_timestamp", "at_id = ".$action["audit_timestamp_id"]);
+			$identification 			= $id[0]["ai_username"]."</span> ]";
+			$timestamp				= $ts[0]["at_timestamp"];
+			$details						= dl::select("audit_details_actions", "audit_action_id = ".$action["aa_id"]);
+			if($row_count++ 		== 0) {
+				echo "<div id='row-even'>";
+			}else{
+				echo "<div id='row-odd'>";
+				$row_count			=0;
+			}
+			echo "<div id='field-display'>".$timestamp."</div><div id='field-display'>".$typeDescription."</div><div id='field-display'>".$actionDescription."</div><div id='field-display'>".$response.$identification."</div><BR><BR>";
+			if(!empty($details)) {
+				$detailItems = dl::select("audit_details", "ad_id = ".$details[0]["audit_details_id"]);
+				echo "<div id='spacer'></div><div id='field-display'>Table affected:</div>";
+				echo "<div id='spacer'></div><div id='field-display'>".$detailItems[0]["ad_tables"]." with values [ </div>";
+				foreach($details as $detail) {
+					$detailItems = dl::select("audit_details", "ad_id = ".$detail["audit_details_id"]);
+					foreach($detailItems as $detailItem){
+						echo "<div id='field-display'>".$detailItem["ad_key"]."::<span id='value-display'>".$detailItem["ad_value"]."</span></div>";
+					}
+				}
+				echo "<div id='field-display'>[ Record_ID::<span id='value-display'>".$detailItems[0]["ad_record_id"]."</span> ]]</div><BR><BR>";
+			}
+			echo "</div>"; //end of row
+		}	
+}
+
+function getResponse($action) {
+	switch($action) {
+		case "LOGIN":
+		case "LOGOUT":
+		case "FAILED LOGIN":
+			$retVal = "User name : [ <span id='value-display'>";
+			break;
+		case "RECORD ADDED":
+			$retVal = "Created By : User name: [ <span id='value-display'>";
+			break;
+		case "RECORD DELETED":
+			$retVal = "Deleted By :  User name: [ <span id='value-display'>";
+			break;
+		case "RECORD UPDATED":
+			$retVal = "Updated By :  User name: [ <span id='value-display'>";
+			break;
+		case "UPLOAD":
+			$retVal = "File uploaded By :  User name: [ <span id='value-display'>";
+			break;
+	}
+	return $retVal;
+}
+
+
+
+
+
 ?>

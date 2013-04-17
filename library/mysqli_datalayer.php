@@ -6,6 +6,7 @@ class dl {
    static public $debug = false;
    static private $mysqli;
    static private $database;
+   static public $noRows;
  
    function __construct( ) {
    }
@@ -48,8 +49,10 @@ class dl {
         if (! $result = self::_query( $query ) ) 
         return false;  
       $ret = array();
+	  self::$noRows = 0;
       while ( $row = $result->fetch_assoc() ) {
         $ret[] = $row;
+		self::$noRows++;
 		}
 		$result->free();
       return $ret;

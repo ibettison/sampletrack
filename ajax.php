@@ -17,6 +17,7 @@ define( "JAVAPATH", "./library/js/");
 
 require(LIBRARYPATH.'mysqli_datalayer.php');
 require(CLASSPATH.'field.class.php');
+require(CLASSPATH.'audit.class.php');
 require(CLASSPATH.'permission.class.php');
 require('Classes/'.						'PHPExcel.php');
 include('connection.php');
@@ -57,6 +58,8 @@ if($_POST["func"] == "compare_spreadsheet"){
 	//write samples_list record
 	dl::insert("samples_list", array("customer_id"=>$cust_ID[0]["c_id"], "sl_status"=>"Outstanding"));
 	$last_id = dl::getId();
+	$audit = new audit("DATA MANAGEMENT", "RECORD ADDED", array($_SESSION["userId"], $_SESSION["user_name"]));
+	audit::create_action(array("table"=>"samples_list", "values"=>array("customer_id"=>$cust_ID[0]["c_id"], "sl_status"=>"Outstanding")), $last_id);
 	//prepare sample_list_items
 	$sl_fields = array("samples_list_id", "sli_customer_identifier","sli_description", "sli_pathology_no", "sli_date_sample_stored", "sli_SNOMED_code", "sli_subject_gender", "sli_subject_age", "sli_disease_state", "sli_sample_stage", "sli_study_name", "sli_adult_paediatric");
 	
@@ -79,6 +82,8 @@ if($_POST["func"] == "compare_spreadsheet"){
 		//write the spreadsheet row into the database.
 		dl::insert("sample_list_items", $writeLn);
 		$itemId = dl::getId();
+		$audit = new audit("DATA MANAGEMENT", "RECORD ADDED", array($_SESSION["userId"], $_SESSION["user_name"]));
+		audit::create_action(array("table"=>"sample_list_items", "values"=>$writeLn), $itemId);
 		$rowValues=array();
 		
 		//now need to gather the additional field information and store it in the additional_information field.
@@ -92,6 +97,8 @@ if($_POST["func"] == "compare_spreadsheet"){
 			}	
 			//update the additional information field in the list items table.
 			dl::update("sample_list_items", array("sli_additional_information"=>$listString), "sli_id = ".$itemId);
+			$audit = new audit("DATA MANAGEMENT", "RECORD UPDATED", array($_SESSION["userId"], $_SESSION["user_name"]));
+			audit::create_action(array("table"=>"sample_list_items", "values"=>array("sli_additional_information"=>$listString)), $itemId);
 		}
 	}
 	echo "Spreadsheet data added to database.";
@@ -126,6 +133,8 @@ if($_POST["func"] == "moveContainer") {
 	$allowed = dl::getQuery($sql);
 	if(!empty($allowed)) {
 		dl::update("containers", array("locations_id"=>$conTemp2_ID[0]["c_id"]), "c_id =".$conTemp1_ID[0]["c_id"]);
+		$audit = new audit("DATA MANAGEMENT", "RECORD UPDATED", array($_SESSION["userId"], $_SESSION["user_name"]));
+		audit::create_action(array("table"=>"container_types", "values"=>array("locations_id"=>$conTemp2_ID[0]["c_id"])), $conTemp1_ID[0]["c_id"]);
 		echo "The container has been stored.";
 	}else{
 		echo "This container is not authorised to store the container type.";
@@ -159,70 +168,6 @@ if($_POST["func"] == "check_barcode") {
 	echo json_encode($retArr);
 }
 
-if($_POST["func"] == "setMessageId"){
-	$ajax_message = dl::select("sms_message_appointment", "ma_id = ". $_POST["mId"]);
-	if(!empty($ajax_message)) {
-		$show = dl::select("sms_messages", "m_id = ". $ajax_message[0]["message_id"] );
-		echo "<B>".$show[0]["m_short_title"]."</B><BR><BR>";
-		echo $show[0]["m_message"];
-	}
-}
-
-if($_POST["func"] == "delMessageId"){
-	$delete = dl::select("sms_message_appointment", "ma_id = ". $_POST["dId"]);
-	dl::delete("sms_appointments", "a_id = ".$delete[0]["appointment_id"]);
-	dl::delete("sms_sent_messages", "message_appointment_id = ". $_POST["dId"]);
-	dl::delete("sms_message_appointment", "ma_id = ".$_POST["dId"]);
-	appointment_body();
-}
-
-if($_POST["func"] == "show_message") {
-	$ajax_message = dl::select("sms_messages", "m_short_title = '".$_POST["messVal"]."'");
-	if(!empty($ajax_message)){
-		echo "<fieldset><legend>Message to be sent</legend>";
-		echo $ajax_message[0]["m_message"];
-		echo "</fieldset>";
-	}
-}
-
-if( $_POST["func"] == "delete_patient" ){
-	$mobile = substr($_POST["del"],0,strpos($_POST["del"]," "));
-	//get patient Id
-	$patient = dl::select("sms_patient_contact_details", "pcd_mobile_number = '".$mobile."'");
-	if(!empty($patient)){
-		$appointments = dl::select("sms_message_appointment", "patient_id = ". $patient[0]["pcd_id"]);
-		foreach($appointments as $appts) {
-			dl::delete("sms_appointments", "a_id = ".$appts["appointment_id"]);
-		}
-		dl::delete("sms_message_appointment", "patient_id = ". $patient[0]["pcd_id"]);
-		dl::delete("sms_patient_contact_details", "pcd_id = ".$patient[0]["pcd_id"]);
-		echo "Deleted";
-	}else{
-		echo "Not Found";
-	}
-	
-}
-
-if( $_POST["func"] == "delete_message" ) {
-	$messages = dl::select( "sms_messages", "m_short_title = '".$_POST["del"]."'" );
-	//now need to check if the message is queued to send. If not we will delete it
-	$sql = "select * from sms_messages as m
-		join sms_message_appointment as ma on (m.m_id=ma.message_id)
-		left join
-		sms_sent_messages as sm on (ma.ma_id=sm.message_appointment_id)
-		where
-		sm.sm_timestamp is NULL 
-		and ma.message_id = ".$messages[0]["m_id"];
-	$messQueued = dl::getQuery($sql);
-	if(empty($messQueued)) {
-		//we can safely delete the message
-		dl::delete("sms_messages", "m_id = ". $messages[0]["m_id"]);
-		echo "Deleted Message...";
-	}else{
-		echo "The message is queued for delivery, not deleted...";
-	}
-}
-
 
 if( $_POST["func"] == "Add_Note") {	
 	addnote::add_notes_to($_POST["table"]);
@@ -241,18 +186,31 @@ if( $_POST["func"] == "new_container_type") {
 	if($_POST["option"]== "new"){
 		dl::insert("container_types", $combine);
 		$newId = dl::getId();
+		$audit = new audit("DATA MANAGEMENT", "RECORD ADDED", array($_SESSION["userId"], $_SESSION["user_name"]));
+		audit::create_action(array("table"=>"container_types", "values"=>$combine), $newId);
 		echo "New container type has been created";
 	}else{
 		dl::update("container_types", $combine, "ct_id = ",$_SESSION["containerTypeID"]);
 		$newId = $_SESSION["containerTypeID"];
+		$audit = new audit("DATA MANAGEMENT", "RECORD UPDATED", array($_SESSION["userId"], $_SESSION["user_name"]));
+		audit::create_action(array("table"=>"sample_list_items", "values"=>$combine), $SESSION["containTypeID"]);
 		echo "Container Type has been amended";
+		$containers = dl::select("allowed_containers", "types_id = ".$newId);
+		foreach($containers as $container) {
+			$audit = new audit("DATA MANAGEMENT", "RECORD DELETED", array($_SESSION["userId"], $_SESSION["user_name"]));
+			audit::create_action(array("table"=>"allowed_containers", "values"=>array("allowed_ids"=>$container["allowed_ids"], "types_id"=>$container["types_id"])), $container["a_id"]);
+		}
 		dl::delete("allowed_containers", "types_id = ".$newId); //remove existing allowed containers as you do not know if a container has been deselected
+		
 	}
 	if(!empty($_POST["allowedContainers"])) {
 		foreach($_POST["allowedContainers"] as $container){
 			$c_id = dl::select("container_types", "ct_name = '".$container."'");
 			if(!empty($c_id)) {
 				dl::insert("allowed_containers", array("allowed_ids"=>$c_id[0]["ct_id"], "types_id"=>$newId));
+				$newId = dl::getId();
+				$audit = new audit("DATA MANAGEMENT", "RECORD ADDED", array($_SESSION["userId"], $_SESSION["user_name"]));
+				audit::create_action(array("table"=>"allowed_containers", "values"=>array("allowed_ids"=>$c_id[0]["ct_id"], "types_id"=>$newId)), $newId);
 			}
 		}
 	}
@@ -264,6 +222,9 @@ if( $_POST["func"] == "new_container_template") {
 	$values = array($types[0]["ct_id"], $_POST["conRows"],$_POST["conCols"],$_POST["conRowType"], $_POST["conColType"], $_POST["tempName"]);
 	$combine = array_combine($fields, $values);
 	dl::insert("container_templates", $combine);
+	$newId = dl::getId();
+	$audit = new audit("DATA MANAGEMENT", "RECORD ADDED", array($_SESSION["userId"], $_SESSION["user_name"]));
+	audit::create_action(array("table"=>"container_templates", "values"=>$combine), $newId);
 	echo "New container template has been created";
 }
 
@@ -277,6 +238,9 @@ if( $_POST["func"] == "new_container") {
 			$values = array($templates[0]["ct_id"],$_POST["conName"],$_POST["conBarcode"]);
 			$combine = array_combine($fields, $values);
 			dl::insert("containers", $combine);
+			$newId = dl::getId();
+			$audit = new audit("DATA MANAGEMENT", "RECORD ADDED", array($_SESSION["userId"], $_SESSION["user_name"]));
+			audit::create_action(array("table"=>"containers", "values"=>$combine), $newId);
 			echo json_encode(array("message"=>'New container has been created'));
 		}else{
 			echo json_encode(array("message"=>'This barcoded container already exists, not created'));
@@ -287,6 +251,8 @@ if( $_POST["func"] == "new_container") {
 		$values = array($templates[0]["ct_id"],$_POST["conName"],$_POST["conBarcode"]);
 		$combine = array_combine($fields, $values);
 		dl::update("containers", $combine, "c_id = ". $_SESSION["containerID"]);
+		$audit = new audit("DATA MANAGEMENT", "RECORD UPDATED", array($_SESSION["userId"], $_SESSION["user_name"]));
+		audit::create_action(array("table"=>"containers", "values"=>$combine), $_SESSION["containerID"]);
 		$containers = dl::select("containers");
 		foreach($containers as $c){
 			$list[]= $c["c_container_name"]." - ".$c["c_container_barcode"];
@@ -341,6 +307,8 @@ if( $_POST["func"] == "new_registration") {
 	$combine = array_combine($fields, $values);
 	dl::insert("sample_registrations", $combine);
 	$regId = dl::getId();
+	$audit = new audit("DATA MANAGEMENT", "RECORD ADDED", array($_SESSION["userId"], $_SESSION["user_name"]));
+	audit::create_action(array("table"=>"sample_registrations", "values"=>$combine), $regId);
 	//registration_information
 	$sample_types = dl::select("sample_types", "st_type='".$_POST["sample_type"]."'");
 	$container_types = dl::select("container_types", "ct_name = '".$_POST["sample_container"]."'");
@@ -350,11 +318,17 @@ if( $_POST["func"] == "new_registration") {
 	$_POST["sample_temperature"], $_POST["samples_catalogued"], $_POST["sample_info"]);
 	$combine = array_combine($fields, $values);
 	dl::insert("registration_information", $combine);
+	$newId = dl::getId();
+	$audit = new audit("DATA MANAGEMENT", "RECORD ADDED", array($_SESSION["userId"], $_SESSION["user_name"]));
+	audit::create_action(array("table"=>"registration_information", "values"=>$combine), $newId);
 	//registration_payments
 	$fields = array("rp_payment_reference", "rp_payment_details", "sample_registrations_id");
 	$values = array($_POST["contact_paymentRef"], $_POST["contact_paymentDetails"], $regId);
 	$combine = array_combine($fields, $values);
 	dl::insert("registration_payments", $combine);
+	$newId = dl::getId();
+	$audit = new audit("DATA MANAGEMENT", "RECORD ADDED", array($_SESSION["userId"], $_SESSION["user_name"]));
+	audit::create_action(array("table"=>"registration_payments", "values"=>$combine), $newId);
 	//biobank services
 	$ids = $_POST["ids"];
 	$services = $_POST["services"];
@@ -362,6 +336,9 @@ if( $_POST["func"] == "new_registration") {
 	foreach($ids as $id) {
 		if($services[$id-1] == "true") {
 			dl::insert("biobank_services", array("service_list_id"=>$id, "registration_information_id"=>$regId));
+			$newId = dl::getId();
+			$audit = new audit("DATA MANAGEMENT", "RECORD ADDED", array($_SESSION["userId"], $_SESSION["user_name"]));
+			audit::create_action(array("table"=>"biobank_services", "values"=>array("service_list_id"=>$id, "registration_information_id"=>$regId)), $newId);
 		}
 	}
 	echo "New registration created...";
@@ -371,6 +348,9 @@ if($_POST["func"] == "new_contact_details") {
 	$contact_types = dl::select("contact_types", "ct_type = \"".$_POST["conType"]."\"");
 	//add new details
 	dl::insert("contact_details", array("contact_type_id"=>$contact_types[0]["ct_id"], "cd_detail"=>$_POST["conDetail"]));
+	$newId = dl::getId();
+	$audit = new audit("DATA MANAGEMENT", "RECORD ADDED", array($_SESSION["userId"], $_SESSION["user_name"]));
+	audit::create_action(array("table"=>"contact_details", "values"=>array("contact_type_id"=>$contact_types[0]["ct_id"], "cd_detail"=>$_POST["conDetail"])), $newId);
 	if($_POST["option"] == "new"){
 		$details = dl::select("contact_details", "customers_id=0", "cd_id ASC"); //if no customer id is set then the details haven't been properly saved yet
 	}else{
@@ -426,9 +406,14 @@ if($_POST["func"] == "save_contact_details") {
 	if($_POST["option"] == "new"){
 		dl::insert("customers", array("c_name"=>$_POST["conCust"], "c_type_of_business"=>$_POST["conBus"], "c_registration_no"=>$_POST["conReg"]));
 		$cust_id = dl::getId();
+		$audit = new audit("DATA AMENDMENT", "RECORD ADDED", array($_SESSION["userId"], $_SESSION["user_name"]));
+		audit::create_action(array("table"=>"customers", "values"=>array("c_name"=>$_POST["conCust"], "c_type_of_business"=>$_POST["conBus"], "c_registration_no"=>$_POST["conReg"])), $cust_id);
 		dl::update("contact_details", array("customers_id"=>$cust_id), "customers_id=0");
 	}else{
 		dl::update("customers", array("c_name"=>$_POST["conCust"], "c_type_of_business"=>$_POST["conBus"], "c_registration_no"=>$_POST["conReg"]), "c_id = ".$_POST["customer_id"]);
+		$cust_id = dl::getId();
+		$audit = new audit("DATA AMENDMENT", "RECORD UPDATED", array($_SESSION["userId"], $_SESSION["user_name"]));
+		audit::create_action(array("table"=>"customers", "values"=>array("c_name"=>$_POST["conCust"], "c_type_of_business"=>$_POST["conBus"], "c_registration_no"=>$_POST["conReg"])), $_POST["customer_id"]);
 		dl::update("contact_details", array("customers_id"=>$_POST["customer_id"]), "customers_id=0");
 	}
 	echo "Customer Details have been saved...";
@@ -680,9 +665,16 @@ if($_POST["func"] == "add_sample") {
 			if(!empty($sample)) {
 				if($sample[0]["s_status"] == 'Removed') { //check if the sample has been removed
 					dl::update("samples", $writeLn, "s_number = '".$barcode."'");
+					$update_id = dl::select("samples", "s_number = '".$barcode."'");
+					$newId = dl::getId();
+					$audit = new audit("DATA MANAGEMENT", "RECORD UPDATED", array($_SESSION["userId"], $_SESSION["user_name"]));
+					audit::create_action(array("table"=>"samples", "values"=>$writeLn), $update_id[0]["s_id"]);
 					$saved_sample_id = $sample[0]["s_id"];
 					//there must be a sample_orphan record so delete it
 					dl::delete("sample_orphans", "sample_id=".$sample[0]["s_id"]);
+					$newId = dl::getId();
+					$audit = new audit("DATA MANAGEMENT", "RECORD DELETED", array($_SESSION["userId"], $_SESSION["user_name"]));
+					audit::create_action(array("table"=>"sample_ophans", "values"=>"sample_id=".$sample[0]["s_id"]), $newId);
 					$sample_update = true;
 				}else{
 					$sample_update = false;
@@ -697,22 +689,40 @@ if($_POST["func"] == "add_sample") {
 			}else{
 				dl::insert("samples", $writeLn);
 				$saved_sample_id = dl::getId();
+				$audit = new audit("DATA MANAGEMENT", "RECORD ADDEDD", array($_SESSION["userId"], $_SESSION["user_name"]));
+				audit::create_action(array("table"=>"samples", "values"=>$writeLn), $saved_sample_id);
+				$sample_update = true;
 			}
 			if($sample_update) { //The sample has been updated so save the container position/ location and location history
 				dl::insert("container_positions", array("cp_row"=>substr($position,0, strpos($position,"-")), "cp_column"=>substr($position, strpos($position,"-")+1, strlen($position))));
 				$container_position_id = dl::getId();
+				$audit = new audit("DATA MANAGEMENT", "RECORD ADDEDD", array($_SESSION["userId"], $_SESSION["user_name"]));
+				audit::create_action(array("table"=>"container_positions", "values"=>array("cp_row"=>substr($position,0, strpos($position,"-")), "cp_column"=>substr($position, strpos($position,"-")+1, strlen($position)))), $container_position_id);
+				
 				$findContainer = dl::select("containers", "c_container_barcode = \"".$container_id."\"");
 				dl::insert("container_locations", array("samples_id"=>$saved_sample_id, "containers_id"=>$findContainer[0]["c_id"], "container_positions_id"=>$container_position_id));
+				$newId = dl::getId();
+				$audit = new audit("DATA MANAGEMENT", "RECORD ADDED", array($_SESSION["userId"], $_SESSION["user_name"]));
+				audit::create_action(array("table"=>"container_locations", "values"=>array("samples_id"=>$saved_sample_id, "containers_id"=>$findContainer[0]["c_id"], "container_positions_id"=>$container_position_id)), $newId);
 				dl::update("containers", array("locations_id"=>$findContainer[0]["c_id"]), "c_container_barcode = '".$barcode."'");
+				$update_id = dl::select("containers", "c_container_barcode = '".$barcode."'");
+				$newId = dl::getId();
+				$audit = new audit("DATA MANAGEMENT", "RECORD UPDATED", array($_SESSION["userId"], $_SESSION["user_name"]));
+				audit::create_action(array("table"=>"containers", "values"=>array("locations_id"=>$findContainer[0]["c_id"])), $update_id[0]["c_id"]);
 				$findContainer = dl::select("containers", "c_container_barcode = \"".$container_id."\"");
 				$fields = array("locations_id", "lh_date", "lh_action");
 				$values = array($findContainer[0]["c_id"], date('Y-m-d H:i:s'), "Added to container");
 				$combine = array_combine($fields, $values);
 				dl::insert("locations_history", $combine);
 				$lh_id = dl::getId();
+				$audit = new audit("DATA MANAGEMENT", "RECORD ADDED", array($_SESSION["userId"], $_SESSION["user_name"]));
+				audit::create_action(array("table"=>"locations_history", "values"=>$combine), $lh_id);
 				$samples = dl::select("samples", "s_number = '".$barcode."' and samples_list_items_id = ".$sample_id);
 				$s_id = $samples[0]["s_id"];
 				dl::insert("location_history_samples", array("location_history_id"=>$lh_id, "samples_id"=>$s_id));
+				$newId = dl::getId();
+				$audit = new audit("DATA MANAGEMENT", "RECORD ADDED", array($_SESSION["userId"], $_SESSION["user_name"]));
+				audit::create_action(array("table"=>"location_history_samples", "values"=>array("location_history_id"=>$lh_id, "samples_id"=>$s_id)), $newId);
 			}
 			$_SESSION["selectedSample"]=""; //reset the session variable
 		}else{
@@ -735,6 +745,66 @@ if($_POST["func"] == "add_sample") {
 	}
 }
 
+if($_POST["func"] == "save_sample_locations") {
+	$list = dl::select("samples_list", "sl_date_uploaded = \"".substr($_POST["sampleVal"], -19)."\"");
+	$list_id = $list[0]["sl_id"];
+	$customer_id = $list[0]["customer_id"];
+	$container = dl::select("containers", "c_container_barcode =\"". $_POST["container"]."\"");
+	if(!empty($_POST["container"]) and !empty($_POST["sampleVal"])) {
+		//check if this is an association or a full catalogue
+		if($_POST["uncatalogued"] == "true") {
+			//need to add all of the samples in the samples_list_items table to the samples table with s_number = 0 and link the  container_locations table with container_position_id = 0
+			// then need to mark the list as complete in the samples_list table
+			$sample_items = dl::select("sample_list_items", "samples_list_id = ".$list_id);
+			foreach($sample_items as $item) {
+				dl::insert("samples", array("s_type_id"=>0,"s_number"=>0,"customer_id"=>$customer_id, "samples_list_items_id"=>$item["sli_id"], "s_status"=>"Stored"));
+				$samplesId = dl::getId();
+				$audit = new audit("DATA MANAGEMENT", "RECORD ADDED", array($_SESSION["userId"], $_SESSION["user_name"]));
+				audit::create_action(array("table"=>"samples", "values"=>array("s_type_id"=>0,"s_number"=>0,"customer_id"=>$customer_id, "samples_list_items_id"=>$item["sli_id"], "s_status"=>"Stored")), $samplesId);
+				dl::insert("container_locations", array("samples_id"=>$samplesId, "containers_id"=>$container[0]["c_id"], "container_positions_id"=>0));
+				$newId = dl::getId();
+				$audit = new audit("DATA MANAGEMENT", "RECORD ADDED", array($_SESSION["userId"], $_SESSION["user_name"]));
+				audit::create_action(array("table"=>"container_locations", "values"=>array("samples_id"=>$samplesId, "containers_id"=>$container[0]["c_id"], "container_positions_id"=>0)), $newId);
+			}
+			echo "The samples have been added to the container in an uncatalogued state.";
+			dl::update("samples_list", array("sl_status"=>"Complete"), "sl_id = ".$list_id);
+			$newId = dl::getId();
+			$audit = new audit("DATA MANAGEMENT", "RECORD UPDATED", array($_SESSION["userId"], $_SESSION["user_name"]));
+			audit::create_action(array("table"=>"samples_list", "values"=>array("sl_status"=>"Complete")), $newId);
+		}else{
+			//need to check if all of the samples in the list have been catalogued
+			// if yes then the list can be marked as completed
+			//if not then can reply with a message
+			$listSamples = dl::select("sample_list_items", "samples_list_id = ".$list_id);
+			$notFound = false;
+			if(!empty($listSamples)) {
+				foreach($listSamples as $ls) {
+					$samplesId = dl::select("samples", "samples_list_items_id = ".$ls["sli_id"]);
+					$container_loc = dl::select("container_locations", "samples_id = ".$samplesId[0]["s_id"]);
+					if(empty($container_loc)) {
+						$notFound = true;
+					}
+				}
+				if(!$notFound) {
+					//looks like the container has been filled with all the samples lets update the samples_list table
+					dl::update("samples_list", array("sl_status"=>"Complete"), "sl_id = ".$list_id);
+					$newId = dl::getId();
+					$audit = new audit("DATA MANAGEMENT", "RECORD UPDATED", array($_SESSION["userId"], $_SESSION["user_name"]));
+					audit::create_action(array("table"=>"samples_list", "values"=>array("sl_status"=>"Complete")), $list_id);
+					echo "The samples list has been completed all samples have been catalogued.";
+				}else{
+					echo "Not all samples have been catalogued for this samples list.";
+				}
+			}else{
+				echo "No samples from this list have been catalogued.";
+			}
+		}
+	}else{
+		echo "The samples list and container barcode are required items. Please select them to proceed.";
+	}
+}
+
+
 if($_POST["func"] == "Remove") {
 	//search samples with the barcode
 	$samples = dl::select("samples", "s_number = '".$_POST["barcode"]."'");
@@ -742,18 +812,31 @@ if($_POST["func"] == "Remove") {
 	$s_id = $samples[0]["s_id"];
 	//add a sample_orphans record for the removed sample
 	dl::insert("sample_orphans", array("sample_id"=>$s_id));
+	$newId = dl::getId();
+	$audit = new audit("DATA MANAGEMENT", "RECORD ADDED", array($_SESSION["userId"], $_SESSION["user_name"]));
+	audit::create_action(array("table"=>"sample_orphans", "values"=>array("sample_id"=>$s_id)), $newId);
 	//get host container id
 	$host = dl::select("containers", "c_container_barcode ='".$_POST["container_id"]."'");
 	//add locations_history record
 	dl::insert("locations_history", array("locations_id"=>$host[0]["c_id"], "lh_date"=>date('Y-m-d H:i:s'), "lh_action"=>"Removed from container"));
 	$lh_id = dl::getId();
+	$audit = new audit("DATA MANAGEMENT", "RECORD ADDED", array($_SESSION["userId"], $_SESSION["user_name"]));
+	audit::create_action(array("table"=>"locations_history", "values"=>array("locations_id"=>$host[0]["c_id"], "lh_date"=>date('Y-m-d H:i:s'), "lh_action"=>"Removed from container")), $lh_id);
 	dl::insert("location_history_samples", array("location_history_id"=>$lh_id, "samples_id"=>$s_id));
 	$lhs_id = dl::getId();
+	$audit = new audit("DATA MANAGEMENT", "RECORD ADDED", array($_SESSION["userId"], $_SESSION["user_name"]));
+	audit::create_action(array("table"=>"location_history_samples", "values"=>array("location_history_id"=>$lh_id, "samples_id"=>$s_id)), $lh_id);
+	
 	//if there is a note then save it
 	if(!empty($_POST["note"])) {
 		dl::insert("notes", array("note"=>$_POST["note"]));
 		$n_id = dl::getId();
+		$audit = new audit("DATA MANAGEMENT", "RECORD ADDED", array($_SESSION["userId"], $_SESSION["user_name"]));
+		audit::create_action(array("table"=>"notes", "values"=>array("note"=>$_POST["note"])), $n_id);
 		dl::insert("location_history_notes", array("note_id"=>$n_id, "locations_history_id"=>$lhs_id));
+		$newId = dl::getId();
+		$audit = new audit("DATA MANAGEMENT", "RECORD ADDED", array($_SESSION["userId"], $_SESSION["user_name"]));
+		audit::create_action(array("table"=>"location_history_notes", "values"=>array("note_id"=>$n_id, "locations_history_id"=>$lhs_id)), $newId);
 	}
 	//use the samples ID to find the container location
 	$containerPos = dl::select("container_locations", "samples_id =".$s_id);
@@ -761,11 +844,23 @@ if($_POST["func"] == "Remove") {
 	$containerPos_id = $containerPos[0]["container_positions_id"];
 	//delete the container location
 	dl::delete("container_locations", "samples_id =".$s_id);
+	$newId = dl::getId();
+	$audit = new audit("DATA MANAGEMENT", "RECORD DELETED", array($_SESSION["userId"], $_SESSION["user_name"]));
+	audit::create_action(array("table"=>"container_locations", "values"=>array("samples_id" =>$s_id)), $newId);
 	//delete the container position
 	dl::delete("container_positions", "cp_id=". $containerPos_id);
+	$newId = dl::getId();
+	$audit = new audit("DATA MANAGEMENT", "RECORD DELETED", array($_SESSION["userId"], $_SESSION["user_name"]));
+	audit::create_action(array("table"=>"container_positions", "values"=>array("cp_id"=> $containerPos_id)), $newId);
 	$container = dl::select("containers", "c_container_barcode = '".$_POST["barcode"]."'");
 	dl::update("containers", array("locations_id"=>0), "c_id=".$container[0]["c_id"]);
+	$newId = dl::getId();
+	$audit = new audit("DATA MANAGEMENT", "RECORD UPDATED", array($_SESSION["userId"], $_SESSION["user_name"]));
+	audit::create_action(array("table"=>"containers", "values"=>array("locations_id"=>0)), $container[0]["c_id"]);
 	dl::update("samples", array("s_status"=>"Removed"), "s_id = ".$s_id);
+	$newId = dl::getId();
+	$audit = new audit("DATA MANAGEMENT", "RECORD UPDATED", array($_SESSION["userId"], $_SESSION["user_name"]));
+	audit::create_action(array("table"=>"samples", "values"=>array("s_status"=>"Removed")), $s_id);
 	$_SESSION["selectedSample"]=""; //reset the session variable
 }
 
@@ -837,6 +932,9 @@ if($_POST["func"] == "saveBarcodeSettings") {
 	$values = array($_POST["bcPrefix"],$_POST["bcNumber"],$_POST["bcSuffix"],$_POST["bcName"]);
 	$writeln = array_combine($fields, $values);
 	dl::insert("print_barcode_settings", $writeln);
+	$newId = dl::getId();
+	$audit = new audit("DATA MANAGEMENT", "RECORD ADDED", array($_SESSION["userId"], $_SESSION["user_name"]));
+	audit::create_action(array("table"=>"print_barcode_settings", "values"=>$writeln), $newId);
 	echo "Created print settings...";
 
 }
@@ -856,6 +954,9 @@ if($_POST["func"] == "saveBarcodeTemplate") {
 	$values = array($_POST["posx"],$_POST["posy"],$_POST["bcHeight"],$_POST["bcWidth"],$_POST["lHeight"], $_POST["lWidth"], $types[0]["pbt_id"], $settings[0]["pbs_id"], $_POST["bcTempName"], $rl);
 	$writeln = array_combine($fields, $values);
 	dl::insert("print_template", $writeln);
+	$newId = dl::getId();
+	$audit = new audit("DATA MANAGEMENT", "RECORD ADDED", array($_SESSION["userId"], $_SESSION["user_name"]));
+	audit::create_action(array("table"=>"print_template", "values"=>$writeln), $newId);
 	echo "Created print template...";
 
 }
@@ -896,6 +997,9 @@ if($_POST["func"] == "updatePrintValue") {
 		where template_name ='".$_POST["selTemplate"]."'";
 		$selected = dl::getQuery($sql);
 		dl::update("print_barcode_settings", array("pbs_number"=>$_POST["bcnumber"]), "pbs_id = ".$selected[0]["pbs_id"]);
+		$newId = dl::getId();
+		$audit = new audit("DATA MANAGEMENT", "RECORD UPDATED", array($_SESSION["userId"], $_SESSION["user_name"]));
+		audit::create_action(array("table"=>"print_barcode_settings", "values"=>array("pbs_number"=>$_POST["bcnumber"])), $selected[0]["pbs_id"]);
 	}
 }
 
@@ -986,5 +1090,59 @@ if($_POST["func"] == "findCustomer") {
 		}
 		echo json_encode(array("email"=>$jsEmail, "ContactName"=>$jscontact, "Phone"=>$jsPhone));
 	}
+}
+
+if($_POST["func"] == "audit_filter") {
+	$sql = "select audit_action.aa_id, audit_actions_id, audit_identification_id, audit_timestamp_id from audit_action";
+	$where = " where ";
+	if(!empty($_POST["from"]) and !empty($_POST["to"])){
+		$date_from = date('Y-m-d', mktime(0,0,0, substr($_POST["from"],3,2), substr($_POST["from"],0,2), substr($_POST["from"], 6,4)));
+		$date_to = date("Y-m-d", mktime(0,0,0, substr($_POST["to"],3,2), substr($_POST["to"],0,2), substr($_POST["to"], 6,4)));
+		$sql .= " join audit_timestamp on (at_id=audit_timestamp_id)";
+		$where .= " at_timestamp >= '".$date_from." 00:00:00' and at_timestamp <= '".$date_to." 23:59:59'";
+	}
+	//check the user id's
+	if(!empty($_POST["user"])) {
+		$user_ids = dl::select("audit_identification", "ai_username = '".$_POST["user"]."'");
+		$sql .= " join audit_identification on (ai_id=audit_identification_id)";
+		if($where == " where ") {
+			$where .= " ai_userid = ".$user_ids[0]["ai_userid"];
+		}else{
+			$where .= " and ai_userid = ".$user_ids[0]["ai_userid"];
+		}
+	}
+	//check actions
+	if(!empty($_POST["action"])) {
+		$action = dl::select("audit_actions", "aa_list = '".$_POST["action"]."'");
+		$sql .= " join audit_actions as aa on (aa.aa_id=audit_actions_id)";
+		if($where == " where ") {
+			$where .= " audit_actions_id = ".$action[0]["aa_id"];
+		}else{
+			$where .= " and audit_actions_id = ".$action[0]["aa_id"];
+		}
+	}
+	//check tables
+	if(!empty($_POST["table"])) {
+		$sql .= " join audit_details_actions as ada on (audit_action.aa_id=ada.audit_action_id) join audit_details on (ada.audit_details_id=ad_id)";
+		if($where == " where ") {
+			$where .= " ad_tables = '".$_POST["table"]."'";
+		}else{
+			$where .= " and ad_tables = '".$_POST["table"]."'";
+		}
+	}
+	//check record ID
+	if(!empty($_POST["table"])) {
+		if($where == " where ") {
+			$where .= " ad_record_id = '".$_POST["table"]."'";
+		}else{
+			$where .= " and ad_record_id = '".$_POST["record"]."'";
+		}
+	}
+	if($where !== " where ") {
+		$actions = dl::getQuery($sql.$where);
+	}else{
+		$actions = dl::getQuery($sql);
+	}
+	audit_report_body($actions);
 }
 ?>

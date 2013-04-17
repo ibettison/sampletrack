@@ -263,6 +263,7 @@ class dates extends fields {
 	public $field_anim;
 	public $field_image;
 	public $field_year;
+	public $date_format;
 	
 	function __construct( $field_prompt, $field_type, $field_class, $field_length, $field_value, $field_name, $field_id, $field_year="false", $field_animation="blind", $field_image="./library/images/date_picker.png" ) {
 		 parent::__construct ($field_prompt, $field_type, $field_class, $field_length, $field_value, $field_name);
@@ -271,12 +272,13 @@ class dates extends fields {
 		 $this->field_image		= $field_image;
 		 $this->field_year		= $field_year;
 		 $this->create_date($this->field_id);
+		 $this->date_format	= 'dd/mm/yy';
 	}
 	
 	function create_date($id) {
 	?>
 	<style>
-	.ui-widget { font-family: Arial, Helvetica, Verdana, sans-serif; font-size: 12px; }
+	.ui-widget { font-family: Arial, Helvetica, Verdana, sans-serif; font-size: 16px; }
 	</style>
 		<script language="JavaScript">
 							
