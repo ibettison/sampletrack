@@ -1,17 +1,49 @@
 <?php 
 session_start();
-echo "<!DOCTYPE html>";
-echo "<html xmlns='http://www.w3.org/1999/xhtml'>";
 ?>
-<SCRIPT src			="library/js/jquery-1.8.2.min.js"></SCRIPT>
-<script src				="library/js/jquery-ui/js/jquery-ui-1.10.0.custom.min.js" type="text/javascript"></script>
-<SCRIPT language	="JavaScript" src="library/js/jquery.autoresize.js"></SCRIPT>
-<SCRIPT language	="JavaScript" src="library/js/jquery-validation/jquery.validate.js"></SCRIPT>
-<SCRIPT language	="JavaScript" src="library/js/jquery.flexipage.min.js"></SCRIPT>
-<SCRIPT language	="JavaScript" src="library/js/jquery.spritely-0.6.1.js"></SCRIPT>
-<SCRIPT language	="JavaScript" src="library/js/jquery-ui-multiselect-widget-master/src/jquery.multiselect.js"></SCRIPT>
-<SCRIPT language	="JavaScript" src="library/js/jquery-ui-multiselect-widget-master/src/jquery.multiselect.filter.js"></SCRIPT>
+<!doctype html>
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<!--[if IE 9]>    <html class="no-js ie9" lang="en"> <![endif]-->
+<!-- Consider adding an manifest.appcache: h5bp.com/d/Offline -->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" itemscope itemtype="http://schema.org/Product"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
 
+    <!-- Use the .htaccess and remove these lines to avoid edge case issues.
+       More info: h5bp.com/b/378 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+    <title>Sample Tracking System</title>
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta name="author" content="humans.txt">
+
+    <link rel="shortcut icon" href="favicon.png" type="image/x-icon" />
+
+    <!-- Facebook Metadata /-->
+    <meta property="fb:page_id" content="" />
+    <meta property="og:image" content="" />
+    <meta property="og:description" content=""/>
+    <meta property="og:title" content=""/>
+
+    <!-- Google+ Metadata /-->
+    <meta itemprop="name" content="">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+    <!-- We highly recommend you use SASS and write your custom styles in sass/_custom.scss.
+       However, there is a blank style.css in the css directory should you prefer -->
+    <link rel="stylesheet" href="css/gumby.css">
+    <!-- <link rel="stylesheet" href="css/style.css"> -->
+
+    <script src="js/libs/modernizr-2.6.2.min.js"></script>
+	<link REL='SHORTCUT ICON' HREF='".LOCALIMAGEPATH."favicon.ico'>
+</head>
 <?php
 date_default_timezone_set("Europe/London");
 
@@ -57,23 +89,18 @@ if($_GET["func"] == "logoff") {
 	
 }
 
-echo "<head>";
-
 //echo "<meta http-equiv='X-UA-Compatible' content='IE=edge'>";
 //echo "<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1' />"; 
 
-echo "<title>Sample Tracking System</title> ";
-echo "<link rel='StyleSheet' href='".JAVAPATH."jquery-ui/css/smoothness/jquery-ui-1.10.0.custom.css' type='text/css' media='screen'>";
-echo "<link rel='stylesheet' href='".JAVAPATH."jquery-ui-multiselect-widget-master/jquery.multiselect.css>";
-echo "<link rel='stylesheet' href='".JAVAPATH."jquery-ui-multiselect-widget-master/jquery.multiselect.filter.css>";
-echo "<link rel='stylesheet/css' href='".CSSPATH."nav.css' TYPE='text/css' media='screen'>";
-echo "<link rel='stylesheet/less' href='".CSSPATH."sts.less' TYPE='text/css' media='screen'>"; 
-echo "<SCRIPT src='".JAVAPATH."less/less-1.3.0.min.js'></SCRIPT>";
+// echo "<link rel='StyleSheet' href='".JAVAPATH."jquery-ui/css/smoothness/jquery-ui-1.10.0.custom.css' type='text/css' media='screen'>";
+// echo "<link rel='stylesheet' href='".JAVAPATH."jquery-ui-multiselect-widget-master/jquery.multiselect.css>";
+// echo "<link rel='stylesheet' href='".JAVAPATH."jquery-ui-multiselect-widget-master/jquery.multiselect.filter.css>";
+// echo "<link rel='stylesheet/css' href='".CSSPATH."nav.css' TYPE='text/css' media='screen'>";
+// echo "<link rel='stylesheet/less' href='".CSSPATH."sts.less' TYPE='text/css' media='screen'>"; 
+// echo "<SCRIPT src='".JAVAPATH."less/less-1.3.0.min.js'></SCRIPT>";
 //echo "<LINK REL='stylesheet/css' HREF='".JAVAPATH."jquery.ptTimeSelect.css' TYPE='text/css' media='screen'>";
 //echo "<SCRIPT src='".JAVAPATH."jquery.ptTimeSelect.js'></SCRIPT>";
 
-echo "<link REL='SHORTCUT ICON' HREF='".LOCALIMAGEPATH."favicon.ico'>"; 
-echo "</head>";
 /*testing Audit
 $audit = new audit("SECURITY", "RECORD ADDED", array("janStoddart@ncl.ac.uk", "Jan Stoddart"), "Users, Security");
 audit::create_action(array("table"=>"audit_action", "values"=>array("field1"=>"value1","field2"=>"value2","field3"=>"value3","field4"=>"value4")), 5);
@@ -143,7 +170,33 @@ if($_GET["func"] == "confirm") { // security confirmation
 	}
 }
 echo "<body>";
-echo "<div class='container'>";
+?>
+<div class="pretty navbar" gumby-fixed="top" id="nav3">
+    <div class="row">
+      <a class="toggle" gumby-trigger="#nav3 > .row > ul" href="#"><i class="icon-menu"></i></a>
+      <h1 class="six columns logo">
+        <a href="#">
+          <img src="img/gumby_mainlogo.png" gumby-retina />
+        </a>
+      </h1>
+	  <div class="five columns">
+      <ul class="eight columns">
+        <li>
+          <a href="#">Login</a>
+          <div class="dropdown">
+            <ul>
+               <li class="field"> <input class="wide email input" type="email" placeholder="Email input" /></li>
+				<li class="field"> <input class="wide password input" type="password" placeholder="Password input" /></li>
+				
+            </ul>
+			<div class="medium default btn icon-right entypo icon-user"><a href="#">Login</a></div>
+          </div>
+        </li>
+      </ul>
+	  </div>
+    </div>
+  </div>
+<?php 
 echo "<div class='header-top'>";
 echo "</div>";
 echo "<div class='header'>";
