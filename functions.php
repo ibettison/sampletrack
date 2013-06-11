@@ -2060,14 +2060,14 @@ function audit_report(){
 	foreach($users as $u) {
 		$user[] =  $u["user_name"];
 	}
-	$field = new selection("User", "text", "greyInput", "35", "", "user", $user, "", "0");
+	$field = new selection("User", "text", "greyInput", "30", "", "user", $user, "", "0");
 	echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
 	echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='userClick'><img class='gi-img' src='images/dropdown.png'></span>";
 	$actions = dl::select("audit_actions");
 	foreach($actions as $ac) {
 		$action[] = $ac["aa_list"];
 	}
-	$field = new selection("Actions", "text", "greyInput", "35", "", "actions", $action, "", "0");
+	$field = new selection("Actions", "text", "greyInput", "30", "", "actions", $action, "", "0");
 	echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
 	echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='actionsClick'><img class='gi-img' src='images/dropdown.png'></span>";
 	$sql = "select table_name, engine
@@ -2077,7 +2077,7 @@ function audit_report(){
 	foreach($tables as $t) {
 		$table[] = $t["table_name"];
 	}
-	$field = new selection("Tables", "text", "greyInput", "35", "", "table_list", $table, "", "0");
+	$field = new selection("Tables", "text", "greyInput", "30", "", "table_list", $table, "", "0");
 	echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
 	echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='tablesClick'><img class='gi-img' src='images/dropdown.png'></span><BR>";
 	$field = new fields("Record Id", "text", "greyInput", "20", "", "recId");
