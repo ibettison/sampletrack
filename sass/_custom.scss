@@ -1,1 +1,105 @@
 // Your custom SCSS should be written here...
+$home-title-border-color: #4781c7;
+$home-title-border-right: 1px #dbe6f4 solid;
+$home-title-color: #30619c;
+$home-font-size: 75%;
+$home-legend-color: #0080C0;
+$home-legend-background: #638DBC;
+$home-fieldset-background: #EFEFEF;
+$home-fieldset-height: 18.5em;
+$home-dark-text: #555;
+$home-line-height: 5px;
+$home-printline-colour: #888;
+$home-printline-border: 1px $home-title-border-color dotted;
+
+home_page .titles, .printline {
+	display: inline-block;
+	color: $home-title-color;
+	padding-bottom: 0;
+	v-align: center;
+	font-size: $home-font-size;
+}
+
+home_page legend {
+	margin-top: -14px;
+	margin-bottom: -16px;
+	color: $home-legend-color;
+	@include text-shadow(1px 1px 1px rgba(0, 0, 0, 0.15));
+}
+
+home_page fieldset {
+	background-color: $home-fieldset-background;
+	height: $home-fieldset-height;
+	@include box-shadow( 0 2px 4px rgba(0, 0, 0, 0.15));
+}
+
+home_page p {
+	color: $home-dark-text;
+	font-size: $home-font-size;
+}
+
+home_page .line {
+	border: 0;
+	color: $home-title-border-color;
+	background-color: $home-title-border-color;
+	height: $home-line-height;
+}
+
+home_page .printline {
+	clear: right;
+	color: $home-printline-colour;
+	min-width: 8em;
+	border-bottom: $home-printline-border;
+}
+
+/* PAGE - FOOTER SETTINGS */
+
+$footer-font-family: "Arial Narrow", Gadget, sans-serif;
+$footer-image:  transparent url('../images/platforms.png') no-repeat top right;
+$footer-copy-colour: #004477;
+$footer-gradient-from: #616c75;
+$footer-gradient-to: #343c43;
+$gf: $footer-gradient-from;
+$gt: $footer-gradient-to;
+
+.footer {
+	/*position: absolute;
+	bottom: 2.5em;*/
+	width:100%;
+	filter: none;
+	height: 6em;
+	background-color: $gf;
+}
+
+.footer-left {
+	display: inline-block;
+	float: left;
+	margin:1em;
+	font-size: 1.5em;
+	color: #EEE;
+	line-height: 1em;
+	font-family: $footer-font-family;
+	text-shadow: 1px 1px 0 #111; 
+}
+
+.footer-right {
+	display: inline-block;
+	float: right;
+	margin: 1.5em;
+	width: 237px;
+	height: 50px;
+	background: $footer-image;
+}
+
+.footer-copyright {
+	/*position: absolute;
+	bottom: 1em;*/
+	width: 100%;
+	clear:both;
+	padding-top: 0.4em;
+	text-align: center;
+	font-size: 0.75em;
+	color: $footer-copy-colour;
+	line-height: 1em;
+	z-index: 1;
+}

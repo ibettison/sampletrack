@@ -145,11 +145,60 @@ $(document).ready(function(){
 }
 
 function show_frontpage() {
-	echo " <front_page>";
-		echo "<div id='container'>";
-			echo "<div id='front-left'>";	
-				echo "<div id='front-left-top'><B>Newcastle Biomedicine Biobank<BR>Sample Tracking System</B><BR><BR>
-				The Newcastle Biomedicine Biobank Sample Tracking System login screen allows a registered user to login and manage samples, record new sample registration requests, process sample withdrawals,
+?>
+<div class="navbar" gumby-fixed="top" id="nav">
+    <div class="row">
+      <a class="toggle" gumby-trigger="#nav > .row > ul" href="#"><i class="icon-menu"></i></a>
+	  <h1 class="three columns logo ">
+      <a href="#">
+        <img src="img/sampletrack.png" gumby-retina />
+      </a>
+    </h1>
+	  <div class="push_eight">
+      <ul class="nine columns">
+        <li>
+          <a href="#">Login</a>
+          <div class="dropdown">
+            <ul>
+               <li class="field" style="padding-left: 2em;"> <input id="email_address" class="xwide email input" type="email" placeholder="Email input" /></li>
+				<li class="field" style="padding-left: 2em;"> <input id="password" class="xwide password input" type="password" placeholder="Password input" /></li>
+            </ul>
+			<div class="medium default btn icon-right entypo icon-user"><a id="login-trigger" href="#">Login</a></div>
+          </div>
+        </li>
+      </ul>
+	  </div>
+    </div>
+  </div>
+  <script>
+ $(document).ready(function(){
+	$('#login-trigger').click(function(){
+		alert("boo");
+		var func = "login";
+			$.post(
+				"ajax.php",
+				{ func: func,
+				email_address: $("#email_address").val(),
+				password: $("#password").val(),
+				},
+				function (data)
+				{
+				$("#header-top").html(data);
+				alert("returned");
+				window.location.href = "index.php";
+			});
+	});
+});
+</script>
+<?php
+		echo "<div class='row'>";
+			echo "<div class='twelve columns'>";	
+				echo "<H1>Newcastle Biomedicine Biobank<BR>Sample Tracking System</H1>";
+			echo "</div>";
+		echo "</div>";
+		echo "<div class='row'>";
+		
+		echo"The Newcastle Biomedicine Biobank Sample Tracking System login screen allows a registered user to login and manage samples, record new sample registration requests, process sample withdrawals,
 				manage deliveries, create and re-freeze or process transportation of Aliquots. The system will record the complete lifecycle of the sample, recording where it came from, its location, 
 				any Aliquot creations and their storage locations; recording all requests and deliveries against all samples. Finally the system will record publication, invention events regarding samples that have been stored in the 
 				Biobank.</div>";
@@ -162,70 +211,76 @@ function show_frontpage() {
 				from the room, the freezer, the shelf or the phial the sample resides in. All containers are linked so scanning a container identifies where it is and what it is automatically, you can even tell where it has been 
 				and when it was moved. The system is centrally controlled by a built-in Audit system so every movement is monitored and can be traced back to date and time of the action and the individual performing the action.
 				</div>";
-				echo "<div id='front-right-bottom'><img src='images/parcels.png' style='max-width:100%; height: auto;'></div>";
+				echo "<div class='front-right-bottom'><img src='images/parcels.png' style='max-width:100%; height: auto;'></div>";
 			echo "</div>";
 		echo "</div>"; // end of container
-	echo "</front_page>";
 }
 
 function show_homePage(){
-	echo "<main><div id='container-main'>";
-			echo "<home_page>";
-				echo "<fieldset>";
-					echo "<legend><div id='legend_colour'>Recent Registration</div></legend>"; 
-					echo "<p>Listed are the recent Registrations showing the expected delivery information.</p>";
-					echo "<div id='titles-image'><img src='images/registrations_icon.png' style='max-width: 100%; max-height: auto;'></div>";
-					echo "<div id='titles-registration'>Customer<BR><BR></div>";
-					echo "<div id='titles'>Expected<BR> Delivery</div>";
-					echo "<div id='titles'>No. of <BR>Samples</div>";
-					echo "<hr id='line'>";
-					echo "<div id='divheight'>";
-					checkRegistrations();
-					echo "</div>";
-				echo "</fieldset>";
-			echo "</home_page>";
-			echo "<home_page>";
-				echo "<fieldset>";
-					echo "<legend><div id='legend_colour'>Outstanding Lists</div></legend>"; 
-					echo "<p>The Samples list have been uploaded and are awaiting the sample delivery.</p>";
-					echo "<div id='titles-image'><img src='images/lists_icon.png' style='max-width: 100%; height: auto;'></div>";
-					echo "<div id='titles-lists'>Customer<BR><BR></div>";
-					echo "<div id='titles'>Date<BR>uploaded</div>";
-					echo "<hr id='line'>";
-					echo "<div id='divheight'>";
-					checkLists();
-					echo "</div>";
-				echo "</fieldset>";
-			echo "</home_page>";
-			echo "<home_page>";
-				echo "<fieldset>";
-					echo "<legend><div id='legend_colour'>Outstanding Requests</div></legend>"; 
-					echo "<p>Below is a list of the most recent requests for sample removals/creations.</p>";
-					echo "<div id='titles-image' style='max-width: 100%; height: auto;'><img src='images/requests_icon.png' style='max-width: 100%; height: auto;'></div>";
-					echo "<div id='titles-requests'>Customer<BR><BR></div>";
-					echo "<div id='titles'>Request<BR>made</div>";
-					echo "<div id='titles'>Destination<BR><BR></div>";
-					echo "<hr id='line'>";
-					echo "<div id='divheight'>";
-					checkRequests();
-					echo "</div>";
-				echo "</fieldset>";
-			echo "</home_page>";
-			echo "<home_page>";
-				echo "<fieldset>";
-					echo "<legend><div id='legend_colour'>Recent Transfers</div></legend>"; 
-					echo "<p>The most recent despatches to our customers. Select a transfer to edit its status.</p>";
-					echo "<div id='titles-image' style='max-width: 100%; height: auto;'><img src='images/transfers_icon.png' style='max-width: 100%; height: auto;'></div>";
-					echo "<div id='titles-transfers'>Customer<BR><BR></div>";
-					echo "<div id='titles'>Despatch<BR>Date</div>";
-					echo "<hr id='line'>";
-					echo "<div id='divheight'>";
-					checkTransfers();
-					echo "</div>";
-				echo "</fieldset>";
-			echo "</home_page>";
-		echo "</div>"; //end of main div
-	echo "</main>";
+	echo "<div class='container'>";
+	echo "<home_page>";
+	echo "<form>";
+	echo "<div class='row'>";
+		echo "<fieldset class='six columns'>";
+			echo "<legend>Recent Registration</legend>"; 
+			echo "<div class='row'>";
+				echo "<div class='one columns'><img src='images/registrations_icon.png'></div><p class='eleven columns'>Listed are the recent Registrations showing the expected delivery information</p>";
+			echo "</div>";
+			echo "<div class='row'>";
+				echo "<div class='five columns titles'>Customer</div>";
+				echo "<div class='four columns titles'>Expected Delivery</div>";
+				echo "<div class='three columns titles'>No. of Samples</div>";
+				echo "<hr class='line'>";
+			echo "</div>";
+			
+			checkRegistrations();
+		echo "</fieldset>";
+		echo "<fieldset class='six columns'>";
+			echo "<legend><div class='legend_colour'>Outstanding Lists</div></legend>"; 
+			echo "<div class='row'>";
+				echo "<div class='one columns'><img src='images/lists_icon.png'></div><p class='eleven columns'>The Samples list have been uploaded and are awaiting the sample delivery.</p>";
+			echo "</div>";
+			echo "<div class='row'>";
+				echo "<div class='titles five columns'>Customer</div>";
+				echo "<div class='titles four columns'>Date uploaded</div>";
+			echo "<hr class='line'>";
+			echo "</div>";
+			
+			checkLists();
+		echo "</fieldset>";
+	echo "</div>";
+	echo "<div class='row'>";
+		echo "<fieldset class='six columns'>";
+			echo "<legend><div class='legend_colour'>Outstanding Requests</div></legend>"; 
+			echo "<div class='row'>";
+				echo "<div class='one columns'><img src='images/requests_icon.png'></div><p class='eleven columns'>Below is a list of the most recent requests for sample removals/creations.</p>";
+			echo "</div>";
+			echo "<div class='row'>";
+				echo "<div class='titles five columns'>Customer</div>";
+				echo "<div class='titles three columns'>Request made</div>";
+				echo "<div class='titles four columns'>Destination</div>";
+			echo "<hr class='line'>";
+			echo "</div>";
+			
+			checkRequests();
+		echo "</fieldset>";
+		echo "<fieldset class=' six columns'>";
+			echo "<legend><div class='legend_colour'>Recent Transfers</div></legend>"; 
+			echo "<div class='row'>";
+				echo "<div class='one columns'><img src='images/transfers_icon.png'></div><p class='eleven columns'>The most recent despatches to our customers. Select a transfer to edit its status.</p>";
+			echo "</div>";
+			echo "<div class='row'>";
+				echo "<div class='titles five columns'>Customer</div>";
+				echo "<div class='titles four columns'>Despatch Date</div>";
+			echo "<hr class='line'>";
+			echo "</div>";
+			
+			checkTransfers();
+		echo "</fieldset>";
+	echo "</div>";
+	echo "</form>";
+	echo "</home_page>";
+	echo "</div>";
 }
 
 function checkRegistrations() {
@@ -237,26 +292,24 @@ function checkRegistrations() {
 	$samples = dl::getQuery($sql);
 	if(!empty($samples)) {
 		$count = 0;
+		
 		foreach($samples as $sample){
-			if(strlen($sample["c_name"]) >43 ) {
-				$cust_name = substr($sample["c_name"],0,42)."...";
+			if(strlen($sample["c_name"]) >28 ) {
+				$cust_name = substr($sample["c_name"],0,27)."...";
 			}else{
 				$cust_name = $sample["c_name"];
 			}
 			if($count < 3){
-				echo "<div id='printline' style='width: 54%; padding-right: 0; padding-left: 0'>".$cust_name."</div><div id='printline' style='width: 15%;'>".date("d/m/Y", strtotime($sample["sr_expected_delivery"]))."</div><div id='printline'>".$sample["ri_no_samples"]."</div><BR>";	
+				echo "<div class='row twelve columns'><div class='printline five columns'>".$cust_name."</div><div class='printline four columns'>".date("d/m/Y", strtotime($sample["sr_expected_delivery"]))."</div><div class='printline three columns'>".$sample["ri_no_samples"]."</div></div>";	
 			}
 			$count++;
 		}
 		if($count == 1){
-			echo "There is ".$count." recent registration.";
+			echo "<p class='ten columns'>There is ".$count." recent registration.</p>";
 		}else{
-			echo "There are ".$count." recent registrations.";
+			echo "<p class='ten columns'>There are ".$count." recent registrations.</p>";
 		}
-		echo "<span style='float: right;'>";
-		$button = new fields("submit Button", "submit", "bluebutton", 10, "Manage Registrations","m_registrations");
-		echo $button->show_field();
-		echo "</span>";
+		echo "<div class='medium primary btn' id='m_registrations'><a href='#'>Manage Registrations</a></div>";
 		?>
 		<script>
 		$(document).ready(function(){
@@ -267,7 +320,7 @@ function checkRegistrations() {
 		</script>
 		<?php
 	}else{
-		echo "There are no recent registrations.";
+		echo "<p>There are no recent registrations.</p>";
 	}
 }
 
@@ -280,36 +333,33 @@ function checkLists() {
 	$count = 0;
 	foreach($samples as $sample){
 		$customer = dl::select("customers", "c_id ='".$sample["customer_id"]."'");
-		if(strlen($customer[0]["c_name"]) >43 ) {
-			$cust_name = substr($customer[0]["c_name"],0,42)."...";
+		if(strlen($customer[0]["c_name"]) >28 ) {
+			$cust_name = substr($customer[0]["c_name"],0,27)."...";
 		}else{
 			$cust_name = $customer[0]["c_name"];
 		}
 		if($count < 3){
-			echo "<div id='printline' style='width: 54%; padding-right: 0; padding-left: 0'>".$cust_name."</div><div id='printline' style='width: 15%;'>".date("d/m/Y", strtotime($sample["sl_date_uploaded"]))."</div><BR>";	
+			echo "<div class='row'><div class='printline five columns'>".$cust_name."</div><div class='printline seven columns'>".date("d/m/Y", strtotime($sample["sl_date_uploaded"]))."</div></div>";	
 		}
 		$count++;
 	}
 	if($count == 1){
-		echo "There is ".$count." outstanding list.";
+		echo "<p>There is ".$count." outstanding list.</p>";
 	}else{
-		echo "There are ".$count." outstanding lists.";
+		echo "<p>There are ".$count." outstanding lists.</p>";
 	}
-	echo "<span style='float: right;'>";
-	$button = new fields("submit Button", "submit", "bluebutton", 10, "Manage Lists","m_lists");
-	echo $button->show_field();
-	echo "</span>";
-	?>
-	<script>
-	$(document).ready(function(){
-		$('#m_lists').click(function() {
-			window.location.href = "index.php?func=outstanding_lists";
+	echo "<div class='medium primary btn' id='m_lists'><a href='#'>Manage Lists</a></div>";
+		?>
+		<script>
+		$(document).ready(function(){
+			$('#m_lists').click(function() {
+				window.location.href = "index.php?func=outstanding_lists";
+			});
 		});
-	});
-	</script>
-	<?php
+		</script>
+		<?php
 	}else{
-		echo "There are no outstanding lists.";
+		echo "<p>There are no outstanding lists.</p>";
 	}
 }
 
@@ -322,7 +372,7 @@ function checkRequests() {
 	if(!empty($samples)) {
 	
 	}else{
-		echo "There are no recent requests.";
+		echo "<p>There are no recent requests.</p>";
 	}
 }
 
@@ -335,7 +385,7 @@ function checkTransfers() {
 	if(!empty($samples)) {
 	
 	}else{
-		echo "There are no recent transfers.";
+		echo "<p>There are no recent transfers.</p>";
 	}
 }
 
@@ -560,52 +610,88 @@ function readExcel() {
 }
 
 function display_menus() {
-echo "<div class='menuArea'>";
+?>
+<div class="navbar" id="nav">
+    <div class="row">
+      <a class="toggle" gumby-trigger="#nav > .row > ul" href="#"><i class="icon-menu"></i></a>
+	  <h1 class="three columns logo ">
+      <a href="index.php">
+        <img src="img/sampletrack.png" gumby-retina />
+      </a>
+    </h1>
+      <ul class="six columns">
+        <li>
+          <a href="#">Receipts</a>
+          <div class="dropdown">
+            <ul>
+               <li><a href="index.php?func=add_registration">Add Registration</a></li>
+				<li><a href="index.php?func=upload_sheet">Upload spreadsheet</a></li>
+				<li><a href="index.php?func=accept_samples">Accept samples</a></li>
+            </ul>
+			
+          </div>
+        </li>
+		<li>
+          <a href="#">Requests</a>
+          <div class="dropdown">
+            <ul>
+               <li><a href="index.php?func=add_registration">New Request</a></li>
+				<li><a href="index.php?func=upload_sheet">Find Requests</a></li>
+				<li><a href="index.php?func=accept_samples">Outstanding Requests</a></li>
+				<li><a href="index.php?func=accept_samples">View transfer list</a></li>
+				<li><a href="index.php?func=accept_samples">Find Creations</a></li>
+            </ul>
+			
+          </div>
+        </li>
+		<li>
+          <a href="#">New</a>
+          <div class="dropdown">
+            <ul>
+               <li><a href="index.php?func=add_registration">New Customer</a></li>
+				<li><a href="index.php?func=upload_sheet">Container</a>
+				<div class="dropdown">
+					<ul>
+							<li><a href="index.php?func=add_registration">New Container</a></li>
+							<li><a href="index.php?func=upload_sheet">Container Template</a></li>
+							<li><a href="index.php?func=accept_samples">Container Type</a></li>
+							<li><a href="index.php?func=accept_samples">View transfer list</a></li>
+							<li><a href="index.php?func=accept_samples">Find Creations</a></li>
+					</ul>
+				</div></li>
+				<li><a href="index.php?func=accept_samples">New Request</a></li>
+				<li><a href="index.php?func=accept_samples">View transfer list</a></li>
+				<li><a href="index.php?func=accept_samples">Find Creations</a></li>
+            </ul>
+			
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <script>
+ $(document).ready(function(){
+	$('#login-trigger').click(function(){
+		var func = "login";
+			$.post(
+				"ajax.php",
+				{ func: func,
+				email_address: $("#email_address").val(),
+				password: $("#password").val(),
+				},
+				function (data)
+				{
+				$("#header-top").html(data);
+				alert("returned");
+				window.location.href = "index.php";
+			});
+	});
+});
+</script>
+<?php
+/*echo "<div class='menuArea'>";
 	echo "<menu>";
 		echo "<div id='home'></div>";
-		echo "<ul>";
-			echo "<li id='heading'>";
-				echo "<a id='links' href='#'>";
-						echo "Receipts";
-					echo "</a>";
-				echo "<div id='menu-content'>";
-					echo "<a id='menu-item' href='index.php?func=add_registration'>";
-						echo "Add a sample registration";
-					echo "</a>";
-					echo "<a id='menu-item' href='index.php?func=upload_sheet'>";
-						echo "Upload sample spreadsheet";
-					echo "</a>";
-					echo "<a id='menu-item' href='index.php?func=accept_samples'>";
-						echo "Accept samples";
-					echo "</a>";
-				echo "</div>";
-			echo "</li> ";
-			
-		echo "</ul>";
-		echo "<ul>";
-			echo "<li id='heading2'>";
-				echo "<a id='links2' href='#'>";
-						echo "Requests";
-					echo "</a>";
-				echo "<div id='menu-content2'>";
-					echo "<a id='menu-item2' href='index.php?func=new_request'>";
-						echo "New request";
-					echo "</a>";
-					echo "<a id='menu-item2' href='index.php?func=search_requests'>";
-						echo "Find requests";
-					echo "</a>";
-					echo "<a id='menu-item2' href='index.php?func=view_requests'>";
-						echo "View outstanding requests";
-					echo "</a>";
-					echo "<a id='menu-item2' href='index.php?func=view_transfers'>";
-						echo "View transfer list";
-					echo "</a>";
-					echo "<a id='menu-item2' href='index.php?func=view_creations'>";
-						echo "View creations";
-					echo "</a>";
-				echo "</div>";
-			echo "</li>";
-		echo "</ul>";
 		echo "<ul>";
 			echo "<li id='heading3'>";
 				echo "<a id='links3' href='#'>";
@@ -793,7 +879,7 @@ echo "<div class='menuArea'>";
 		});
 	});
 	</script>
-	<?php
+	<?php*/
 
 }
 

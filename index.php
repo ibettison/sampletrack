@@ -21,7 +21,7 @@ session_start();
     <meta name="keywords" content="" />
     <meta name="author" content="humans.txt">
 
-    <link rel="shortcut icon" href="favicon.png" type="image/x-icon" />
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
 
     <!-- Facebook Metadata /-->
     <meta property="fb:page_id" content="" />
@@ -35,13 +35,12 @@ session_start();
     <meta itemprop="image" content="">
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-
     <!-- We highly recommend you use SASS and write your custom styles in sass/_custom.scss.
        However, there is a blank style.css in the css directory should you prefer -->
     <link rel="stylesheet" href="css/gumby.css">
     <!-- <link rel="stylesheet" href="css/style.css"> -->
-
     <script src="js/libs/modernizr-2.6.2.min.js"></script>
+	<script src="js/libs/jquery-1.9.1.min.js"></script>
 	<link REL='SHORTCUT ICON' HREF='".LOCALIMAGEPATH."favicon.ico'>
 </head>
 <?php
@@ -109,7 +108,7 @@ $_SESSION["notConfirmed"] = false;
 if(!isset($_SESSION["loggedIn"])) {
 	$_SESSION["loggedIn"] = "";
 }
-if($_GET["func"] == "login") { // attempt to login
+if($_POST["func"] == "login") { // attempt to login
 	$email											= strtolower(addslashes($_POST["email_address"]));
 	$id 												= dl::select("user", "user_email_address='".$email."'");
 	$password									= $_POST["password"];
@@ -170,43 +169,15 @@ if($_GET["func"] == "confirm") { // security confirmation
 	}
 }
 echo "<body>";
-?>
-<div class="pretty navbar" gumby-fixed="top" id="nav3">
-    <div class="row">
-      <a class="toggle" gumby-trigger="#nav3 > .row > ul" href="#"><i class="icon-menu"></i></a>
-      <h1 class="six columns logo">
-        <a href="#">
-          <img src="img/gumby_mainlogo.png" gumby-retina />
-        </a>
-      </h1>
-	  <div class="five columns">
-      <ul class="eight columns">
-        <li>
-          <a href="#">Login</a>
-          <div class="dropdown">
-            <ul>
-               <li class="field"> <input class="wide email input" type="email" placeholder="Email input" /></li>
-				<li class="field"> <input class="wide password input" type="password" placeholder="Password input" /></li>
-				
-            </ul>
-			<div class="medium default btn icon-right entypo icon-user"><a href="#">Login</a></div>
-          </div>
-        </li>
-      </ul>
-	  </div>
-    </div>
-  </div>
-<?php 
-echo "<div class='header-top'>";
-echo "</div>";
-echo "<div class='header'>";
-echo "<div class='header-left'></div>";
+
 if( $_SESSION["loggedIn"] == "true") {
+
 	display_menus();
 }
-dropdown_loginForm();
+//dropdown_loginForm();
 echo "</div>";
 if($_SESSION["loggedIn"] == "") {
+
 	show_frontpage();
 	echo "</div>";
 }
@@ -466,9 +437,42 @@ if(empty($nofooter)) {
 		
 	echo "</div>"; //end of footer div
 	echo "<div class='footer-copyright'>";
-		echo "Copyright &copy 2012 Newcastle University";
+		echo "Copyright &copy 2012-2013 Newcastle University";
 		echo "</div>";
 }
+?>
+  <!--
+  Include gumby.js followed by UI modules.
+  Or concatenate and minify into a single file
+  <script src="js/libs/gumby.js"></script>
+  <script src="js/libs/ui/gumby.retina.js"></script>
+  <script src="js/libs/ui/gumby.fixed.js"></script>
+  <script src="js/libs/ui/gumby.skiplink.js"></script>
+  <script src="js/libs/ui/gumby.toggleswitch.js"></script>
+  <script src="js/libs/ui/gumby.checkbox.js"></script>
+  <script src="js/libs/ui/gumby.radiobtn.js"></script>
+  <script src="js/libs/ui/gumby.tabs.js"></script>
+  <script src="js/libs/ui/jquery.validation.js"></script>
+  -->
+  <script src="js/libs/gumby.min.js"></script>
+  <script src="js/plugins.js"></script>
+  <script src="js/main.js"></script>
+
+  <!-- Change UA-XXXXX-X to be your site's ID -->
+  <script>
+    window._gaq = [['_setAccount','UAXXXXXXXX1'],['_trackPageview'],['_trackPageLoadTime']];
+    Modernizr.load({
+      load: ('https:' == location.protocol ? '//ssl' : '//www') + '.google-analytics.com/ga.js'
+    });
+  </script>
+
+  <!-- Prompt IE 6 users to install Chrome Frame. Remove this if you want to support IE 6.
+       chromium.org/developers/how-tos/chrome-frame-getting-started -->
+  <!--[if lt IE 7 ]>
+    <script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
+    <script>window.attachEvent('onload',function(){CFInstall.check({mode:'overlay'})})</script>
+  <![endif]-->
+<?php
 echo "</body>";
 echo "</html>";
 //lets remove the connection to the database here as it is connecting everytime anyway

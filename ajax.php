@@ -35,6 +35,34 @@ require(CLASSPATH.'phpmailer/class.phpmailer.php');
 include("functions.php");
 include( "validation_rules.php" );
 
+if($_POST["func"]== "login") {
+	$email											= strtolower(addslashes($_POST["email_address"]));
+	$id 												= dl::select("user", "user_email_address='".$email."'");
+	$password									= $_POST["password"];
+	$login 											= new login( "user_id", $id[0]["user_id"], "user", "security", "security_password", $password, $id[0]["confirmed"]);
+	if( $login->check_password() ) {
+		//the userid and password are ok need to get the permissions
+		$permissions 							= new permission( "user_types", "user_types_name_id", $id[0]["user_id"], "user_id", "permission_id" );
+		$settings 									= $permissions->get_permissions( "permission_user", "permissions", "permission_name", "permission_value" );
+		$_SESSION["settings"] 				= $settings;
+		if(!$login->check_confirmation()) {
+			$_SESSION["notConfirmed"] 	= true;
+			$_SESSION["user_email"] 		= $id[0]["user_email_address"];
+		}else{
+			$_SESSION["notConfirmed"]	= false;
+			$_SESSION["loggedIn"] 		= "true";
+			$_SESSION["userId"] 			= $id[0]["user_id"];
+			$_SESSION["user_name"] 	= $id[0]["user_name"];
+			$_SESSION["user_email"] 		= $id[0]["user_email_address"];
+			$_SESSION["loggedInTime"] 	= date("d-m-Y H:i:s");
+			//audit who has logged in
+			$audit = new audit("SECURITY", "LOGIN", array($_SESSION["userId"], $_SESSION["user_name"]));
+		}
+	}else{
+			$audit = new audit("SECURITY", "FAILED LOGIN", array(0, $email));
+	}
+}
+
 if($_POST["func"] == "compare_spreadsheet"){
 	dl::$debug=true;
 	$matchedColumns = $_POST["list"];
