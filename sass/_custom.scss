@@ -5,12 +5,14 @@ $home-title-color: #30619c;
 $home-font-size: 75%;
 $home-legend-color: #0080C0;
 $home-legend-background: #638DBC;
-$home-fieldset-background: #EFEFEF;
+$home-fieldset-background: #C6E3F9;
+$stored-barcode-background: $home-fieldset-background;
 $home-fieldset-height: 18.5em;
 $home-dark-text: #555;
 $home-line-height: 5px;
 $home-printline-colour: #888;
 $home-printline-border: 1px $home-title-border-color dotted;
+$sample-background: #ccc;
 
 home_page .titles, .printline {
 	display: inline-block;
@@ -31,6 +33,7 @@ home_page fieldset {
 	background-color: $home-fieldset-background;
 	height: $home-fieldset-height;
 	@include box-shadow( 0 2px 4px rgba(0, 0, 0, 0.15));
+	@include background(linear-gradient(to bottom, $home-fieldset-background 10%, lighten($home-fieldset-background, 5%) 100%));
 }
 
 home_page p {
@@ -102,4 +105,124 @@ $gt: $footer-gradient-to;
 	color: $footer-copy-colour;
 	line-height: 1em;
 	z-index: 1;
+}
+
+data_entry legend {
+	margin-top: -14px;
+	margin-bottom: -16px;
+	color: $home-legend-color;
+	@include text-shadow(1px 1px 1px rgba(0, 0, 0, 0.15));
+}
+
+data_entry fieldset {
+	background-color: $home-fieldset-background;
+	height: $home-fieldset-height;
+	@include box-shadow( 0 2px 4px rgba(0, 0, 0, 0.15));
+	@include background(linear-gradient(to bottom, $home-fieldset-background 10%, lighten($home-fieldset-background, 4%) 100%));
+	height: 43em;
+}
+
+#file_selector {
+@include transparent;
+margin-left: 4.75em;
+position: relative;
+z-index:2;
+}
+
+#link_index {
+z-index:0;
+}
+
+#select_file {
+position: absolute;
+top: 15em;
+left: 39em;
+}
+
+drag_and_drop li {
+	cursor: move;
+}
+
+#sortable-deleted {
+height: 41px;
+overflow: hidden;
+background: url('../images/bin.png') 0 50% no-repeat;
+
+}
+#poof {
+	background: transparent url(../images/poofing.png) 0 0 no-repeat;
+	position: absolute;
+	z-index: 2000;
+	cursor: pointer;
+	display: none;
+	height: 32px;
+	width: 32px;
+}
+
+#sidepanel {
+	position: absolute;
+	display:none;
+	padding: 0.24em;
+	width: 20em;
+	height: 10em;
+	background: $stored-barcode-background;
+	@include box-shadow( 0 2px 4px rgba(0, 0, 0, 0.15));
+	border: 1px solid #CCC;
+	right: 150px;
+	bottom:190px;
+	z-index: 999;
+}
+
+#sidepanelIcon {
+position:absolute;
+background: transparent url(../images/scanIconGray.png) no-repeat 0 0;
+height: 100px;
+width: 100px;
+right: 0px;
+bottom: 170px;
+}
+
+#sampleList {
+	width: 150%;
+	background-color: $sample-background;
+	border: 1px solid #aaa;
+}
+
+.box-cell-empty, .box-cell-full {
+width:1.25em;
+ font-size:1em;
+ line-height: 0.75em; 
+ float:left;
+ margin:0 2px; 
+ padding: 0.5em 0.25em 0.5em 0.25em; 
+
+}
+
+.box-cell-empty {
+ background-color: #ddd;
+ @include box-shadow( inset 2px 2px 3px rgba(0, 0, 0, 0.5));
+}
+
+.box-cell-full {
+	 background-color: #fff;
+	 @include box-shadow( inset -1px -1px 2px rgba(0, 0, 0, 0.35));
+}
+
+list-content #content-container {
+	padding: 0 0 0 3em;
+}
+list-content #content, #content-header, #content-del {
+	display: inline-block;
+	font-size: 1em;
+	width:8em;
+	vertical-align: top;
+}
+
+list-content #content-del {
+	width: 1em;
+}
+
+list-content #content-header {
+	font-weight: bold;
+	color: #0a4a92;
 }

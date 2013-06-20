@@ -38,9 +38,12 @@ session_start();
     <!-- We highly recommend you use SASS and write your custom styles in sass/_custom.scss.
        However, there is a blank style.css in the css directory should you prefer -->
     <link rel="stylesheet" href="css/gumby.css">
+	<link rel="stylesheet" href="css/jquery-ui.css">
     <!-- <link rel="stylesheet" href="css/style.css"> -->
     <script src="js/libs/modernizr-2.6.2.min.js"></script>
 	<script src="js/libs/jquery-1.9.1.min.js"></script>
+	<script src="js/libs/ui/jquery-ui.min.js"></script>
+	<script src="library/js/jquery.spritely-0.6.1.js"></script>
 	<link REL='SHORTCUT ICON' HREF='".LOCALIMAGEPATH."favicon.ico'>
 </head>
 <?php
@@ -413,7 +416,7 @@ function checkBarcode(){
 		function (data)
 			{
 				var json = $.parseJSON(data);
-				if(json.found) {
+				if(json.found=="true") {
 					$('#sidepanelIcon').css('background-image', 'url(images/scanIconColour.png)');
 					$('#barcode').val(json.value);
 				}else{

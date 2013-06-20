@@ -309,7 +309,7 @@ function checkRegistrations() {
 		}else{
 			echo "<p class='ten columns'>There are ".$count." recent registrations.</p>";
 		}
-		echo "<div class='medium primary btn' id='m_registrations'><a href='#'>Manage Registrations</a></div>";
+		echo "<div class='medium pretty primary icon-left btn icon-pencil' id='m_registrations'><a href='#'>Manage Registrations</a></div>";
 		?>
 		<script>
 		$(document).ready(function(){
@@ -330,25 +330,25 @@ function checkLists() {
 	sl_status = 'Outstanding' order by sl_date_uploaded DESC";
 	$samples = dl::getQuery($sql);
 	if(!empty($samples)) {
-	$count = 0;
-	foreach($samples as $sample){
-		$customer = dl::select("customers", "c_id ='".$sample["customer_id"]."'");
-		if(strlen($customer[0]["c_name"]) >28 ) {
-			$cust_name = substr($customer[0]["c_name"],0,27)."...";
+		$count = 0;
+		foreach($samples as $sample){
+			$customer = dl::select("customers", "c_id ='".$sample["customer_id"]."'");
+			if(strlen($customer[0]["c_name"]) >28 ) {
+				$cust_name = substr($customer[0]["c_name"],0,27)."...";
+			}else{
+				$cust_name = $customer[0]["c_name"];
+			}
+			if($count < 3){
+				echo "<div class='row'><div class='printline five columns'>".$cust_name."</div><div class='printline seven columns'>".date("d/m/Y", strtotime($sample["sl_date_uploaded"]))."</div></div>";	
+			}
+			$count++;
+		}
+		if($count == 1){
+			echo "<p>There is ".$count." outstanding list.</p>";
 		}else{
-			$cust_name = $customer[0]["c_name"];
+			echo "<p>There are ".$count." outstanding lists.</p>";
 		}
-		if($count < 3){
-			echo "<div class='row'><div class='printline five columns'>".$cust_name."</div><div class='printline seven columns'>".date("d/m/Y", strtotime($sample["sl_date_uploaded"]))."</div></div>";	
-		}
-		$count++;
-	}
-	if($count == 1){
-		echo "<p>There is ".$count." outstanding list.</p>";
-	}else{
-		echo "<p>There are ".$count." outstanding lists.</p>";
-	}
-	echo "<div class='medium primary btn' id='m_lists'><a href='#'>Manage Lists</a></div>";
+		echo "<div class='medium pretty primary icon-left btn icon-pencil' id='m_lists'><a href='#'>Manage Lists</a></div>";
 		?>
 		<script>
 		$(document).ready(function(){
@@ -370,7 +370,34 @@ function checkRequests() {
 	sr_status = 'NEW' order by sr_expected_delivery DESC";
 	$samples = dl::getQuery($sql);
 	if(!empty($samples)) {
-	
+		$count = 0;
+		foreach($samples as $sample){
+			$customer = dl::select("customers", "c_id ='".$sample["customer_id"]."'");
+			if(strlen($customer[0]["c_name"]) >28 ) {
+				$cust_name = substr($customer[0]["c_name"],0,27)."...";
+			}else{
+				$cust_name = $customer[0]["c_name"];
+			}
+			if($count < 3){
+				echo "<div class='row'><div class='printline five columns'>".$cust_name."</div><div class='printline seven columns'>".date("d/m/Y", strtotime($sample["sl_date_uploaded"]))."</div></div>";	
+			}
+			$count++;
+		}
+		if($count == 1){
+			echo "<p>There is ".$count." outstanding list.</p>";
+		}else{
+			echo "<p>There are ".$count." outstanding lists.</p>";
+		}
+		echo "<div class='medium pretty primary icon-left btn icon-pencil' id='m_lists'><a href='#'>Manage Lists</a></div>";
+		?>
+		<script>
+		$(document).ready(function(){
+			$('#m_lists').click(function() {
+				window.location.href = "index.php?func=outstanding_lists";
+			});
+		});
+		</script>
+		<?php
 	}else{
 		echo "<p>There are no recent requests.</p>";
 	}
@@ -383,43 +410,87 @@ function checkTransfers() {
 	sr_status = 'NEW' order by sr_expected_delivery DESC";
 	$samples = dl::getQuery($sql);
 	if(!empty($samples)) {
-	
+		$count = 0;
+		foreach($samples as $sample){
+			$customer = dl::select("customers", "c_id ='".$sample["customer_id"]."'");
+			if(strlen($customer[0]["c_name"]) >28 ) {
+				$cust_name = substr($customer[0]["c_name"],0,27)."...";
+			}else{
+				$cust_name = $customer[0]["c_name"];
+			}
+			if($count < 3){
+				echo "<div class='row'><div class='printline five columns'>".$cust_name."</div><div class='printline seven columns'>".date("d/m/Y", strtotime($sample["sl_date_uploaded"]))."</div></div>";	
+			}
+			$count++;
+		}
+		if($count == 1){
+			echo "<p>There is ".$count." outstanding list.</p>";
+		}else{
+			echo "<p>There are ".$count." outstanding lists.</p>";
+		}
+		echo "<div class='medium pretty info icon-left btn icon-pencil' id='m_lists'><a href='#'>Manage Lists</a></div>";
+		?>
+		<script>
+		$(document).ready(function(){
+			$('#m_lists').click(function() {
+				window.location.href = "index.php?func=outstanding_lists";
+			});
+		});
+		</script>
+		<?php
 	}else{
 		echo "<p>There are no recent transfers.</p>";
 	}
 }
 
 function upload_excel() {
-		echo "<fieldset>";
+echo "<form ENCTYPE='multipart/form-data' id='upload_form' method='post' action='index.php?func=uploadFile'>";
+echo "<data_entry>";
+	echo "<div class='row'>";
+		echo "<fieldset class='six columns'>";
 			echo "<legend><div id='legend_colour'>Upload Spreadsheet</div></legend>"; 
 			echo "<p>Enter the file to upload and extract the sample information from. Make sure there are no empty columns before the headings start.</p>";
-			echo "<form ENCTYPE='multipart/form-data' id='upload_form' method='post' action='index.php?func=uploadFile'>";
-				$field = new fields("Select File", "file", "greyInput", "30", "", "frmFile");
-				echo "<span class='form_prompt'>".$field->show_prompt()." </span>";
-				echo "<span class='form_field'>".$field->show_field()."</span><BR />";
-				$field = new fields("Excel Title Row", "text", "greyInput", "10", "", "excel_row");
-				echo "<span class='form_prompt'>".$field->show_prompt()." </span>";
-				echo "<span class='form_field'>".$field->show_field()."</span><BR />";
-				$customers = dl::select("customers");
-				foreach($customers as $c) {
-					$custs[]= $c["c_name"];
-				}
-				$field = new selection("Customer", "text", "greyInput", "40", "", "customer_list", $custs, "", "0");
-				echo "<span class='form_prompt'>".$field->show_prompt()." </span>";
-				echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='custClick'><img class='gi-img' src='images/dropdown.png'></span><BR /><br />";
-			$button = new fields("submit Button", "submit", "bluebutton", 10, "Upload File","submit");
-			echo $button->show_field();
-			echo "</form>";
-		echo "</fieldset>";
-		// the jQuery script checks for a click on the select graphic and then focuses to the field and the drop down box appears.
+		echo "<ul>";
+			echo "<li class=' append field'>";
+				echo "<input name='frmFile' id='file_selector' class='wide text input' type='file' />";
+				echo "<div id='select_file'>";
+					echo "<input id='file_value' class='xwide text input' type='text' placeholder='Choose the file to upload'' />";
+					echo "<span id='link_index' class='adjoined'>Browse...</span>";
+				echo "</div>";
+			echo "</li>";
+			echo "<li class='field'>";
+			echo "<input id='excel_row' name='excel_row' class='wide text input' type='text' placeholder='Enter the excel title row no.'' />";
+			echo "</li>";
+			echo "<li class='default label'>Existing Customers</li>";
+			echo "<li class='field'>";
+				echo "<div class='picker'>";
+					echo "<select id='customer' name='customer_list'>";
+						$customers = dl::select("customers");
+						foreach($customers as $c) {
+							$custs[]= $c["c_name"];
+						}
+						foreach($custs as $cust) {
+							echo "<option>$cust</option>";
+						}
+					echo "</select>";
+				echo "</div>";
+			echo "</li>";
+		echo "</ul>";
 		?>
-		<script type="text/javascript">
-				$("#custClick").live("click", function () {
-					$("#customer_list").focus();	
-				});
-
+		<script>
+		$("#file_selector").change( function(event, ui) { 
+			$("#file_value").val($("#file_selector").val());
+				
+		});
 		</script>
 		<?php
+			$button = new fields("submit Button", "submit", "bluebutton", 10, "Upload File","submit");
+			echo $button->show_field();
+		echo "</fieldset>";	
+	echo "</div>";
+	echo "</data_entry>";
+
+echo "</form>";
 }
 function uploadFile(){
 	if($_FILES['frmFile']['error'] == 0) {
@@ -436,7 +507,7 @@ function uploadFile(){
 					$_SESSION["upload"]="File uploaded";
 					?>
 					<script>
-						window.location.href = "index.php?func=read_excel&file=<?php echo "./documents/".$filename ?>&customer=<?php echo $_POST["customer_list"]?>&excel_row=<?php echo $_POST["excel_row"]?>";
+						window.location.href = "index.php?func=read_excel&file=<?php echo "documents/".$filename ?>&customer=<?php echo $_POST["customer_list"]?>&excel_row=<?php echo $_POST["excel_row"]?>";
 					</script>
 					<?php
 					die();
@@ -459,7 +530,6 @@ function readExcel() {
 	$fileName = $_GET["file"];
 	$customer = $_GET["customer"];
 	$rowToRead = $_GET["excel_row"];
-	
 	//load the spreadsheet
 	$objPHPExcel = PHPExcel_IOFactory::load($fileName); 
 	$cell=0;
@@ -514,38 +584,44 @@ function readExcel() {
 	</script>
 	<?php 
 	$rowCount=0;
-	echo "<div id='sort-div''>";
-	echo "<div id='sort-div-title'>SPREADSHEET</div>";
-	echo "<ul id='sortable' class='connected' '>";
-	echo "<li class='heading'>Match this...";
-	foreach($rowVals as $row) {
-		echo "<li class='ui-state-default'><span class='ui-icon ui-icon-arrowthick-2-n-s'></span>".$rowCount." ".$row."</li>";
-		$rowCount++;
-		if($rowCount == 11) {
-			echo "</ul>";
-			echo "<ul id='sortable2' class='connected' '>";
-			echo "<li class='heading'>Additional information";
+	echo "<div class='row'>";
+	echo "<H3>SPREADSHEET UPLOAD</H3>";
+	echo "<div class='columns three'>";
+		echo "<drag_and_drop>";
+		echo "<ul id='sortable' class='connected' '>";
+		echo "<li class='heading'>Match this...";
+		foreach($rowVals as $row) {
+			echo "<li class='info alert'>".$rowCount." ".$row."</li>";
+			$rowCount++;
+			if($rowCount == 11) {
+				echo "</ul>";
+				echo "</drag_and_drop>";
+				echo "</div>";
+				echo "<div class='columns three'>";
+				echo "<drag_and_drop>";
+				echo "<ul id='sortable2' class='connected' '>";
+				echo "<li class='heading'>Additional information";
+			}
+			
 		}
-		
-	}
-	echo "</ul><BR /><BR />";
+		echo "</ul>";
+		echo "</drag_and_drop>";
 	echo "</div>";
 
-	echo "<div id='min-data'>";
-		echo "<div id='min-data-title'>Minimum dataset</div>";
+	echo "<div id='min-data' class='columns three'>";
 		echo "<ul id='min-data-ul'>";
-			echo "<li class='heading'>With this...";
-			echo "<li class='ui-state-default'> 0 CUSTOMER IDENTIFIER</li>";
-			echo "<li class='ui-state-default'> 1 SAMPLE DESCRIPTION</li>";
-			echo "<li class='ui-state-default'> 2 PATHOLOGY NUMBER</li>";
-			echo "<li class='ui-state-default'> 3 DATE SAMPLE STORED</li>";
-			echo "<li class='ui-state-default'> 4 SNOMED CODE</li>";
-			echo "<li class='ui-state-default'> 5 SUBJECT GENDER</li>";
-			echo "<li class='ui-state-default'> 6 SUBJECT AGE</li>";
-			echo "<li class='ui-state-default'> 7 DISEASE STATE</li>";			
-			echo "<li class='ui-state-default'> 8 SAMPLE STAGE</li>";
-			echo "<li class='ui-state-default'> 9 STUDY NAME</li>";
-			echo "<li class='ui-state-default'>10 ADULT OR PAEDIATRIC</li>";
+			echo "<li>With this...";
+			echo "<li class='primary alert'> 0 CUSTOMER IDENTIFIER</li>";
+			echo "<li class='primary alert'> 1 SAMPLE DESCRIPTION</li>";
+			echo "<li class='primary alert'> 2 PATHOLOGY NUMBER</li>";
+			echo "<li class='primary alert'> 3 DATE SAMPLE STORED</li>";
+			echo "<li class='primary alert'> 4 SNOMED CODE</li>";
+			echo "<li class='primary alert'> 5 SUBJECT GENDER</li>";
+			echo "<li class='primary alert'> 6 SUBJECT AGE</li>";
+			echo "<li class='primary alert'> 7 DISEASE STATE</li>";			
+			echo "<li class='primary alert'> 8 SAMPLE STAGE</li>";
+			echo "<li class='primary alert'> 9 STUDY NAME</li>";
+			echo "<li class='primary alert'>10 ADULT OR PAEDIATRIC</li>";
 		echo "</ul>";
 		
 		?>
@@ -584,24 +660,21 @@ function readExcel() {
 	</script>
 	<?php
 	echo "</div>";
-	echo "<div id='button-div'>";
+	echo "</div>";
+	echo "<div class='row'>";
 	echo "<div id='poof'></div>";
 		echo "<ul id='sortable-deleted' class='connected'>";
 		echo "</ul>";
-		$button = new fields("submit Button", "submit", "bluebutton", 10, "Add Blank","blank");
-		echo $button->show_field();
-	
-	$button = new fields("submit Button", "submit", "bluebutton", 10, "Process Spreadsheet","Process");
-	echo $button->show_field();
+		echo "<div id='blank' class='pretty medium primary btn icon-left icon-plus'><a href='#'>Add Blank</a></div> ";
+		echo "<div id='Process' class='pretty medium primary btn icon-left icon-thumbs-up'><a href='#'>Process Spreadsheet</a></div><BR /><BR />";
 	echo "<span id='showMatching'></span>";
-	echo "</div>";
 	echo "</div>";
 	
 		?>
 	<script>
 	$("#blank").click(function (e) {
 		e.preventDefault();
-		var $li = $("<li class='ui-state-default'/>").text("<SPACER>");
+		var $li = $("<li class='info alert'/>").text("<SPACER>");
 		$("#sortable").append($li);
 		$("#sortable").sortable('refresh');
 	});
@@ -648,22 +721,69 @@ function display_menus() {
           <a href="#">New</a>
           <div class="dropdown">
             <ul>
-               <li><a href="index.php?func=add_registration">New Customer</a></li>
-				<li><a href="index.php?func=upload_sheet">Container</a>
+               <li><a href="index.php?func=new_customer">New Customer</a></li>
+				<li><a href="index.php?func=new_container">Container</a>
 				<div class="dropdown">
 					<ul>
-							<li><a href="index.php?func=add_registration">New Container</a></li>
-							<li><a href="index.php?func=upload_sheet">Container Template</a></li>
-							<li><a href="index.php?func=accept_samples">Container Type</a></li>
-							<li><a href="index.php?func=accept_samples">View transfer list</a></li>
-							<li><a href="index.php?func=accept_samples">Find Creations</a></li>
+							<li><a href="index.php?func=new_container">New Container</a></li>
+							<li><a href="index.php?func=new_container_template">Container Template</a></li>
+							<li><a href="index.php?func=new_container_type">Container Type</a></li>
 					</ul>
 				</div></li>
-				<li><a href="index.php?func=accept_samples">New Request</a></li>
-				<li><a href="index.php?func=accept_samples">View transfer list</a></li>
-				<li><a href="index.php?func=accept_samples">Find Creations</a></li>
+				<li><a href="#">Types</a>
+				<div class="dropdown">
+					<ul>
+							<li><a href="index.php?func=type_request">Request Type</a></li>
+							<li><a href="index.php?func=type_action">Action Type</a></li>
+							<li><a href="index.php?func=type_sample">Sample Type</a></li>
+							<li><a href="index.php?func=new_container_type">Container Type</a></li>
+					</ul>
+				</div></li>
+				<li><a href="#">Printer</a>
+				<div class="dropdown">
+					<ul>
+							<li><a href="index.php?func=new_printer_template">Print Template</a></li>
+							<li><a href="index.php?func=new_barcode_settings">Barcode Settings</a></li>
+					</ul>
+				</div></li>
             </ul>
 			
+          </div>
+        </li>
+		<li>
+          <a href="#">Edit</a>
+          <div class="dropdown">
+            <ul>
+               <li><a href="index.php?func=edit_customer">Customers</a></li>
+			   <li><a href="index.php?func=edit_containers">Containers</a></li>
+				<li><a href="#">Types</a>
+				<div class="dropdown">
+					<ul>
+							<li><a href="index.php?func=new_container">Request Types</a></li>
+							<li><a href="index.php?func=new_container_template">Action Types</a></li>
+							<li><a href="index.php?func=new_container_type">Sample Types</a></li>
+							<li><a href="index.php?func=new_container_type">Container Types</a></li>
+					</ul>
+				</div></li>
+            </ul>
+          </div>
+        </li>
+		<li>
+          <a href="#">Scan</a>
+          <div class="dropdown">
+            <ul>
+               <li><a href="index.php?func=scan_in">Scan Container In</a></li>
+			   <li><a href="index.php?func=scan_out">Scan Container Out</a></li>
+            </ul>
+          </div>
+        </li>
+		<li>
+          <a href="#">Print Labels</a>
+          <div class="dropdown">
+            <ul>
+               <li><a href="index.php?func=scan_in">Print Barcode Labels</a></li>
+			   <li><a href="index.php?func=scan_out">Re-print a label</a></li>
+            </ul>
           </div>
         </li>
       </ul>
@@ -1000,25 +1120,85 @@ function validate_fieldName($index) {
 <?php
 }
 function add_registration() {
-		echo "<fieldset>";
+	
+	echo "<form>";
+	echo "<data_entry>";
+	echo "<div class='row'>";
+		echo "<fieldset class='six columns'>";
 		echo "<legend><div id='legend_colour'>New Registration</div></legend>";
-		$field = new dates("Contact Date", "text", "greyInput", "20", "", "contact_date", "contact_date");
-		echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-		echo "<span class='form_field'>".$field->show_field()."</span><BR />";
 		$customers =dl::select("customers");
 		foreach($customers as $customer){
 			$customer_list[] = $customer["c_name"];
 		}
-		$field = new selection("Existing Customer", "text", "greyInput", "40", "", "customer", $customer_list, "", "0");
-		echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-		echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='custClick'><img class='gi-img' src='images/dropdown.png'></span><BR />";
+		//design the form
+		echo "<ul>";
+			echo "<li class='prepend field'>";
+			echo "<span class='adjoined'><img src='library/images/date_picker.png'></span>";
+			echo "<input id='contact_date' class='wide text input' type='text' placeholder='Contact Date'' />";
+			echo "</li>";
+			echo "<li class='default label'>Existing Customers</li>";
+			echo "<li class='field'>";
+				echo "<div class='picker'>";
+					echo "<select id='customer'>";
+					foreach($customer_list as $cust) {
+						echo "<option>$cust</option>";
+					}
+					echo "</select>";
+				echo "</div>";
+			echo "</li>";
+			echo "<li class='field'>";
+			echo "<input id='contact_name' class='wide text input' type='text' placeholder='Contact name'' />";
+			echo "</li>";
+			echo "<li class='field'>";
+			echo "<input id='contact_email' class='wide text input' type='text' placeholder='Contact email'' />";
+			echo "</li>";
+			echo "<li class='field'>";
+			echo "<input id='contact_phone' class='wide text input inputs' type='text' placeholder='Contact phone'' />";
+			echo "</li>";
+			echo "<li class='field'>";
+			echo "<textarea id='required' class='input textarea' placeholder='Requirements' rows='2'></textarea>";
+			echo "</li>";
+			echo "<li class='prepend field'>";
+			echo "<span class='adjoined'><img src='library/images/date_picker.png'></span>";
+			echo "<input id='delivery_date' class='wide text input' type='text' placeholder='Expected delivery'' />";
+			echo "</li>";
+			echo "<li class='field'>";
+			echo "<input id='contact_paymentRef' class='wide text input' type='text' placeholder='Payment Reference'' />";
+			echo "</li>";
+			echo "<li class='field'>";
+			echo "<textarea id='contact_paymentDetails' class='input textarea' placeholder='Payment details' rows='2'></textarea>";
+			echo "</li>";
+		echo "</ul>";
+		?>
+			<script language="JavaScript">
+							
+			$(document).ready(function() {
+				
+				
+				$("#contact_date").datepicker( {
+				dateFormat: 		'dd/mm/yy',
+				buttonImageOnly: 	true
+				});
+				$("#delivery_date").datepicker( {
+				dateFormat: 		'dd/mm/yy',
+				buttonImageOnly: 	true
+				});
+				
+			});
+			
+		</script><?php
+		$types = dl::select("sample_types");
+		foreach($types as $type) {
+			$sample_types[] = $type["st_type"]; 
+		}
+		$containers = dl::select("container_types");
+		foreach($containers as $container) {
+			$container_list[]= $container["ct_name"];
+		}
 		// the jQuery script checks for a click on the select graphic and then focuses to the field and the drop down box appears.
 		?>
 		<script type="text/javascript">
-				$("#custClick").live("click", function () {
-					$("#customer").focus();	
-				});
-				$("#customer").on("autocompletechange", function(event, ui) { 
+				$("#customer").change( function(event, ui) { 
 				var func = "findCustomer";
 				$.post(
 					"ajax.php",
@@ -1035,92 +1215,90 @@ function add_registration() {
 		});
 		</script>
 		<?php
-		$field = new fields("Contact Name", "text", "greyInput", "40", "", "contact_name");
-		echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-		echo "<span class='form_field'>".$field->show_field()."</span><BR>";
-		$field = new fields("Contact Email", "text", "greyInput", "40", "", "contact_email");
-		echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-		echo "<span class='form_field'>".$field->show_field()."</span><BR>";
-		$field = new fields("Contact Phone No.", "text", "greyInput", "40", "", "contact_phone");
-		echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-		echo "<span class='form_field'>".$field->show_field()."</span><BR>";
 	
-		$selection = new textArea("Requirements","text", "greyInput", "20", "" , "required", 40, 3);
-		echo "<span class='form_prompt'>".$selection->show_prompt()."</span>";
-		echo "<span class='form_field'>".$selection->show_field()."</span><BR />";
-		$field = new dates("Expected Delivery", "text", "greyInput", "20", "", "delivery_date", "delivery_date");
-		echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-		echo "<span class='form_field'>".$field->show_field()."</span><BR />";
-		$field = new fields("Payment Reference.", "text", "greyInput", "40", "", "contact_paymentRef");
-		echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-		echo "<span class='form_field'>".$field->show_field()."</span><BR>";
-		$selection = new textArea("Payment Details","text", "greyInput", "20", "" , "contact_paymentDetails", 40, 3);
-		echo "<span class='form_prompt'>".$selection->show_prompt()."</span>";
-		echo "<span class='form_field'>".$selection->show_field()."</span><BR />";
 		echo "</fieldset>";
-		echo "<fieldset>";
+
+		echo "<fieldset class='six columns'>";
 		echo "<legend><div id='legend_colour'>Sample Information</div></legend>";
+		echo "<ul>";
+			echo "<li class='field'>";
+			echo "<input id='sample_no' class='wide text input' type='text' placeholder='Number of samples'' />";
+			echo "</li>";
+			echo "<li class='default label'>Sample Types</li>";
+			echo "<li class='field'>";
+				echo "<div class='picker'>";
+					echo "<select id='sample_type'>";
+					foreach($sample_types as $types) {
+						echo "<option>$types</option>";
+					}
+					echo "</select>";
+				echo "</div>";
+			echo "</li>";
+			echo "<li class='default label'>Containers</li>";
+			echo "<li class='field'>";
+				echo "<div class='picker'>";
+					echo "<select id='sample_container'>";
+					foreach($container_list as $containers) {
+						echo "<option>$containers</option>";
+					}
+					echo "</select>";
+				echo "</div>";
+			echo "</li>";
+			echo "<li class='field'>";
+			echo "<label class='checkbox' for='boxes'>";
+			echo "<input id='boxes' class='wide text input' type='checkbox'' />";
+			echo "<span> </span> Stored in Boxes?";
+			echo "</label>";
+			echo "<input id='sample_boxsize' class='wide text input' type='text' placeholder='Box size'' />";
+			echo "</li>";
+			echo "<li class='default label'>Temperature</li>";
+			echo "<li class='field'>";
+				echo "<label class='radio' style='float: left;' for='sample_temperature1'>";
+				echo "<input name='temperature' id='sample_temperature1' value='-20&degC' type='radio' />";
+				echo "<span></span> -20&degC&nbsp";
+				echo "</label>";
+				echo "<label class='radio' style='float: left;' for='sample_temperature2'>";
+				echo "<input name='temperature' id='sample_temperature2' value='-80&degC' type='radio' />";
+				echo "<span></span> -80&degC&nbsp ";
+				echo "</label>";
+				echo "<label class='radio' style='float:left;' for='sample_temperature3'>";
+				echo "<input name='temperature' id='sample_temperature3' value='-150&degC' type='radio' />";
+				echo "<span></span> -150&degC ";
+				echo "</label>";
+			echo "</li>";
+			echo "<li class='default label'>Samples Catalogued ?</li>";
+			echo "<li class='field'>";
+				echo "<label class='radio' style='float: left;' for='sample_catYes'>";
+				echo "<input name='samples_catalogued' id='samples_catYes' value='Yes' type='radio' />";
+				echo "<span></span> Yes&nbsp";
+				echo "</label>";
+				echo "<label class='radio' style='float: left;' for='sample_catNo'>";
+				echo "<input name='samples_catalogued' id='samples_catNo' value='No' type='radio' />";
+				echo "<span></span> No&nbsp ";
+				echo "</label>";
+			echo "</li>";
+			echo "<li class='field'>";
+			echo "<textarea id='sample_info' class='input textarea' placeholder='Sample Information' rows='2'></textarea>";
+			echo "</li>";
+			
+		echo "</ul>";
 
-		$field = new fields("Number of Samples", "text", "greyInput", "10", "", "sample_no");
-		echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-		echo "<span class='form_field'>".$field->show_field()."</span><BR>";
-		$types = dl::select("sample_types");
-		foreach($types as $type) {
-			$sample_types[] = $type["st_type"]; 
-		}
-		$field = new selection("Sample Type", "text", "greyInput", "40", "", "sample_type", $sample_types, "", "0");
-		echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-		echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='typeClick'><img class='gi-img' src='images/dropdown.png'></span><BR>";
-		?>
-		<script type="text/javascript">
-				$("#typeClick").live("click", function () {
-					$("#sample_type").focus();	
-				});
-
-		</script>
-		<?php
-		$containers = dl::select("container_types");
-		foreach($containers as $container) {
-			$container_list[]= $container["ct_name"];
-		}
-		$field = new selection("Containers", "text", "greyInput", "40", "", "sample_container", $container_list,"","0");
-		echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-		echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='containerClick'><img class='gi-img' src='images/dropdown.png'></span><BR>";
-		?>
-		<script type="text/javascript">
-				$("#containerClick").live("click", function () {
-					$("#sample_container").focus();	
-				});
-
-		</script>
-		<?php
-		$field = new checkbox("Stored in Boxes?", "checkbox", "greyInput", "40", "", "boxes");
-		echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-		echo "<span class='form_field'>".$field->show_field()."</span>";
-		$field = new fields("Box Size", "text", "greyInput", "10", "", "sample_boxsize");
-		echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-		echo "<span class='form_field'>".$field->show_field()."</span><BR>";
-		$Temp = array("-20&degC", "-80&degC", "-150&degC");
-		$selection = new radio("What Temperature?","radio", "greyInput", "20", "" , "sample_temperature", "", "", $Temp, "", "Horizontal");
-		echo "<span class='form_prompt'>".$selection->show_prompt()."</span>";
-		echo "<span class='form_field'>".$selection->show_field()."</span><BR />";
-		$selection = new radio("Samples Catalogued?","radio", "greyInput", "20", "" , "samples_catalogued", "", "", array("Yes", "No"), "", "Horizontal");
-		echo "<span class='form_prompt'>".$selection->show_prompt()."</span>";
-		echo "<span class='form_field'>".$selection->show_field()."</span><BR />";
-		$selection = new textArea("Sample info","text", "greyInput", "20", "" , "sample_info", 40, 3);
-		echo "<span class='form_prompt'>".$selection->show_prompt()."</span>";
-		echo "<span class='form_field'>".$selection->show_field()."</span><BR />";
 		echo "<H3>Biobank Services</H3>";
 		$services = dl::select("biobank_services_list", "", "bsl_id ASC");
+		echo "<li class='field'>";
 		foreach($services as $service) {
-			$field = new checkbox($service["bsl_description"], "checkbox", "greyInput", "40", "", "services".$service["bsl_id"]);
-			echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-			echo "<span class='form_field'>".$field->show_field()."</span><BR>";
+			echo "<label class='checkbox' style='float: left;' for='services".$service["bsl_id"]."'>";
+			echo "<input id='services".$service["bsl_id"]."' class='wide text input' type='checkbox'' />";
+			echo "<span> </span> ".$service["bsl_description"]."&nbsp";
+			echo "</label>";
 		}
+		echo "</li>";
+		
 		echo "<BR /><BR /></fieldset>";
-		$button = new fields("submit Button", "submit", "bluebutton", 10, "New Registration","newReg");
-		echo $button->show_field();
 		echo "<div id='show_registration_message'></div>";
+		echo "<div class='medium pretty primary btn icon-left entypo icon-install'><a id='newReg' href='#'>New Registration</a></div>";
+		
+	echo "</div>";
 	?>
 	<script>
 		$(document).ready(function() {
@@ -1156,7 +1334,7 @@ function add_registration() {
 						sample_container: $("#sample_container").val(),
 						boxes: $("#boxes").is(":checked"),
 						sample_boxsize: $("#sample_boxsize").val(),
-						sample_temperature: $("input:radio[name=sample_temperature][checked]").val(),
+						sample_temperature: $("input:radio[name=temperature][checked]").val(),
 						samples_catalogued: $("input:radio[name=samples_catalogued][checked]").val(),
 						sample_info: $("#sample_info").val(),
 						services: checked,
@@ -1165,39 +1343,19 @@ function add_registration() {
 					function (data)
 					{
 						$('#show_registration_message').html(data);
-						$("#contact_date").val(""),
-						$("#contact_name").val(""),
-						$("#contact_email").val(""),
-						$("#contact_phone").val(""),
-						$("#customer").val(""),
-						$("#required").val(""),
-						$("#delivery_date").val(""),
-						$("#contact_paymentRef").val(""),
-						$("#contact_paymentDetails").val(""),
-						$("#sample_no").val(""),
-						$("#sample_type").val(""),
-						$("#sample_container").val(""),
-						$("#boxes").prop("checked", false),
-						$("#sample_boxsize").val(""),
-						$('input[name="sample_temperature"]').prop("checked",false),
-						$('input[name="samples_catalogued"]').prop("checked",false),
-						$("#sample_info").val(""),
-						<?php
-						$services = dl::select("biobank_services_list", "", "bsl_id ASC");
-						foreach($services as $service){
-						?>
-							$("#<?php echo "services".$service["bsl_id"]?>").prop("checked", false);
-						<?php 
-						}
-						?>
 						$('#show_registration_message').delay(200).fadeOut(2000);
 						$('#show_registration_message').show();
+						setTimeout(function() {
+							window.location.href = "index.php?func=add_registration";
+						}, 2000);
 				});
 
 			});
 		})
 	</script>
 	<?php
+	echo "<data_entry>";
+	echo "</form>";
 }
 
 
@@ -1398,244 +1556,272 @@ function new_container_type($option) {
 }
 
 function new_container($function) {
-	echo "<fieldset>";
-		if($function == "new") {
-			echo "<legend><div id='legend_colour'>New Container</div></legend>";
-			$field = new fields("Container Name", "text", "greyInput", "50", "", "con_name");
-			echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-			echo "<span class='form_field'>".$field->show_field()."</span><BR>";
-		}else{
-			echo "<legend><div id='legend_colour'>Edit Containers</div></legend>";
-			$container_names = dl::select("containers");
-			foreach($container_names as $cn) {
-				$arrContainer[] = $cn["c_container_name"]." - ". $cn["c_container_barcode"]; 
-			}
-			$field = new selection("Container Name", "text", "greyInput", "50", "", "con_name", $arrContainer, "", "0");
-			echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-			echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='containerClick'><img class='gi-img' src='images/dropdown.png'></span><BR />";
-			?>
-		<script type="text/javascript">
-				$("#containerClick").live("click", function () {
-					$("#con_name").focus();	
-				});
-				$("#con_name").on("autocompletechange", function(event, ui) { 
-				var func = "getContainerValues";
-				$.post(
-					"ajax.php",
-					{ func: func,
-					container: $("#con_name").val()
-					},
-					function (data)
-					{
-						var json = $.parseJSON(data);
-						var barcode = json.barcode;
-						var template = json.template_name;
-						var container = json.container;
-						$('#template_type').val(template);
-						$('#con_barcode').val(barcode);
-						$('#con_name').val(container);
-					});
-				});
-		</script>
-		<?php
-		}
-		$templates = dl::select("container_templates");
-		foreach($templates as $template){
-			$template_names[]= $template["ct_template_name"];
-		}
-		$field = new selection("Template Type", "text", "greyInput", "50", "", "template_type", $template_names, "", "0");
-		echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-		echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='templateClick'><img class='gi-img' src='images/dropdown.png'></span><BR />";
-		// the jQuery script checks for a click on the select graphic and then focuses to the field and the drop down box appears.
-		?>
-		<script type="text/javascript">
-				$("#templateClick").live("click", function () {
-					$("#template_type").focus();	
-				});
-		</script>
-		<?php
-		$field = new fields("Container Barcode", "text", "greyInput", "50", "", "con_barcode");
-		echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-		echo "<span class='form_field'>".$field->show_field()."</span><span class='bluebutton' id='getBarcode' style='float:none;'>Get</span><BR/>";
-		if( $function == "new" ) {
-			$buttonval = "Add New Container";
-		}else{
-			$buttonval = "Edit Container";
-		}
-		$button = new fields("submit Button", "submit", "bluebutton", 10, $buttonval,"container_new");
-		echo $button->show_field();
-		echo "<div id='container_div'></div>";
-	echo "</fieldset>";
+	echo "<form>";
+		echo "<data_entry>";
+		echo "<div class='row'>";
+			echo "<fieldset class='six columns'>";
+				if($function == "new") {
+					echo "<legend><div id='legend_colour'>New Container</div></legend>";
+					echo "<li class='field'>";
+					echo "<input id='con_name' name='con_name' class='wide text input' type='text' placeholder='Container Name'' />";
+					echo "</li>";
+				}else{
+					echo "<li class='default label'>Container Name</li>";
+					echo "<legend><div id='legend_colour'>Edit Containers</div></legend>";
+					$container_names = dl::select("containers","", "c_container_name ASC");
+					
+					foreach($container_names as $cn) {
+						$arrContainer[] = $cn["c_container_name"]; 
+					}
+					echo "<li class='field'>";
+						echo "<div class='picker'>";
+						echo "<select id='con_name' name='con_name'>";
+						echo "<option value='#' disabled selected>Select a container</option>";
+					foreach($arrContainer as $con) {
+						echo "<option>$con</option>";
+					}
+					echo "</select>";
+					echo "</div>";
+					echo "</li>";
+					?>
+				<script type="text/javascript">
+
+						$("#con_name").change( function(event, ui) { 
+						var func = "getContainerValues";
+						$.post(
+							"ajax.php",
+							{ func: func,
+							container: $("#con_name").val()
+							},
+							function (data)
+							{
+								var json = $.parseJSON(data);
+								var barcode = json.barcode;
+								var template = json.template_name;
+								var container = json.container;
+								$('#template_type').val(template);
+								$('#con_barcode').val(barcode);
+							});
+						});
+				</script>
+				<?php
+				}
+				$templates = dl::select("container_templates");
+				foreach($templates as $template){
+					$template_names[]= $template["ct_template_name"];
+				}
+				echo "<li class='default label'>Template Type</li>";
+				echo "<li class='field'>";
+					echo "<div class='picker'>";
+					echo "<select id='template_type' name='template_type'>";
+				foreach($template_names as $temps) {
+					echo "<option>$temps</option>";
+				}
+				echo "</select>";
+				echo "</div>";
+				echo "</li>";
+				echo "<li class='field append'>";
+				echo "<input id='con_barcode' name='con_barcode' class='wide text input' type='text' placeholder='Container barcode'' />";
+				echo "<span class='adjoined'><a href='#' id='getBarcode'>Get</a></span>";
+				echo "</li>";
+				if( $function == "new" ) {
+					$buttonval = "Add New Container";
+				}else{
+					$buttonval = "Edit Container";
+				}
+				echo "<div class='medium pretty primary icon-left btn icon-pencil' id='container_new'><a href='#'>$buttonval</a></div>";
+				echo "<div id='container_div'></div>";
+			echo "</fieldset>";
+		echo "</div>";
+		echo "</data_entry>";
+	echo "</form>";
 	?>
 	<script type="text/javascript">
-		$("#getBarcode").live("click", function () {
+		$("#getBarcode").click( function () {
 			var barcode = $("#barcode").val();
 			$("#con_barcode").val(barcode);	
 		});
-		$("#container_new").live("click", function () {
+		$("#container_new").click( function () {
 			var func = "new_container";
 			$.post(
-				"ajax.php",
-				{ func: func,
-					option: "<?php echo $function ?>",
-					conName: $('#con_name').val(),
-					conTemplate: $('#template_type').val(),
-					conBarcode: $('#con_barcode').val()
-				},
-				function (data)
-				{
-					var json = $.parseJSON(data);
-					var list = json.list;
-					var message = json.message;
-					$('#container_div').html(message);
-					$("#con_name").val("");
-					$('#template_type').val("");
-					$('#con_barcode').val("");
-					$('#container_div').delay(200).fadeOut(2000);
-					$('#container_div').show();
-					$("#con_name").autocomplete({
-					source: list,
-					minLength: 0 
-				}).focus(function() {
-					$("#con_name").autocomplete("search", "");
-				});
+			"ajax.php",
+			{ func: func,
+				option: "<?php echo $function ?>",
+				conName: $('#con_name').val(),
+				conTemplate: $('#template_type').val(),
+				conBarcode: $('#con_barcode').val()
+			},
+			function (data)
+			{
+				var json = $.parseJSON(data);
+				var list = json.list;
+				var message = json.message;
+				$('#container_div').html(message);
+				$("#con_name").val("");
+				$('#template_type').val("");
+				$('#con_barcode').val("");
+				$('#container_div').delay(200).fadeOut(2000);
+				$('#container_div').show();
 			});
-
 		});
 	</script>
 		<?php
 }
 
 function new_customer($option) {
-		echo "<fieldset>";
-		?>
-		<script>
-		globalValues = {};
-		</script>
-		<?php
-		if($option == "new") {
-			echo "<legend><div id='legend_colour'>New Customer</div></legend>";
-			$field = new fields("Customer Name", "text", "greyInput", "50", "", "cust_name");
-			echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-			echo "<span class='form_field'>".$field->show_field()."</span><BR>";
-			?>
-			<script>
-			globalValues.customer_id = 0;
-			</script>
-			<?php
-		}else{
-			echo "<legend><div id='legend_colour'>Edit Customer</div></legend>";
-			$customer_names = dl::select("customers");
-			foreach($customer_names as $cn) {
-				$arrCustomer[] = $cn["c_name"]; 
-			}
-			$field = new selection("Customer Name", "text", "greyInput", "50", "", "cust_name", $arrCustomer, "", "0");
-			echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-			echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='customerClick'><img class='gi-img' src='images/dropdown.png'></span><BR />";
-			?>
-		<script type="text/javascript">
-				
-				$("#customerClick").live("click", function () {
-					$("#cust_name").focus();	
-				});
-				$("#cust_name").on("autocompletechange", function(event, ui) { 
-				var func = "getCustomerValues";
-				if($('#showContactDetails').is(':visible')) {
-					$('#showContactDetails').hide();
-				}
-				$.post(
-					"ajax.php",
-					{ func: func,
-					customer: $("#cust_name").val()
-					},
-					function (data)
-					{	var json = $.parseJSON(data);
-						globalValues.customer_id = json.customerId;
-						var business = json.business;
-						var registration = json.registration;
-						var contacts = json.contacts;
-						var html_show = "";
-						var line="";
-						if(jQuery.isEmptyObject(contacts) == false) {
-							$.each(contacts, function(index, value) {
-								var str = value;
-								var pos = str.search(",");
-								var type = str.substr(0,pos);
-								var str2 = str.substr(pos+1,str.length);
-								var pos = str2.search(",");
-								var detail = str2.substr(0,pos);
-								var id = str2.substr(pos+1, str2.length);
-								html_show = "<list-content><div id='content-container'><div id='content-header'>"+type+"</div><div id='content' style='width:15em;'>"+detail+"</div><div id='content'><a href='#' id='button"+id+"' border='0'><img src='images/DeleteRed.png' /></a></div></div></list-content>";
-								line = line.concat(html_show);
-								$("#button"+id).live("click", function (){
-									var func = "del_contact_details";
-									$.post(
-										"ajax.php",
-										{ func: func,
-											option: '<?php echo $option ?>',
-											customer_id: globalValues.customer_id,
-											conId: id
-										},
-										function (data)
-										{
-											$('#showContactDetails').html(data);
-											$("#con_detail").val("");
-											$('#contact_type').val("");
-									});
+	echo "<form>";
+		echo "<data_entry>";
+			echo "<div class='row'>";
+				echo "<fieldset class='six columns'>";
+					?>
+					<script>
+					globalValues = {};
+					</script>
+					<?php
+					if($option == "new") {
+						
+						
+						echo "<legend><div id='legend_colour'>New Customer</div></legend>";
+						echo "<ul>";
+						echo "<li class='field'>";
+						echo "<input id='cust_name' name=cust_name' class='wide text input' type='text' placeholder='Customer name'' />";
+						echo "</li>";
+						
+						?>
+						<script>
+						globalValues.customer_id = 0;
+						</script>
+						<?php
+					}else{
+						echo "<legend><div id='legend_colour'>Edit Customer</div></legend>";
+						echo "<ul>";
+						$customer_names = dl::select("customers");
+						foreach($customer_names as $cn) {
+							$arrCustomer[] = $cn["c_name"]; 
+						}
+						echo "<li class='field'>";
+							echo "<div class='picker'>";
+							echo "<select id='cust_name' name='cust_name'>";
+
+						foreach($arrCustomer as $cust) {
+							echo "<option>$cust</option>";
+						}
+						echo "</select>";
+						echo "</div>";
+						echo "</li>";
+						?>
+					<script type="text/javascript">
+							$("#cust_name").change( function(event, ui) { 
+							var func = "getCustomerValues";
+							if($('#showContactDetails').is(':visible')) {
+								$('#showContactDetails').hide();
+							}
+							$.post(
+								"ajax.php",
+								{ func: func,
+								customer: $("#cust_name").val()
+								},
+								function (data)
+								{	var json = $.parseJSON(data);
+									globalValues.customer_id = json.customerId;
+									var business = json.business;
+									var registration = json.registration;
+									var contacts = json.contacts;
+									var html_show = "";
+									var line="";
+									if(jQuery.isEmptyObject(contacts) == false) {
+										$.each(contacts, function(index, value) {
+											var str = value;
+											var pos = str.search(",");
+											var type = str.substr(0,pos);
+											var str2 = str.substr(pos+1,str.length);
+											var pos = str2.search(",");
+											var detail = str2.substr(0,pos);
+											var id = str2.substr(pos+1, str2.length);
+											html_show = "<list-content><div id='content-container'><div id='content-header'>"+type+"</div><div id='content' style='width:15em;'>"+detail+"</div><div id='content-del'><a href='#' id='button"+id+"' border='0'><img src='images/DeleteRed.png' /></a></div></div></list-content>";
+											line = line.concat(html_show);
+										});
+										$('#showContactDetails').html(line);
+										$.each(contacts, function(index, value) {
+											var str = value;
+											var pos = str.search(",");
+											var type = str.substr(0,pos);
+											var str2 = str.substr(pos+1,str.length);
+											var pos = str2.search(",");
+											var detail = str2.substr(0,pos);
+											var id = str2.substr(pos+1, str2.length);
+											$("#button"+id).click( function (){
+												var func = "del_contact_details";
+												$.post(
+													"ajax.php",
+													{ func: func,
+														option: '<?php echo $option ?>',
+														customer_id: globalValues.customer_id,
+														conId: id
+													},
+													function (data)
+													{
+														$('#showContactDetails').html(data);
+														$("#con_detail").val("");
+														$('#contact_type').val("");
+												});
+											});
+										});
+										if($('#showContactDetails').is(':hidden')) {
+											$('#showContactDetails').show("slide", {
+												direction: "up"
+											}, 500);
+										}
+									}
+									
+									$('#business').val(business);
+									$('#cust_reg').val(registration);
+									
+									$("#con_detail").val("");
+									$('#contact_type').val("");
 								});
 							});
-							$('#showContactDetails').html(line);
-							if($('#showContactDetails').is(':hidden')) {
-								$('#showContactDetails').show("slide", {
-									direction: "up"
-								}, 500);
-							}
+					</script>
+					<?php
+					}
+					echo "<li class='field'>";
+					echo "<input id='business' name='business' class='wide text input' type='text' placeholder='Type of business'' />";
+					echo "</li>";
+					echo "<li class='field'>";
+					echo "<input id='cust_reg' name='cust_reg' class='wide text input' type='text' placeholder='Registration No.'' />";
+					echo "</li>";
+					echo "<h3>Contact details</h3>";
+					echo "<div id='showContactDetails'></div>";
+					echo "<li class='default label'>Contact Type</li>";
+					$contact_types = dl::select("contact_types");
+					foreach($contact_types as $ct){
+						$type_names[]= $ct["ct_type"];
+					}
+					echo "<li class='field'>";
+						echo "<div class='picker'>";
+						echo "<select id='contact_type' name='contact_type'>";
+						foreach($type_names as $tn) {
+							echo "<option>$tn</option>";
 						}
-						
-						$('#business').val(business);
-						$('#cust_reg').val(registration);
-						
-						$("#con_detail").val("");
-						$('#contact_type').val("");
-					});
-				});
-		</script>
-		<?php
-		}
-		
-		$field = new fields("Type of Business", "text", "greyInput", "50", "", "business");
-		echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-		echo "<span class='form_field'>".$field->show_field()."</span><BR>";
-		$field = new fields("Registration no.", "text", "greyInput", "50", "", "cust_reg");
-		echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-		echo "<span class='form_field'>".$field->show_field()."</span><BR>";
-		echo "<h3>Contact details</h3>";
-		echo "<div id='showContactDetails'></div>";
-		$contact_types = dl::select("contact_types");
-		foreach($contact_types as $ct){
-			$type_names[]= $ct["ct_type"];
-		}
-		$field = new selection("Contact Type", "text", "greyInput", "50", "", "contact_type", $type_names, "", "0");
-		echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-		echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='contactClick'><img class='gi-img' src='images/dropdown.png'></span><BR />";
-		// the jQuery script checks for a click on the select graphic and then focuses to the field and the drop down box appears.
-	
-		$field = new textArea("Contact Detail", "text", "greyInput", "50", "", "con_detail", 49, 3);
-		echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-		echo "<span class='form_field'>".$field->show_field()."</span><br/>";
-		$button = new fields("submit Button", "submit", "bluebutton", 10, "Add Details","add_details");
-		echo $button->show_field();
-		echo "<BR><BR><hr id='hr_line'><BR>";
-		$button = new fields("submit Button", "submit", "bluebutton", 10, "Save Customer","save_customer");
-		echo $button->show_field();
-		echo "<div id='showContact_div'></div>";
-	echo "</fieldset>";	
+					echo "</select>";
+					echo "</div>";
+					echo "</li>";
+					// the jQuery script checks for a click on the select graphic and then focuses to the field and the drop down box appears.
+					echo "<li class='field'>";
+						echo "<textarea id='con_detail' class='input textarea' placeholder='Contact detail' rows='1'></textarea>";
+					echo "</li>";
+					echo "<div class='small pretty info icon-left btn icon-plus' id='add_details'><a href='#'>Add Details</a></div>";
+					echo "<hr id='hr_line'>";
+					echo "<div class='medium pretty primary icon-left btn icon-check' id='save_customer'><a href='#'>Save Customer</a></div>";
+					echo "<div id='showContact_div'></div>";
+					echo "</ul>";
+				echo "</fieldset>";	
+			echo "</div>";
+		echo "</data_entry>";
+	echo "</form>";
 	?>
 		<script type="text/javascript">
-				$("#contactClick").live("click", function () {
-					$("#contact_type").focus();	
-				});
-				$("#add_details").live("click", function (){
+				$("#add_details").click( function (){
 					var func = "new_contact_details";
 					$.post(
 						"ajax.php",
@@ -1653,12 +1839,12 @@ function new_customer($option) {
 								}, 500);
 							};
 							$('#showContactDetails').html(data);
-							$('#showContact_div').html("New Contact Details added, please save to add to the Current Customer.");
+							$('#showContact_div').html("Details added/changed, 'Save Customer' will add the record.");
 							$("#con_detail").val("");
 							$('#contact_type').val("");
 					});
 				});
-				$("#save_customer").live("click", function (){
+				$("#save_customer").click( function (){
 					var func = "save_contact_details";
 					$.post(
 						"ajax.php",
@@ -1690,14 +1876,17 @@ function new_customer($option) {
 }
 
 function accept_samples(){
-	echo "<samples>";
-	echo "<fieldset>";
+	echo "<form>";
+	echo "<data_entry>";
+	echo "<div class='row'>";
+	echo "<fieldset class='six columns'>";
 		echo "<legend><div id='legend_colour'>Sample Information</div></legend>";
-		echo "<div style='width: 50%; float:left;'>";
-			$field = new fields("Container Barcode", "text", "greyInput", "45", "", "container_bc");
-			echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-			echo "<span class='form_field'>".$field->show_field()."</span><span class='bluebutton' id='getContainerBarcode' style='float:none;'>Get</span><BR>";
-			
+		echo "<ul>";
+			echo "<li class='field append' id='getContainerBarcode' style='cursor: pointer;'>";
+			echo "<input id='container_bc' name='container_bc' class='wide text input' type='text' placeholder='Container Barcode'' />";
+			echo "<span class='adjoined'>Get</span>";
+			echo "</li>";
+
 			$sql = "select * from samples_list as sl 
 				join customers as c on (sl.customer_id=c.c_id) where sl_status = 'Outstanding' order by sl_date_uploaded ASC
 			";
@@ -1707,81 +1896,83 @@ function accept_samples(){
 					$lists[]= $list["c_name"]." ".$list["sl_date_uploaded"];
 				}
 			}
-			$field = new selection("Samples List", "text", "greyInput", "50", "", "sample_listing", $lists, "", "0");
-			echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-			echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='samplesClick'><img class='gi-img' src='images/dropdown.png'></span><span class='bluebutton' id='showSamples' style='float:none; margin-left: 2.75em;'>View Samples</span><BR />";
-			?>
-			<script>
-				$("#samplesClick").live("click", function () {
-				$("#sample_listing").focus();	
-				});
-			</script>
-			<?php
+			echo "<li class='field'>";
+				echo "<div class='picker'>";
+				echo "<select id='sample_listing' name='sample_listing'>";
+				echo "<option value='#' disabled selected>Select a list to catalogue...</option>";
+					foreach($lists as $list) {
+						echo "<option>$list</option>";
+					}
+				echo "</select>";
+			echo "</div>";
+			echo "</li>";
 			echo "<div id='show_samples'></div>";
-			echo "<BR><BR>";
-			$field = new checkbox("Save Uncatalogued?", "checkbox", "greyInput", "40", "", "uncat", "");
-			echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-			echo "<span class='form_field'>".$field->show_field()."</span><BR>(Select a samples list and it will be associated with the selected container.)<BR><BR>";
-			$button = new fields("submit Button", "submit", "bluebutton", 10, "Save Sample Locations","save_samples");
-			echo $button->show_field();
+			echo "<li class='field'>";
+				echo "<label class='checkbox' for='uncat'>";
+					echo "<input id='uncat' class='wide text input' type='checkbox'' />";
+					echo "<span> </span> Save Uncatalogued ?";
+				echo "</label>";
+			echo "</li>";
 			
+			echo "(Select a samples list and it will be associated with the selected container.)<BR>";
+			echo "<div class='medium pretty primary icon-left btn icon-check' id='save_samples'><a href='#'>Save Sample Locations</a></div>";
 			
+		echo "</ul>";
 			echo "<div id='showContact_div'></div>";
-		echo "</div>";
+	echo "</fieldset>";
+		
 		echo "<div style='width:50%; float:right;'>";
 			echo "<div id='container_details'></div>";
 		echo "</div>";
-	echo "</fieldset>";
+		echo "</div>";
+	
 	echo "<div id='dialog1' style='display: none; font-size:1em;'>";
 		echo "Scan the sample container into the container location:<BR/><BR/>";
-		$field = new fields("Barcode", "text", "greyInput", "20", "", "stored_bc");
-		echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-		echo "<span class='form_field'>".$field->show_field()."</span><span class='bluebutton' id='getBarcode' style='float:none;'>Get</span>";
+		echo "<ul>";
+			echo "<li id='getBarcode' class='field append' style='cursor: pointer;'>";
+			echo "<input id='stored_bc' name='stored_bc' class='wide text input' type='text' placeholder='Click Get to add the scanned barcode'' />";
+			echo "<span class='adjoined'>Get</span>";
+			echo "</li>";
+		echo "</ul>";
 		echo "<div id='sampleBarcode'></div>";
 	echo "</div>";
 	echo "<div id='dialog2' style='display: none; font-size:1em;'>";
 		echo "Scan the barcode and select 'Remove' to remove the sample from the container location:<BR/><BR/>";
-		$field = new fields("Barcode", "text", "greyInput", "22", "", "rem_stored_bc");
-		echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-		echo "<span class='form_field'>".$field->show_field()."</span><span class='bluebutton' id='getRemBarcode' style='float:none;'>Get</span>";
-		$field = new textArea("Removal Note", "text", "greyInput", "50", "", "rem_note", 20, 3);
-		echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-		echo "<span class='form_field'>".$field->show_field()."</span><br/>";
+		echo "<ul>";
+			echo "<li id='getRemBarcode' class='field append' style='cursor: pointer;'>";
+			echo "<input id='rem_stored_bc' name='rem_stored_bc' class='wide text input' type='text' placeholder='Click Get to add the scanned barcode'' />";
+			echo "<span class='adjoined'>Get</span>";
+			echo "</li>";
+			echo "<li class='field'>";
+				echo "<textarea id='rem_note' class='input textarea' placeholder='Removal Note' rows='2'></textarea>";
+			echo "</li>";
+		echo "</ul>";
 	echo "</div>";
-	echo "</samples>";
+	echo "</div>";
+	echo "</data_entry>";
+	echo "</form>";
 	
 	?>
 	<script type="text/javascript">
 	$(document).ready(function() {
-		$("#getBarcode").live("click", function () {
-			var sBarcode = $("#barcode").val();
-			$("#stored_bc").val(sBarcode);	
-			var func = "checkSampleContainer";
+		$("#sample_listing").change( function(event, ui) { 
 			$.post(
 				"ajax.php",
-				{ func: func,
-					conBarcode: $("#stored_bc").val()
+				{ func: "display_samples",
+					sampleVal: $("#sample_listing").val()
 				},
 				function (data)
 				{
-					$('#sampleBarcode').html(data);
-				});
+					$('#show_samples').html(data);
+					$("#show_samples").css({
+						overflow: "scroll",
+						height: "25em",
+						width:	"30em"
+					});
+				}
+			);
 		});
-		$("#getRemBarcode").live("click", function () {
-			var sBarcode = $("#barcode").val();
-			$("#rem_stored_bc").val(sBarcode);	
-			var func = "checkSampleContainer";
-			$.post(
-				"ajax.php",
-				{ func: func,
-					conBarcode: $("#stored_bc").val()
-				},
-				function (data)
-				{
-					$('#sampleBarcode').html(data);
-				});
-		});
-		$("#getContainerBarcode").live("click", function () {
+		$("#getContainerBarcode").click( function () {
 			var barcode = $("#barcode").val();
 			$("#container_bc").val(barcode);	
 			var func = "getContainerDetails";
@@ -1795,23 +1986,36 @@ function accept_samples(){
 					$('#container_details').html(data);
 				});
 		});
-		$("#showSamples").click(function() { 
+		$("#getBarcode").click( function () {
+			var sBarcode = $("#barcode").val();
+			$("#stored_bc").val(sBarcode);	
+			var func = "checkSampleContainer";
 			$.post(
 				"ajax.php",
-				{ func: "display_samples",
-					sampleVal: $("#sample_listing").val()
+				{ func: func,
+					conBarcode: $("#stored_bc").val()
 				},
 				function (data)
 				{
-					$('#show_samples').html(data);
-					$("#show_samples").css({
-						overflow: "scroll",
-						height: "32em",
-						width:	"42em"
-					});
-				}
-			);
+					$('#sampleBarcode').html(data);
+				});
 		});
+		$("#getRemBarcode").click( function () {
+			var sBarcode = $("#barcode").val();
+			$("#rem_stored_bc").val(sBarcode);	
+			var func = "checkSampleContainer";
+			$.post(
+				"ajax.php",
+				{ func: func,
+					conBarcode: $("#stored_bc").val()
+				},
+				function (data)
+				{
+					$('#sampleBarcode').html(data);
+				});
+		});
+		
+		
 		$("#save_samples").click(function() { 
 			$.post(
 				"ajax.php",

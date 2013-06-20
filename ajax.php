@@ -172,11 +172,14 @@ if($_POST["func"] == "moveContainer") {
 if($_POST["func"] == "show_barcode") {
 	$barcode = dl::select("web_barcode");
 	if(empty($barcode)) {
-		echo "<P>There is no stored barcode</P>";
+		echo "<H4>There is no stored barcode</H4>";
 	}else{
-		echo "<P>STORED BARCODE</P>";
-		$field = new fields("Barcode", "text", "greyInput", "30", $barcode[0]["wb_barcode"], "barcode");
-		echo "<BR><span class='form_field'>".$field->show_field()."</span><BR>";
+		echo "<H4>SCANNED BARCODE</H4>";
+		echo "<ul>";
+			echo "<li class='field'>";
+			echo "<input id='barcode' name='barcode' class='wide text input' type='text' value='".$barcode[0]["wb_barcode"]."' placeholder='Barcode'' />";
+			echo "</li>";
+		echo "</ul>";
 	}
 }
 
@@ -189,9 +192,9 @@ if($_POST["func"] == "check_barcode") {
 		//dl::delete("web_barcode");
 	}
 	if(empty($barcode)) {
-		$retArr = array("found"=>false, "time"=>date('i',$time), "value"=>"");
+		$retArr = array("found"=>"false", "time"=>date('i',$time), "value"=>"");
 	}else{
-		$retArr = array("found"=>true, "time"=>date('i',$time), "value"=>$barcode[0]["wb_barcode"]);
+		$retArr = array("found"=>"true", "time"=>date('i',$time), "value"=>$barcode[0]["wb_barcode"]);
 	}
 	echo json_encode($retArr);
 }
@@ -290,13 +293,12 @@ if( $_POST["func"] == "new_container") {
 }
 
 if( $_POST["func"] == "getContainerValues") {	
-	$pos = strpos($_POST["container"], "-")+2; //add 2 to this as there is a space after the minus (-) sign
-	$container = substr($_POST["container"], 0, $pos-3);
-	$barcode = substr($_POST["container"], $pos, strlen($_POST["container"]));
+	$container = dl::select("containers", "c_container_name = '".$_POST["container"]."'");
+	$barcode = $container[0]["c_container_barcode"];
 	$templateId = dl::select("containers", "c_container_barcode = \"".$barcode."\"");
 	$template_name = dl::select("container_templates", "ct_id = ". $templateId[0]["container_templates_id"]);
-	$_SESSION["containerID"]=$templateId[0]["c_id"]; //this needs to be set as bothe the barcode and container description could be changed so is required to identify the record.
-	echo json_encode(array("template_name"=>$template_name[0]["ct_template_name"], "barcode"=>$barcode, "container"=>$container));
+	$_SESSION["containerID"]=$templateId[0]["c_id"]; //this needs to be set as both the barcode and container description could be changed so is required to identify the record.
+	echo json_encode(array("template_name"=>$template_name[0]["ct_template_name"], "barcode"=>$barcode, "container"=>$container[0]["c_container_name"]));
 }
 
 if( $_POST["func"] == "getContainerTypeValues") {	
@@ -387,14 +389,14 @@ if($_POST["func"] == "new_contact_details") {
 	if(!empty($details)) {
 		foreach($details as $detail) {
 			$types = dl::select("contact_types", "ct_id=".$detail["contact_type_id"] );
-			echo "<list-content><div id='content-container'><div id='content-header'>".$types[0]["ct_type"]."</div><div id='content' style='width:15em;'>".nl2br($detail["cd_detail"])."</div><div id='content'><a href='#' id='button".$detail["cd_id"]."' border='0'><img src='images/DeleteRed.png' /></a></div></div></list-content>";
+			echo "<list-content><div id='content-container'><div id='content-header'>".$types[0]["ct_type"]."</div><div id='content' style='width:15em;'>".nl2br($detail["cd_detail"])."</div><div id='content-del'><a href='#' id='button".$detail["cd_id"]."' border='0'><img src='images/DeleteRed.png' /></a></div></div></list-content>";
 		}
 		echo "<br />";
 		//now setup the delete function for the buttons passed back by the above jQuery
 		foreach($details as $d) {
 			?>
 			<script type="text/javascript">
-					$("#button<?php echo $d["cd_id"]?>").live("click", function (){
+					$("#button<?php echo $d["cd_id"]?>").click( function (){
 						var func = "del_contact_details";
 						$.post(
 							"ajax.php",
@@ -425,9 +427,32 @@ if($_POST["func"] == "del_contact_details") {
 	if(!empty($details)) {
 		foreach($details as $detail) {
 			$types = dl::select("contact_types", "ct_id=".$detail["contact_type_id"] );
-			echo "<list-content><div id='content-container'><div id='content-header'>".$types[0]["ct_type"]."</div><div id='content' style='width:15em;'>".nl2br($detail["cd_detail"])."</div><div id='content'><a href='#' id='button".$detail["cd_id"]."' border='0'><img src='images/DeleteRed.png' /></a></div></div></list-content>";
+			echo "<list-content><div id='content-container'><div id='content-header'>".$types[0]["ct_type"]."</div><div id='content' style='width:15em;'>".nl2br($detail["cd_detail"])."</div><div id='content-del'><a href='#' id='button".$detail["cd_id"]."' border='0'><img src='images/DeleteRed.png' /></a></div></div></list-content>";
 		}
 		echo "<br />";
+		//now setup the delete function for the buttons passed back by the above jQuery
+		foreach($details as $d) {
+			?>
+			<script type="text/javascript">
+					$("#button<?php echo $d["cd_id"]?>").click( function (){
+						var func = "del_contact_details";
+						$.post(
+							"ajax.php",
+							{ func: func,
+								option: '<?php echo $_POST["option"] ?>',
+								customer_id: <?php echo $_POST["customer_id"] ?>,
+								conId: <?php echo $d["cd_id"]?>
+							},
+							function (data)
+							{
+								$('#showContactDetails').html(data);
+								$("#con_detail").val("");
+								$('#contact_type').val("");
+						});
+					});
+			</script>
+	<?php
+		}
 	}
 }
 if($_POST["func"] == "save_contact_details") {
@@ -463,7 +488,7 @@ function setContainerDetails() {
 		$rowType		= $containers[0]["ct_row_type"];
 		$colType		= $containers[0]["ct_column_type"];
 		//create the column titles
-		echo "<div style='width:1em; font-size: 1.25em;text-align:center; padding:0.1em 0.25em; line-height: 1em;float:left;'></div>";
+		echo "<div style='width:1em; font-size: 1em;text-align:center; padding:0.1em 0.25em; line-height: 1em;float:left;'></div>";
 		for($i=1; $i<=$noCols; $i++){
 			if($colType == "Alpha"){
 				$content = chr(64+$i); //This will display the character string starting at 65 which is a capital (A)
@@ -472,7 +497,11 @@ function setContainerDetails() {
 				$alpha = "";
 				$content = $i; //This will display the number;
 			}
-			echo "<div style='width:1em; font-size:1.25em; line-height: 1em; float:left; text-align:center;margin:2px 2px; padding: 0 0.25em 0 0.25em;'>$content</div>";
+			if(strlen($i) == 1) {
+				echo "<div style='width:1em; font-size:1em; line-height: 1em; float:left; text-align:center;margin:4px 4px; padding: 0 0.25em 0 0.25em;'>$content</div>";
+			}else{
+				echo "<div style='width:1em; font-size:1em; line-height: 1em; float:left; text-align:center;margin:4px 4px; padding: 0 0.2em 0 0;'>$content</div>";
+			}
 		}
 		echo "<div style='clear:both;'></div>"; //end of the column 
 		//create the rows
@@ -484,7 +513,7 @@ function setContainerDetails() {
 				$alpha = "";
 				$content = $j;
 			}
-			echo "<div style='width:1em; font-size:1.25em; text-align: right; padding: 0.1em 0.25em; line-height: 1em; float:left;'>$content</div>";
+			echo "<div style='width:1em; font-size:1em; text-align: right; padding: 0.1em 0.25em; line-height: 1em; float:left;'>$content</div>";
 			for($k=1; $k<=$noCols; $k++){
 				if($alpha == "Row") {
 					$row = chr(64+$j);
@@ -503,10 +532,10 @@ function setContainerDetails() {
 				$check_container = dl::getQuery($sql);
 				if(!empty($check_container)) {
 					$sampleBC = dl::select("samples", "s_id = ".$check_container[0]["samples_id"]);
-					echo "<div id='$j-$k' style='width:1em; font-size:1.25em; line-height: 1em; float:left;margin:2px 2px; padding: 0.5em 0.25em 0.5em 0.25em; background-color: #efefef;' title='".$sampleBC[0]["s_number"]."'></div>";
+					echo "<div class='box-cell-full' id='$j-$k' title='".$sampleBC[0]["s_number"]."'></div>";
 					$stored = true;
 				}else{
-					echo "<div id='$j-$k' style='width:1em; font-size:1.25em; line-height: 1em; float:left;margin:2px 2px; padding: 0.5em 0.25em 0.5em 0.25em; background-color: #ccc;'></div>";
+					echo "<div class='box-cell-empty' id='$j-$k'></div>";
 					$stored = false;
 				}
 				?>
@@ -642,7 +671,7 @@ function setContainerDetails() {
 				</script>
 				<?php
 			}
-			echo "<BR /><BR />"; //end of columns
+			echo "<div style='clear: both;'></div>"; //end of columns
 		}
 		echo "<div id='trayLoc'></div>";
 		echo "<div id='sampleStore'></div>";
@@ -913,17 +942,17 @@ function show_samples() {
 	$list = dl::select("samples_list", "sl_date_uploaded = \"".substr($_POST["sampleVal"], -19)."\"");
 	$samples = dl::select("sample_list_items", "samples_list_id =".$list[0]["sl_id"]);
 	if(!empty($samples)) {
-		echo "<ul id='ui-state-default'>";
+		echo "<ul id='sampleList'>";
 		foreach($samples as $sample) {
 			//check samples table for this sample there may be a record but will show up if the status is 'Removed'
 			$check_sample = dl::select("samples", "samples_list_items_id = ". $sample["sli_id"]." and s_status = 'Stored'");
 			if(empty($check_sample)) {
-				echo "<li id='sampleId-".$sample["sli_id"]."' style='list-style-type:none; padding:0.25em; height: 2em; margin: -0.5em 0; cursor:pointer; width:150%' class='ui-state-default'><div style='width: 100px; overflow:hidden; float:left; white-space:nowrap;'>".$sample["sli_customer_identifier"]."</div><div style='width: 230px; overflow:hidden; float:left; white-space:nowrap; margin-right:0.25em;'>".$sample["sli_description"]."</div><div style='width: 100px; overflow:hidden; float:left;'>".$sample["sli_pathology_no"]."</div><div style='width: 100px; overflow:hidden; float:left;'>".$sample["sli_SNOMED_code"]."</div></li><BR>";
+				echo "<li id='sampleId-".$sample["sli_id"]."' style='list-style-type:none; font-size:0.75em; padding:0.25em; height: 2em; margin: -0.5em 0; cursor:pointer; width:150%' class='samples'><div style='width: 100px; overflow:hidden; float:left; white-space:nowrap;'>".$sample["sli_customer_identifier"]."</div><div style='width: 230px; overflow:hidden; float:left; white-space:nowrap; margin-right:0.25em;'>".$sample["sli_description"]."</div><div style='width: 100px; overflow:hidden; float:left;'>".$sample["sli_pathology_no"]."</div><div style='width: 100px; overflow:hidden; float:left;'>".$sample["sli_SNOMED_code"]."</div></li><BR>";
 				?>
 					<script>
 					$("#sampleId-<?php echo $sample["sli_id"]?>").selectable({
 						selected: function (event, ui) {
-						$("samples li").each(function(){
+						$("#sampleList li").each(function(){
 							$(this).css("color", "#666");
 						})
 						$(this).css("color", "#578ccc");
