@@ -224,7 +224,7 @@ if( $_POST["func"] == "new_container_type") {
 		dl::update("container_types", $combine, "ct_id = ",$_SESSION["containerTypeID"]);
 		$newId = $_SESSION["containerTypeID"];
 		$audit = new audit("DATA MANAGEMENT", "RECORD UPDATED", array($_SESSION["userId"], $_SESSION["user_name"]));
-		audit::create_action(array("table"=>"sample_list_items", "values"=>$combine), $SESSION["containTypeID"]);
+		audit::create_action(array("table"=>"container_types", "values"=>$combine), $_SESSION["containerTypeID"]);
 		echo "Container Type has been amended";
 		$containers = dl::select("allowed_containers", "types_id = ".$newId);
 		foreach($containers as $container) {
@@ -238,13 +238,34 @@ if( $_POST["func"] == "new_container_type") {
 		foreach($_POST["allowedContainers"] as $container){
 			$c_id = dl::select("container_types", "ct_name = '".$container."'");
 			if(!empty($c_id)) {
-				dl::insert("allowed_containers", array("allowed_ids"=>$c_id[0]["ct_id"], "types_id"=>$newId));
-				$newId = dl::getId();
-				$audit = new audit("DATA MANAGEMENT", "RECORD ADDED", array($_SESSION["userId"], $_SESSION["user_name"]));
-				audit::create_action(array("table"=>"allowed_containers", "values"=>array("allowed_ids"=>$c_id[0]["ct_id"], "types_id"=>$newId)), $newId);
+				if($_POST["option"] == "new") {
+					dl::insert("allowed_containers", array("allowed_ids"=>$c_id[0]["ct_id"], "types_id"=>$newId));
+					$newContainerId = dl::getId();
+					$audit = new audit("DATA MANAGEMENT", "RECORD ADDED", array($_SESSION["userId"], $_SESSION["user_name"]));
+					audit::create_action(array("table"=>"allowed_containers", "values"=>array("allowed_ids"=>$c_id[0]["ct_id"], "types_id"=>$newId)), $newContainerId);
+				}else{
+					dl::insert("allowed_containers", array("allowed_ids"=>$c_id[0]["ct_id"], "types_id"=>$_SESSION["containerTypeID"]));
+					$newContainerId = dl::getId();
+					$audit = new audit("DATA MANAGEMENT", "RECORD ADDED", array($_SESSION["userId"], $_SESSION["user_name"]));
+					audit::create_action(array("table"=>"allowed_containers", "values"=>array("allowed_ids"=>$c_id[0]["ct_id"], "types_id"=>$_SESSION["containerTypeID"])), $newContainerId);
+				}
 			}
 		}
 	}
+}
+
+if( $_POST["func"] == "del_container_type") {
+	$type = dl::select("container_types", "ct_name = '".$_POST["typeName"]."'");
+	$containers = dl::select("allowed_containers", "types_id = ".$type[0]["ct_id"]);
+	foreach($containers as $container) {
+		$audit = new audit("DATA MANAGEMENT", "RECORD DELETED", array($_SESSION["userId"], $_SESSION["user_name"]));
+		audit::create_action(array("table"=>"allowed_containers", "values"=>array("allowed_ids"=>$container["allowed_ids"], "types_id"=>$container["types_id"])), $container["a_id"]);
+	}
+	dl::delete("allowed_containers", "types_id = ".$type[0]["ct_id"]);
+	$audit = new audit("DATA MANAGEMENT", "RECORD DELETED", array($_SESSION["userId"], $_SESSION["user_name"]));
+	audit::create_action(array("table"=>"container_types", "values"=>array("ct_name"=>$type[0]["ct_name"], "ct_detail"=>$type[0]["ct_detail"]), "ct_manufacturer"=>$type[0]["ct_manufacturer"]), $type[0]["ct_id"]);
+	dl::delete("container_types", "ct_name = '".$_POST["typeName"]."'");
+	echo "Record has been deleted";
 }
 
 if( $_POST["func"] == "new_container_template") {	
@@ -310,6 +331,12 @@ if( $_POST["func"] == "getContainerTypeValues") {
 		$allowed_containers[]=$ct[0]["ct_name"];
 	}
 	echo json_encode(array("container_desc"=>$typeId[0]["ct_detail"], "manufacturer"=>$typeId[0]["ct_manufacturer"], "allowed_containers"=>$allowed_containers));
+}
+
+if( $_POST["func"] == "getContainerTempValues") {	
+	$tempId = dl::select("container_templates", "ct_template_name = \"".$_POST["con_temp_name"]."\"");
+	$typeId = dl::select("container_types", "ct_id = ".$tempId[0]["container_types_id"]);
+	echo json_encode(array("container_type"=>$typeId[0]["ct_name"], "rows"=>$tempId[0]["ct_no_rows"], "columns"=>$tempId[0]["ct_no_columns"], "row_type"=>$tempId[0]["ct_row_type"], "column_type"=>$tempId[0]["ct_column_type"]));
 }
 
 if( $_POST["func"] == "getCustomerValues") {	

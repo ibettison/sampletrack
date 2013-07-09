@@ -5655,6 +5655,11 @@ home_page .printline {
   border-bottom: 1px #4781c7 dotted;
 }
 
+/* DATE PICKER z-index hack */
+.ui-datepicker {
+  z-index: 9999 !important;
+}
+
 /* PAGE - FOOTER SETTINGS */
 .footer {
   /*position: absolute;
@@ -5717,6 +5722,15 @@ data_entry fieldset {
   background: -o-linear-gradient(to bottom, #c6e3f9 10%, #d8ecfb 100%);
   background: linear-gradient(to bottom, #c6e3f9 10%, #d8ecfb 100%);
   height: 43em;
+}
+
+data_entry .delete_this {
+  background: transparent url("../images/DeleteRed.png") no-repeat top right;
+  display: none;
+  margin-top: 5px;
+  float: right;
+  height: 1em;
+  width: 1em;
 }
 
 #file_selector {
@@ -5782,6 +5796,16 @@ drag_and_drop li {
   bottom: 170px;
 }
 
+#logoffIcon {
+  position: absolute;
+  cursor: pointer;
+  background: transparent url(../images/logoff.png) no-repeat 0 0;
+  width: 40px;
+  height: 40px;
+  right: 10px;
+  top: 10px;
+}
+
 #sampleList {
   width: 150%;
   background-color: #cccccc;
@@ -5829,4 +5853,168 @@ list-content #content-del {
 list-content #content-header {
   font-weight: bold;
   color: #0a4a92;
+}
+
+audit #filter {
+  margin: 1px;
+  padding: 0.4em;
+  background-color: #efefef;
+  border: 1px solid #dddddd;
+  float: left;
+  height: 42em;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
+  border-radius: 4px;
+}
+
+audit #main_display {
+  overflow-y: scroll;
+  margin: 1px;
+  float: left;
+  height: 42em;
+  padding: 0.4em;
+  background-color: #efefef;
+}
+
+audit #row-even, #row-odd {
+  overflow-y: hidden;
+  margin: 2px;
+  width: 99%;
+  background-color: #bedcdb;
+  padding: 3px;
+  font-size: 0.75em;
+}
+
+audit #row-odd {
+  background-color: #a8d0cf;
+}
+
+audit #field-display {
+  line-height: 1.5em;
+  float: left;
+  padding: 3px;
+  color: #3a6774;
+}
+
+audit #value-display {
+  font-style: italic;
+  color: #666;
+}
+
+audit #spacer {
+  line-height: 1.5em;
+  float: left;
+  width: 4em;
+}
+
+audit #filter-title {
+  line-height: 1.5em;
+  text-align: center;
+  font-size: 1.25em;
+  font-family: "verdana";
+}
+
+front_page #picture-wrapper {
+  width: 1200px;
+  overflow: hidden;
+  height: 37.5em;
+  margin-bottom: 1em;
+}
+
+front_page #picture-background1 {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 35.5em;
+  background: transparent url(../images/sampleTrack1.jpg) no-repeat 0 0;
+  padding: 1em;
+}
+
+front_page #picture-background2 {
+  position: absolute;
+  left: 1300px;
+  top: 0;
+  width: 100%;
+  height: 35.5em;
+  background: transparent url(../images/sampleTrack2.jpg) no-repeat 0 0;
+  padding: 1em;
+  display: none;
+}
+
+front_page #picture-background3 {
+  position: absolute;
+  left: 2600px;
+  top: 0;
+  width: 100%;
+  height: 35.5em;
+  background: transparent url(../images/sampleTrack3.jpg) no-repeat 0 0;
+  padding: 1em;
+  display: none;
+}
+
+front_page #text-holder {
+  position: relative;
+  opacity: 0.7;
+  background-color: #f0f0f0;
+  padding: 1em;
+  margin: 0 5em;
+}
+
+front_page #image-holder {
+  position: absolute;
+  float: left;
+  width: 250px;
+  height: 160px;
+  left: 8em;
+  z-index: 200;
+}
+
+front_page #text-display {
+  opacity: 1;
+  color: #000;
+}
+
+front_page #leftArrow {
+  position: absolute;
+  background: transparent url(../images/leftArrow.png) no-repeat 0 0;
+  top: 20em;
+  left: 2em;
+  height: 2.3em;
+  width: 2.3em;
+  -webkit-box-shadow: inset -1px -1px 2px rgba(0, 0, 0, 0.35);
+  -moz-box-shadow: inset -1px -1px 2px rgba(0, 0, 0, 0.35);
+  box-shadow: inset -1px -1px 2px rgba(0, 0, 0, 0.35);
+}
+
+front_page #rightArrow {
+  position: absolute;
+  background: transparent url(../images/rightArrow.png) no-repeat 0 0;
+  top: 20em;
+  right: 1.5em;
+  height: 2.3em;
+  width: 2.3em;
+  -webkit-box-shadow: inset -1px -1px 2px rgba(0, 0, 0, 0.35);
+  -moz-box-shadow: inset -1px -1px 2px rgba(0, 0, 0, 0.35);
+  box-shadow: inset -1px -1px 2px rgba(0, 0, 0, 0.35);
+}
+
+front_page #rightArrow:hover {
+  cursor: pointer;
+  -webkit-box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.35);
+  -moz-box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.35);
+  box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.35);
+  top: 20.1em;
+  right: 1.4em;
+}
+
+front_page #leftArrow:hover {
+  cursor: pointer;
+  -webkit-box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.35);
+  -moz-box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.35);
+  box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.35);
+  top: 20.1em;
+  left: 2.1em;
 }

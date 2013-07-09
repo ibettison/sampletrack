@@ -29,6 +29,7 @@ function create_tabs( $tabnames, $selectedtab=0) {
 	echo "</div>";
 }
 
+
 function dropdown_loginForm(){
 	include("validation_rules.php");
 	echo "<nav>";
@@ -172,8 +173,7 @@ function show_frontpage() {
   </div>
   <script>
  $(document).ready(function(){
-	$('#login-trigger').click(function(){
-		alert("boo");
+	$('#login-trigger').click(function(){		
 		var func = "login";
 			$.post(
 				"ajax.php",
@@ -184,36 +184,228 @@ function show_frontpage() {
 				function (data)
 				{
 				$("#header-top").html(data);
-				alert("returned");
 				window.location.href = "index.php";
 			});
 	});
 });
 </script>
 <?php
-		echo "<div class='row'>";
-			echo "<div class='twelve columns'>";	
-				echo "<H1>Newcastle Biomedicine Biobank<BR>Sample Tracking System</H1>";
+		echo "<front_page>";
+			echo "<div class='row'>";
+				echo "<div class='twelve columns'>";	
+				echo "<div id='picture-wrapper'>";
+					echo "<div id='picture-background1'>";
+							echo "<H1>Newcastle Biomedicine Biobank<BR>Sample Tracking System</H1>";
+							echo"<div id='text-holder'>";
+								echo "<div id='text-display'>";
+									echo "The Newcastle Biomedicine Biobank Sample Tracking System login screen allows a registered user to login and manage samples, record new sample registration requests, process sample withdrawals,
+									manage deliveries, create and re-freeze or process transportation of Aliquots. The system will record the complete lifecycle of the sample, recording where it came from, its location, 
+									any Aliquot creations and their storage locations; recording all requests and deliveries against all samples. Finally the system will record publication, invention events regarding samples that have been stored in the 
+									Biobank.";
+								echo "</div>";
+							echo "</div>";
+							/*echo "<BR><B>SCANNING</B><BR><BR>
+							The SAMPLE TRACKING SYSTEM uses mobile technology to scan items into and out of the Newcastle Biobank. The system works in real time and stores the sample in containers. Containers can be anything, 
+							from the room, the freezer, the shelf or the phial the sample resides in. All containers are linked so scanning a container identifies where it is and what it is automatically, you can even tell where it has been 
+							and when it was moved. The system is centrally controlled by a built-in Audit system so every movement is monitored and can be traced back to date and time of the action and the individual performing the action.";
+							*/
+					echo "</div>";
+					echo "<div id='picture-background2'>";
+							echo "<H1>Newcastle Biomedicine Biobank<BR>Sample Tracking System</H1>";
+							echo "<div id='image-holder'><img src='images/Group of iOS devices.png' /></div>";
+							echo"<div id='text-holder'>";
+								echo "<div id='text-display' style='padding-left: 18em;'>";
+									echo "The Newcastle Biomedicine Biobank Sample Tracking System uses iOS technology to scan the sample and container barcodes. The app for the iPhone and iPad communicates
+									with the tracking system and allows the incorporation of the scanned barcode into the web pages' barcode fields. A scanned container can be scanned into and out of another container with 
+									every container being able to be stored within another container following logical controls, you can see that this is a simple yet intuitive way to manage the sample locations.";
+								echo "</div>";
+							echo "</div>";
+							/*echo "<BR><B>SCANNING</B><BR><BR>
+							The SAMPLE TRACKING SYSTEM uses mobile technology to scan items into and out of the Newcastle Biobank. The system works in real time and stores the sample in containers. Containers can be anything, 
+							from the room, the freezer, the shelf or the phial the sample resides in. All containers are linked so scanning a container identifies where it is and what it is automatically, you can even tell where it has been 
+							and when it was moved. The system is centrally controlled by a built-in Audit system so every movement is monitored and can be traced back to date and time of the action and the individual performing the action.";
+							*/
+					echo "</div>";
+					echo "<div id='picture-background3'>";
+							echo "<H1>Newcastle Biomedicine Biobank<BR>Sample Tracking System</H1>";
+							echo"<div id='text-holder'>";
+								echo "<div id='text-display'>";
+									echo "The Newcastle Biomedicine Biobank Sample Tracking System has been developed by Newcastle University to manage their vast array of samples and is being used by the Newcastle Biobank
+									which is a Nationally reknowned location, providing sample storage for a host of other Universities and Industries througout the North east of England. All aspects of sample registration and consent monitoring are included in the 
+									system along with transferring samples to other locations and registering Aliquots against existing samples.";
+								echo "</div>";
+							echo "</div>";
+							/*echo "<BR><B>SCANNING</B><BR><BR>
+							The SAMPLE TRACKING SYSTEM uses mobile technology to scan items into and out of the Newcastle Biobank. The system works in real time and stores the sample in containers. Containers can be anything, 
+							from the room, the freezer, the shelf or the phial the sample resides in. All containers are linked so scanning a container identifies where it is and what it is automatically, you can even tell where it has been 
+							and when it was moved. The system is centrally controlled by a built-in Audit system so every movement is monitored and can be traced back to date and time of the action and the individual performing the action.";
+							*/
+					echo "</div>";
+				echo "</div>";
+				echo "<div id='leftArrow'></div>";
+				echo "<div id='rightArrow'></div>";
 			echo "</div>";
-		echo "</div>";
-		echo "<div class='row'>";
+		echo "</div>"; 
+		echo "</front_page>";
+		?>
+		<script>
+		$(document).ready(function(){
+			var clicks = 0
+			clickRight(clicks);
+			$("#leftArrow").click( function() {
+				$("#picture-background3").show();
+				$("#picture-background2").show();
+				switch (clicks) {
+					case 0:
+						
+						$("#picture-background1").animate({
+							left: "-2600px"
+						}, 800);
+						$("#picture-background2").animate({
+							left: "-1300px"
+						}, 800);
+						$("#picture-background3").animate({
+							left: "0"
+						}, 800);
+						clicks=2;
+					break;
+					case 1:
+						$("#picture-background1").animate({
+							left: "0px"
+						}, 400);
+						$("#picture-background2").animate({
+							left: "1300px"
+						}, 400);
+						$("#picture-background3").animate({
+							left: "2600px"
+						}, 400);
+						clicks--;
+						hidePicture("#picture-background3",0);
+						hidePicture("#picture-background2",300);
+					break;
+					case 2:
+						$("#picture-background1").animate({
+							left: "-1300px"
+						}, 400);
+						$("#picture-background2").animate({
+							left: "0"
+						}, 400);
+						$("#picture-background3").animate({
+							left: "1300px"
+						}, 400);
+						clicks--
+						
+						hidePicture("#picture-background3", 400);
+					break;
+				}
+			});
+			$("#rightArrow").click( function() {
+				switch (clicks) {
+					case 2:
+						$("#picture-background2").show();
+						$("#picture-background3").show();
+						$("#picture-background1").animate({
+							left: "0"
+						}, 800);
+						$("#picture-background2").animate({
+							left: "1300px"
+						}, 800);
+						$("#picture-background3").animate({
+							left: "2600px"
+						}, 800);
+						clicks=0;
+						hidePicture("#picture-background3", 400);
+						hidePicture("#picture-background2", 800);
+					break;
+					case 1:
+						$("#picture-background3").show();
+						$("#picture-background1").animate({
+							left: "-2600px"
+						}, 400);
+						$("#picture-background2").animate({
+							left: "-1300px"
+						}, 400);
+						$("#picture-background3").animate({
+							left: "0px"
+						}, 400);
+						clicks++;
+					break;
+					case 0:
+						$("#picture-background2").show();
+						$("#picture-background1").animate({
+							left: "-1300px"
+						}, 400);
+						$("#picture-background2").animate({
+							left: "0"
+						}, 400);
+						$("#picture-background3").animate({
+							left: "1300"
+						}, 400);
+						clicks++;
+						hidePicture("#picture-background3", 400);
+					break;
+				}
+			});
+		});
 		
-		echo"The Newcastle Biomedicine Biobank Sample Tracking System login screen allows a registered user to login and manage samples, record new sample registration requests, process sample withdrawals,
-				manage deliveries, create and re-freeze or process transportation of Aliquots. The system will record the complete lifecycle of the sample, recording where it came from, its location, 
-				any Aliquot creations and their storage locations; recording all requests and deliveries against all samples. Finally the system will record publication, invention events regarding samples that have been stored in the 
-				Biobank.</div>";
-				echo "<div id='front-left-bottom'><img src='images/mobile-scanning.png' style='max-width:100%; height: auto;'></div>";
-			echo "</div>";
-			echo "<div id='front-right'>";
-				echo "<div id='front-right-top'><img src='images/Freezers.png' style='max-width:100%; height: auto;'></div>";
-				echo "<div id='front-right-bottom-right'><B>SCANNING</B><BR><BR>
-				The SAMPLE TRACKING SYSTEM uses mobile technology to scan items into and out of the Newcastle Biobank. The system works in real time and stores the sample in containers. Containers can be anything, 
-				from the room, the freezer, the shelf or the phial the sample resides in. All containers are linked so scanning a container identifies where it is and what it is automatically, you can even tell where it has been 
-				and when it was moved. The system is centrally controlled by a built-in Audit system so every movement is monitored and can be traced back to date and time of the action and the individual performing the action.
-				</div>";
-				echo "<div class='front-right-bottom'><img src='images/parcels.png' style='max-width:100%; height: auto;'></div>";
-			echo "</div>";
-		echo "</div>"; // end of container
+		function clickRight(clicks) {
+			setTimeout(function(){
+				switch (clicks) {
+					case 2:
+						$("#picture-background2").show();
+						$("#picture-background3").show();
+						$("#picture-background1").animate({
+							left: "0"
+						}, 800);
+						$("#picture-background2").animate({
+							left: "1300px"
+						}, 800);
+						$("#picture-background3").animate({
+							left: "2600px"
+						}, 800);
+						clicks=0;
+						hidePicture("#picture-background3", 400);
+						hidePicture("#picture-background2", 800);
+					break;
+					case 1:
+						$("#picture-background3").show();
+						$("#picture-background1").animate({
+							left: "-2600px"
+						}, 400);
+						$("#picture-background2").animate({
+							left: "-1300px"
+						}, 400);
+						$("#picture-background3").animate({
+							left: "0px"
+						}, 400);
+						clicks++;
+					break;
+					case 0:
+						$("#picture-background2").show();
+						$("#picture-background1").animate({
+							left: "-1300px"
+						}, 400);
+						$("#picture-background2").animate({
+							left: "0"
+						}, 400);
+						$("#picture-background3").animate({
+							left: "1300"
+						}, 400);
+						clicks++;
+						hidePicture("#picture-background3", 400);
+					break;
+				}
+				clickRight(clicks);
+			}, 20000);
+		}
+		
+		function hidePicture(pic, delay) {
+			setTimeout(function () {
+				$(pic).hide();
+			}, delay);
+		}
+		</script>
+		<?php
 }
 
 function show_homePage(){
@@ -469,6 +661,7 @@ echo "<data_entry>";
 						foreach($customers as $c) {
 							$custs[]= $c["c_name"];
 						}
+						echo "<option value='#' selected disabled>Select an existing customer...</option>";
 						foreach($custs as $cust) {
 							echo "<option>$cust</option>";
 						}
@@ -755,14 +948,21 @@ function display_menus() {
           <div class="dropdown">
             <ul>
                <li><a href="index.php?func=edit_customer">Customers</a></li>
-			   <li><a href="index.php?func=edit_containers">Containers</a></li>
+			   <li><a href="index.php?func=edit_containers">Containers</a>
+			   <div class="dropdown">
+					<ul>
+							<li><a href="index.php?func=edit_containers">Edit Containers</a></li>
+							<li><a href="index.php?func=edit_container_template">Edit Container Templates</a></li>
+							<li><a href="index.php?func=edit_container_type">Edit Container Types</a></li>
+					</ul>
+				</div></li>
 				<li><a href="#">Types</a>
 				<div class="dropdown">
 					<ul>
-							<li><a href="index.php?func=new_container">Request Types</a></li>
-							<li><a href="index.php?func=new_container_template">Action Types</a></li>
-							<li><a href="index.php?func=new_container_type">Sample Types</a></li>
-							<li><a href="index.php?func=new_container_type">Container Types</a></li>
+							<li><a href="index.php?func=edit_request_type">Request Types</a></li>
+							<li><a href="index.php?func=edit_action_type">Action Types</a></li>
+							<li><a href="index.php?func=edit_sample_type">Sample Types</a></li>
+							<li><a href="index.php?func=edit_container_type">Container Types</a></li>
 					</ul>
 				</div></li>
             </ul>
@@ -781,16 +981,35 @@ function display_menus() {
           <a href="#">Print Labels</a>
           <div class="dropdown">
             <ul>
-               <li><a href="index.php?func=scan_in">Print Barcode Labels</a></li>
-			   <li><a href="index.php?func=scan_out">Re-print a label</a></li>
+               <li><a href="index.php?func=print_barcodes">Print Barcode Labels</a></li>
+			   <li><a href="index.php?func=reprint_label">Re-print a label</a></li>
             </ul>
           </div>
         </li>
+		<?php
+		if(check_permissions("Add Users")){
+		?>
+		<li>
+          <a href="#">Admin</a>
+          <div class="dropdown">
+            <ul>
+               <li><a href="index.php?func=audit_report">Audit Report</a></li>
+			   <li><a href="index.php?func=administration">User management</a></li>
+            </ul>
+          </div>
+        </li>
+		<?php 
+		}
+		?>
       </ul>
     </div>
   </div>
+  <div id="logoffIcon"></div>
   <script>
  $(document).ready(function(){
+	$("#logoffIcon").click( function(){
+		window.location.href = "index.php?func=logoff";
+	})
 	$('#login-trigger').click(function(){
 		var func = "login";
 			$.post(
@@ -802,7 +1021,6 @@ function display_menus() {
 				function (data)
 				{
 				$("#header-top").html(data);
-				alert("returned");
 				window.location.href = "index.php";
 			});
 	});
@@ -1140,6 +1358,7 @@ function add_registration() {
 			echo "<li class='field'>";
 				echo "<div class='picker'>";
 					echo "<select id='customer'>";
+					echo "<option value='#' selected disabled>Select an existing customer...</option>";
 					foreach($customer_list as $cust) {
 						echo "<option>$cust</option>";
 					}
@@ -1199,6 +1418,9 @@ function add_registration() {
 		?>
 		<script type="text/javascript">
 				$("#customer").change( function(event, ui) { 
+					$('#contact_name').val("");
+					$('#contact_email').val("");
+					$('#contact_phone').val("");
 				var func = "findCustomer";
 				$.post(
 					"ajax.php",
@@ -1359,63 +1581,115 @@ function add_registration() {
 }
 
 
-function new_container_template () {
-	echo "<fieldset>";
-		echo "<legend><div id='legend_colour'>New Container template</div></legend>";
-		$field = new fields("Template Name", "text", "greyInput", "40", "", "con_temp_name");
-		echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-		echo "<span class='form_field'>".$field->show_field()."</span><BR>";
-		$containers = dl::select("container_types");
-		foreach($containers as $container) {
-			$container_names[]= $container["ct_name"];
+function new_container_template($option) {
+	echo "<form>";
+		echo "<data_entry>";
+		echo "<div class='row'>";
+			echo "<fieldset class='six columns'>";
+			if($option == "new") {
+			echo "<legend><div id='legend_colour'>New Container template</div></legend>";
+				echo "<ul>";
+					echo "<li class='field'>";
+					echo "<input id='con_temp_name' name='con_temp_name' class='wide text input' type='text' placeholder='Template Name'' />";
+					echo "</li>";
+		}else{
+			$templates = dl::select("container_templates");
+			foreach($templates as $template) {
+				$template_names[]= $template["ct_template_name"];
+			}
+			echo "<legend><div id='legend_colour'>Edit Container Template</div></legend>";
+			echo "<li class='default label'>Template Name</li>";
+			echo "<li class='field'>";
+				echo "<div class='picker'>";
+				echo "<select id='con_temp_name' name='con_temp_name'>";
+				echo "<option value='#' selected disabled>Select a template...</option>";
+				foreach($template_names as $t) {
+					echo "<option>$t</option>";
+				}
+			echo "</select>";
+			echo "</div>";
+			echo "</li>";
+			?>
+			<script type="text/javascript">
+					$("#con_temp_name").change( function(event, ui) { 
+					var func = "getContainerTempValues";
+					$.post(
+						"ajax.php",
+						{ func: func,
+						con_temp_name: $("#con_temp_name").val()
+						},
+						function (data)
+						{
+							var json = $.parseJSON(data);
+							var description = json.container_type;
+							var rows = json.rows;
+							var columns = json.columns;
+							var row_type = json.row_type;
+							var column_type = json.column_type;
+							$('#container_type').val(description);
+							$('#container_rows').val(rows);
+							$('#container_columns').val(columns);
+							$("#row_type").val(row_type);
+							$("#column_type").val(column_type);
+						});
+					});
+			</script>
+			<?php
 		}
-		$field = new selection("Container Type", "text", "greyInput", "40", "", "container_type", $container_names, "", "0");
-		echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-		echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='containerClick'><img class='gi-img' src='images/dropdown.png'></span><BR />";
-		// the jQuery script checks for a click on the select graphic and then focuses to the field and the drop down box appears.
+
+					$containers = dl::select("container_types");
+					foreach($containers as $container) {
+						$container_names[]= $container["ct_name"];
+					}
+					echo "<li class='default label'>Container Type</li>";
+					echo "<li class='field'>";
+						echo "<div class='picker'>";
+						echo "<select id='container_type' name='container_type'>";
+					foreach($container_names as $con) {
+						echo "<option>$con</option>";
+					}
+					echo "</select>";
+					echo "</div>";
+					echo "</li>";
+					echo "<li class='field'>";
+					echo "<input id='container_rows' name='container_rows' class='wide text input' type='text' placeholder='No. of Rows'' />";
+					echo "</li>";
+					echo "<li class='field'>";
+					echo "<input id='container_columns' name='container_columns' class='wide text input' type='text' placeholder='No. of Columns'' />";
+					echo "</li>";
+					$list = array("","Alpha", "Numeric");
+					echo "<li class='default label'>Row Type</li>";
+					echo "<li class='field'>";
+						echo "<div class='picker'>";
+						echo "<select id='row_type' name='row_type'>";
+						echo "<option value='#' disabled selected>Select the row type...</option>";
+					foreach($list as $l) {
+						echo "<option>$l</option>";
+					}
+					echo "</select>";
+					echo "</div>";
+					echo "</li>";
+					echo "<li class='default label'>Column Type</li>";
+					echo "<li class='field'>";
+						echo "<div class='picker'>";
+						echo "<select id='column_type' name='column_type'>";
+						echo "<option value='#' disabled selected>Select the column type...</option>";
+					foreach($list as $l) {
+						echo "<option>$l</option>";
+					}
+					echo "</select>";
+					echo "</div>";
+					echo "</li>";
+					echo "<div class='medium pretty primary icon-left btn icon-pencil' id='container_template'><a href='#'>Add Container Template</a></div>";
+				echo "</ul>";
+					echo "<div id='container_template_div'></div>";
+			echo "</fieldset>";
+		echo "</div>";
+		echo "</data_entry>";
+	echo "</form>";
 		?>
 		<script type="text/javascript">
-				$("#containerClick").live("click", function () {
-					$("#container_type").focus();	
-				});
-		</script>
-		<?php
-		$field = new fields("No. Container Rows", "text", "greyInput", "10", "", "container_rows");
-		echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-		echo "<span class='form_field'>".$field->show_field()."</span><BR>";
-		$field = new fields("No. Container Columns", "text", "greyInput", "10", "", "container_columns");
-		echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-		echo "<span class='form_field'>".$field->show_field()."</span><BR>";
-		$list = array("Alpha", "Numeric");
-		$field = new selection("Row Type", "text", "greyInput", "20", "", "row_type", $list, "", "0");
-		echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-		echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='rowClick'><img class='gi-img' src='images/dropdown.png'></span><BR />";
-		// the jQuery script checks for a click on the select graphic and then focuses to the field and the drop down box appears.
-		?>
-		<script type="text/javascript">
-				$("#rowClick").live("click", function () {
-					$("#row_type").focus();	
-				});
-		</script>
-		<?php
-		$field = new selection("Column Type", "text", "greyInput", "20", "", "column_type", $list, "", "0");
-		echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-		echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='columnClick'><img class='gi-img' src='images/dropdown.png'></span><BR /><BR/>";
-		// the jQuery script checks for a click on the select graphic and then focuses to the field and the drop down box appears.
-		?>
-		<script type="text/javascript">
-				$("#columnClick").live("click", function () {
-					$("#column_type").focus();	
-				});
-		</script>
-		<?php
-		$button = new fields("submit Button", "submit", "bluebutton", 10, "Add Container Template","container_template");
-		echo $button->show_field();
-		echo "<div id='container_template_div'></div>";
-	echo "</fieldset>";
-		?>
-		<script type="text/javascript">
-		$("#container_template").live("click", function () {
+		$("#container_template").click(function () {
 			var func = "new_container_template";
 			$.post(
 				"ajax.php",
@@ -1446,28 +1720,35 @@ function new_container_template () {
 }
 
 function new_container_type($option) {
-	echo "<fieldset>";
+	echo "<form>";
+		echo "<data_entry>";
+		echo "<div class='row'>";
+			echo "<fieldset class='six columns'>";
 		if($option == "new") {
 			echo "<legend><div id='legend_colour'>New Container Type</div></legend>";
-			$field = new fields("Container Type Name", "text", "greyInput", "50", "", "con_type_name");
-			echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-			echo "<span class='form_field'>".$field->show_field()."</span><BR>";
+			echo "<li class='field'>";
+			echo "<input id='con_type_name' name='con_type_name' class='wide text input' type='text' placeholder='Container Type Name'' />";
+			echo "</li>";
 		}else{
-			$containers = dl::select("container_types");
+			$containers = dl::select("container_types", "", "ct_name ASC");
 			foreach($containers as $container) {
 				$container_names[]= $container["ct_name"];
 			}
 			echo "<legend><div id='legend_colour'>Edit Container Type</div></legend>";
-			$field = new selection("Container Type Name", "text", "greyInput", "50", "", "con_type_name", $container_names, "", "0");
-			echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-			echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='typeClick'><img class='gi-img' src='images/dropdown.png'></span><BR />";
-			// the jQuery script checks for a click on the select graphic and then focuses to the field and the drop down box appears.
+			echo "<li class='default label'>Container Types</li>";
+			echo "<li class='field'>";
+				echo "<div class='picker'>";
+				echo "<select id='con_type_name' name='con_type_name'>";
+				echo "<option value='#' disabled selected>Select a container type...</option>";
+				foreach($container_names as $c) {
+					echo "<option>$c</option>";
+				}
+			echo "</select>";
+			echo "</div><div id='delete_con_type' class='delete_this'></div>";
+			echo "</li>";
 			?>
 			<script type="text/javascript">
-					$("#typeClick").live("click", function () {
-						$("#con_type_name").focus();	
-					});
-					$("#con_type_name").on("autocompletechange", function(event, ui) { 
+					$("#con_type_name").change( function(event, ui) { 
 					var func = "getContainerTypeValues";
 					$.post(
 						"ajax.php",
@@ -1484,22 +1765,24 @@ function new_container_type($option) {
 							$('#con_type_manufacturer').val(manufacturer);
 							$('#allowed_types').val(allowed_containers);
 							$("#allowed_types").multiselect("refresh");
+							$("#delete_con_type").show();
 						});
 					});
+					
 			</script>
 			<?php
 		}
-		$selection = new textArea("Container Description","text", "greyInput", "20", "" , "container_info", 49, 3);
-		echo "<span class='form_prompt'>".$selection->show_prompt()."</span>";
-		echo "<span class='form_field'>".$selection->show_field()."</span><BR />";
-		$field = new fields("Manufacturer", "text", "greyInput", "50", "", "con_type_manufacturer");
-		echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-		echo "<span class='form_field'>".$field->show_field()."</span><BR>";
-		$type = dl::select("container_types");
+		echo "<li class='field'>";
+			echo "<textarea id='container_info' class='input textarea' placeholder='Container Description' rows='2'></textarea>";
+		echo "</li>";
+		echo "<li class='field'>";
+		echo "<input id='con_type_manufacturer' name='con_type_manufacturer' class='wide text input' type='text' placeholder='Manufacturer'' />";
+		echo "</li>";
+		echo "<li class='default label'>Allowed Containers</li>";
+		$type = dl::select("container_types","", "ct_name ASC");
 		foreach($type as $t){
 			$types[]= $t["ct_name"];
 		}
-		echo "<span style='width:10em; display: inline-block; color: #333;'>Allowed Containers</span>";
 		echo "<select class='multiselect' id='allowed_types' style='width:29em; height:1em;' name='allowed_types' multiple='multiple'>";
 		foreach($types as $type){ 
 			echo "<option>".$type."</option>";
@@ -1522,13 +1805,15 @@ function new_container_type($option) {
 		}else{
 			$buttonValue = "Edit Container Type";
 		}
-		$button = new fields("submit Button", "submit", "bluebutton", 10, $buttonValue,"container_type");
-		echo $button->show_field();
+		echo "<div class='medium pretty primary icon-left btn icon-pencil' id='container_type'><a href='#'>$buttonValue</a></div>";
 		echo "<div id='container_type_div'></div>";
 	echo "</fieldset>";
+	echo "</div>";
+	echo "</data_entry>";
+	echo "</form>";
 	?>
 		<script type="text/javascript">
-				$("#container_type").live("click", function () {
+				$("#container_type").click( function () {
 					var func = "new_container_type";
 					$.post(
 						"ajax.php",
@@ -1542,10 +1827,35 @@ function new_container_type($option) {
 						function (data)
 						{
 							$('#container_type_div').html(data);
+							<?php if($option == "new") {?>
 							$('#con_type_name').val("");
+							<?php }else{?>
+							$('#con_type_name').val("#");
+							<?php } ?>
 							$('#container_info').val("");
 							$('#con_type_manufacturer').val("");
 							$('#allowed_types').val("");
+							$('#allowed_types').multiselect('refresh');
+							$('#container_type_div').delay(200).fadeOut(2000);
+							$('#container_type_div').show();
+					});
+
+				});
+				$("#delete_con_type").click( function () {
+					var func = "del_container_type";
+					$.post(
+						"ajax.php",
+						{ func: func,
+							typeName: $('#con_type_name').val(),
+						},
+						function (data)
+						{
+							$('#container_type_div').html(data);
+							$('#con_type_name').val("#");
+							$('#container_info').val("");
+							$('#con_type_manufacturer').val("");
+							$('#allowed_types').val("");
+							$('#allowed_types').multiselect('refresh');
 							$('#container_type_div').delay(200).fadeOut(2000);
 							$('#container_type_div').show();
 					});
@@ -1699,10 +2009,11 @@ function new_customer($option) {
 						foreach($customer_names as $cn) {
 							$arrCustomer[] = $cn["c_name"]; 
 						}
+						echo "<li class='default label'>Existing Customers</li>";
 						echo "<li class='field'>";
 							echo "<div class='picker'>";
 							echo "<select id='cust_name' name='cust_name'>";
-
+							echo "<option value='#' disabled selected>Select an existing customer...</option>";
 						foreach($arrCustomer as $cust) {
 							echo "<option>$cust</option>";
 						}
@@ -2037,26 +2348,35 @@ function accept_samples(){
 }
 
 function scan_container($action) {
-	echo "<fieldset>";
-		echo "<legend><div id='legend_colour'>Scan Containers</div></legend>";
-			$field = new fields("Place this Container", "text", "greyInput", "45", "", "container_move");
-			echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-			echo "<span class='form_field'>".$field->show_field()."</span><span class='bluebutton' id='getBarcode1' style='float:none;'>Get</span><BR>";
-			echo "<div id='showContainer1'></div>";
-			$field = new fields("Into this Container", "text", "greyInput", "45", "", "container_to");
-			echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-			echo "<span class='form_field'>".$field->show_field()."</span><span class='bluebutton' id='getBarcode2' style='float:none;'>Get</span><BR>";
-			echo "<div id='showContainer2'></div>";
-			$button = new fields("submit Button", "submit", "bluebutton", 10, "Store Container","store_con");
-			echo $button->show_field();
-			echo "<div id='containerMessage'></div>";
-	echo "</fieldset>";
+	echo "<form>";
+		echo "<div class='row'>";
+			echo "<data_entry>";
+				echo "<fieldset class='six columns'>";
+					echo "<legend><div id='legend_colour'>Scan Containers</div></legend>";
+						echo "<li class='default label'>Container 1</li>";
+						echo "<li id='container_move' class='field append' style='cursor: pointer;'>";
+						echo "<input id='getBC1' name='getBC1' class='wide text input' type='text' placeholder='Place this container'' />";
+						echo "<span class='adjoined'>Get</span>";
+						echo "</li>";
+						echo "<div id='showContainer1'></div>";
+						echo "<li class='default label'>Container 2</li>";
+						echo "<li id='container_to' class='field append' style='cursor: pointer;'>";
+						echo "<input id='getBC2' name='getBC2' class='wide text input' type='text' placeholder='Into this container'' />";
+						echo "<span class='adjoined'>Get</span>";
+						echo "</li>";
+						echo "<div id='showContainer2'></div>";
+						echo "<div class='medium pretty primary icon-left btn icon-pencil' id='store_con'><a href='#'>Store Container</a></div>";
+						echo "<div id='containerMessage'></div>";
+				echo "</fieldset>";
+			echo "</data_entry>";
+		echo "</div>";
+	echo "</form>";
 	?>
 	<script>
 	$(document).ready(function() {
-		$("#getBarcode1").live("click", function () {
+		$("#container_move").click( function () {
 			var sBarcode = $("#barcode").val();
-			$("#container_move").val(sBarcode);	
+			$("#getBC1").val(sBarcode);	
 			var func = "checkMoveContainer";
 			$.post(
 				"ajax.php",
@@ -2070,9 +2390,9 @@ function scan_container($action) {
 					$('#showContainer1').show();
 				});
 		});
-		$("#getBarcode2").live("click", function () {
+		$("#container_to").click( function () {
 			var sBarcode = $("#barcode").val();
-			$("#container_to").val(sBarcode);	
+			$("#getBC2").val(sBarcode);	
 			var func = "checkToContainer";
 			$.post(
 				"ajax.php",
@@ -2086,9 +2406,9 @@ function scan_container($action) {
 					$('#showContainer2').show();
 				});
 		});
-		$("#store_con").live("click", function () {
-			var container1 = $("#container_move").val();
-			var container2 = $("#container_to").val();
+		$("#store_con").click( function () {
+			var container1 = $("#getBC1").val();
+			var container2 = $("#getBC2").val();
 			var func = "moveContainer";
 			$.post(
 				"ajax.php",
@@ -2338,72 +2658,111 @@ function audit_report(){
 	if( !check_permissions("View Audit") ) {
 		die("Sorry but you do not have access to the Audit Reporting function.");				
 	}
-	echo "<div id='filter'>";
-	echo "<div id='filter-title'>Audit Report Filter</div>";
-	$field = new dates("Timestamp From:", "text", "greyInput", "20", "", "from", "from");
-	echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-	echo "<span class='form_field'>".$field->show_field()."</span><BR />";
-	$field = new dates("Timestamp To:", "text", "greyInput", "20", "", "to", "to");
-	echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-	echo "<span class='form_field'>".$field->show_field()."</span><BR />";
-	$users = dl::select("user", "confirmed = 1");
-	foreach($users as $u) {
-		$user[] =  $u["user_name"];
-	}
-	$field = new selection("User", "text", "greyInput", "30", "", "user", $user, "", "0");
-	echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-	echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='userClick'><img class='gi-img' src='images/dropdown.png'></span>";
-	$actions = dl::select("audit_actions");
-	foreach($actions as $ac) {
-		$action[] = $ac["aa_list"];
-	}
-	$field = new selection("Actions", "text", "greyInput", "30", "", "actions", $action, "", "0");
-	echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-	echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='actionsClick'><img class='gi-img' src='images/dropdown.png'></span>";
-	$sql = "select table_name, engine
-	from information_schema.tables
-	where table_type = 'BASE TABLE' and table_schema = 'nsample'";
-	$tables = dl::getQuery($sql);
-	foreach($tables as $t) {
-		$table[] = $t["table_name"];
-	}
-	$field = new selection("Tables", "text", "greyInput", "30", "", "table_list", $table, "", "0");
-	echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-	echo "<span class='form_field'>".$field->show_field()."</span><span class='greyInputSelect' id='tablesClick'><img class='gi-img' src='images/dropdown.png'></span><BR>";
-	$field = new fields("Record Id", "text", "greyInput", "20", "", "recId");
-	echo "<span class='form_prompt'>".$field->show_prompt()."</span>";
-	echo "<span class='form_field'>".$field->show_field()."</span><BR>";
-	$button = new fields("submit Button", "submit", "bluebutton", 10, "Set Filter","set_filter");
-	echo $button->show_field();
-	$button = new fields("submit Button", "submit", "bluebutton", 10, "Clear","clear_filter");
-	echo $button->show_field();
-	echo "<div id='FilterMessage'></div>";
-	echo "</div>";
-	$actions = dl::select("audit_action");	
-	echo "<div id='main_display'>";
-	audit_report_body($actions);
-	echo "</div>";
+	echo "<form>";
+		echo "<audit>";
+			echo "<div class='row'>";
+				echo "<div class='three columns'>";
+					echo "<div id='filter'>";
+						echo "<div id='filter-title'>Audit Report Filter</div>";
+							echo "<li class='prepend field'>";
+								echo "<span class='adjoined'><img src='library/images/date_picker.png'></span>";
+								echo "<input id='from' class='wide text input' type='text' placeholder='Timestamp From'' />";
+							echo "</li>";
+							echo "<li class='prepend field'>";
+								echo "<span class='adjoined'><img src='library/images/date_picker.png'></span>";
+								echo "<input id='to' class='wide text input' type='text' placeholder='Timestamp To'' />";
+							echo "</li>";
+							?>
+							<script language="JavaScript">
+								$(document).ready(function() {
+									$("#from").datepicker( {
+									dateFormat: 		'dd/mm/yy',
+									buttonImageOnly: 	true
+									
+									});
+									$("#to").datepicker( {
+									dateFormat: 		'dd/mm/yy',
+									buttonImageOnly: 	true
+									});
+								});
+							</script><?php
+
+							$users = dl::select("user", "confirmed = 1");
+							foreach($users as $u) {
+								$user[] =  $u["user_name"];
+							}
+							echo "<li class='field'>";
+								echo "<div class='picker'>";
+								echo "<select id='user' name='user'>";
+								echo "<option value='#' selected disabled>Select a user...</option>";
+							foreach($user as $u) {
+								echo "<option>$u</option>";
+							}
+							echo "</select>";
+							echo "</div>";
+							echo "</li>";
+						$actions = dl::select("audit_actions");
+						foreach($actions as $ac) {
+							$action[] = $ac["aa_list"];
+						}
+						echo "<li class='field'>";
+							echo "<div class='picker'>";
+								echo "<select id='actions' name='actions'>";
+								echo "<option value='#' selected disabled>Select an action...</option>";
+								foreach($action as $a) {
+									echo "<option>$a</option>";
+								}
+								echo "</select>";
+							echo "</div>";
+						echo "</li>";
+
+						$sql = "select table_name, engine
+						from information_schema.tables
+						where table_type = 'BASE TABLE' and table_schema = 'nsample'";
+						$tables = dl::getQuery($sql);
+						foreach($tables as $t) {
+							$table[] = $t["table_name"];
+						}
+						echo "<li class='field'>";
+							echo "<div class='picker'>";
+								echo "<select id='table_list' name='table_list'>";
+								echo "<option value='#' selected disabled>Select a table...</option>";
+								foreach($table as $t) {
+									echo "<option>$t</option>";
+								}
+								echo "</select>";
+							echo "</div>";
+						echo "</li>";
+						echo "<li class='field'>";
+						echo "<input id='recId' name='recId' class='wide text input' type='text' placeholder='Record Id'' />";
+						echo "</li>";
+						echo "<div class='medium pretty primary icon-left btn icon-database' id='set_filter'><a href='#'>Set Filter</a></div> ";
+						echo "<div class='medium pretty primary icon-left btn icon-erase' id='clear_filter'><a href='#'>Clear</a></div> ";
+						echo "<div id='FilterMessage'></div>";
+					echo "</div>";
+				echo "</div>";
+				echo "<div class='nine columns'>";
+					echo "<div id='main_display'>";
+						$actions = dl::select("audit_action");	
+						audit_report_body($actions);
+					echo "</div>";
+				echo "</div>";
+			echo "</div>";
+		echo "</audit>";
+	echo "</form>";
 	?>
 	<script>
 	$(document).ready(function() {
-		$("#userClick").live("click", function () {
-			$("#user").focus();	
-		});
-		$("#actionsClick").live("click", function () {
-			$("#actions").focus();	
-		});
-		$("#tablesClick").live("click", function () {
-			$("#table_list").focus();	
-		});
-		$("#clear_filter").live("click", function () {
+		$("#clear_filter").click( function () {
 				$("#from").val("");
 				$("#to").val("");
-				$("#user").val("");
-				$("#actions").val("");
-				$("#table_list").val("");
+				$("#user").val("#");
+				$("#actions").val("#");
+				$("#table_list").val("#");
 				$("#recId").val("");
+				$("#set_filter").click();
 		});
-		$("#set_filter").live("click", function () {
+		$("#set_filter").click( function () {
 			var func = "audit_filter";
 			$.post(
 				"ajax.php",
@@ -2452,7 +2811,7 @@ function audit_report_body($actions) {
 				echo "<div id='row-odd'>";
 				$row_count			=0;
 			}
-			echo "<div id='field-display'>".$timestamp."</div><div id='field-display'>".$typeDescription."</div><div id='field-display'>".$actionDescription."</div><div id='field-display'>".$response.$identification."</div><BR><BR>";
+			echo "<div id='field-display'>".$timestamp."</div><div id='field-display'>".$typeDescription."</div><div id='field-display'>".$actionDescription."</div><div id='field-display'>".$response.$identification."</div><BR>";
 			if(!empty($details)) {
 				$detailItems = dl::select("audit_details", "ad_id = ".$details[0]["audit_details_id"]);
 				echo "<div id='spacer'></div><div id='field-display'>Table affected:</div>";

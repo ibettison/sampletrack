@@ -54,6 +54,10 @@ home_page .printline {
 	min-width: 8em;
 	border-bottom: $home-printline-border;
 }
+/* DATE PICKER z-index hack */
+.ui-datepicker{
+	z-index: 9999 !important;
+}
 
 /* PAGE - FOOTER SETTINGS */
 
@@ -107,6 +111,9 @@ $gt: $footer-gradient-to;
 	z-index: 1;
 }
 
+$data_entry_deleteImage: transparent url('../images/DeleteRed.png') no-repeat top right;
+$data_entry_imageSize: 1em;
+$data_entry_imageMargin: 5px;
 data_entry legend {
 	margin-top: -14px;
 	margin-bottom: -16px;
@@ -120,6 +127,15 @@ data_entry fieldset {
 	@include box-shadow( 0 2px 4px rgba(0, 0, 0, 0.15));
 	@include background(linear-gradient(to bottom, $home-fieldset-background 10%, lighten($home-fieldset-background, 4%) 100%));
 	height: 43em;
+}
+
+data_entry .delete_this {
+	background: $data_entry_deleteImage;
+	display: none;
+	margin-top: $data_entry_imageMargin;
+	float: right;
+	height: $data_entry_imageSize;
+	width: $data_entry_imageSize;
 }
 
 #file_selector {
@@ -182,6 +198,16 @@ right: 0px;
 bottom: 170px;
 }
 
+#logoffIcon {
+position:absolute;
+cursor: pointer;
+background: transparent url(../images/logoff.png) no-repeat 0 0;
+width: 40px;
+height: 40px;
+right: 10px;
+top: 10px;
+}
+
 #sampleList {
 	width: 150%;
 	background-color: $sample-background;
@@ -225,4 +251,163 @@ list-content #content-del {
 list-content #content-header {
 	font-weight: bold;
 	color: #0a4a92;
+}
+
+$audit-bg: #efefef;
+$audit-even-colour: #bedcdb;
+$audit-odd-colour: #a8d0cf;
+$audit-field-colour: #3A6774;
+$audit-border: 1px solid #ddd;
+$audit-height: 42em;
+
+audit #filter {
+	margin: 1px;
+	padding: 0.4em;
+	background-color: $audit-bg;
+	border: $audit-border;
+	float: left;
+	height: $audit-height;
+	@include border-radius(4px);
+}
+
+audit #main_display {
+	overflow-y: scroll;
+	margin: 1px;
+	float: left;
+	height: $audit-height;
+	padding: 0.4em;
+	background-color: $audit-bg;
+}
+
+audit #row-even, #row-odd {
+	overflow-y: hidden;
+	margin: 2px;
+	width: 99%;
+	background-color: $audit-even-colour;
+	padding: 3px;
+	font-size: 0.75em;
+}
+
+audit #row-odd {
+	background-color: $audit-odd-colour;
+}
+
+audit #field-display {
+	line-height: 1.5em;
+	float:left;
+	padding: 3px;
+	color: $audit-field-colour;
+}
+
+audit #value-display {
+	font-style: italic;
+	color: #666;
+	
+}
+
+audit #spacer {
+	line-height: 1.5em;
+	float: left;
+	width: 4em;
+}
+
+audit #filter-title {
+	line-height: 1.5em;
+	text-align: center;
+	font-size: 1.25em;
+	font-family: "verdana";
+}
+
+$front-page-textBG: #F0F0F0;
+front_page #picture-wrapper {
+	width: 1200px;
+	overflow: hidden;
+	height: 37.5em;
+	margin-bottom: 1em;
+}
+front_page #picture-background1 {
+	position: absolute;
+	left: 0;
+	top:0;
+	width: 100%;
+	height: 35.5em;
+	background: transparent url(../images/sampleTrack1.jpg) no-repeat 0 0;
+	padding: 1em;
+}
+
+front_page #picture-background2 {
+	position: absolute;
+	left: 1300px;
+	top: 0;
+	width: 100%;
+	height: 35.5em;
+	background: transparent url(../images/sampleTrack2.jpg) no-repeat 0 0;
+	padding: 1em;
+	display: none;
+}
+
+front_page #picture-background3 {
+	position: absolute;
+	left: 2600px;
+	top: 0;
+	width: 100%;
+	height: 35.5em;
+	background: transparent url(../images/sampleTrack3.jpg) no-repeat 0 0;
+	padding: 1em;
+	display: none;
+}
+
+front_page #text-holder {
+	position: relative;
+	opacity: 0.7;
+	background-color: $front-page-textBG;
+	padding: 1em;
+	margin:  0 5em;
+}
+
+front_page #image-holder {
+	position: absolute;
+	float: left;
+	width: 250px;
+	height: 160px;
+	left: 8em;
+	z-index: 200;
+}
+
+front_page #text-display{
+	opacity: 1;
+	color: #000;
+}
+
+front_page #leftArrow {
+	position:absolute;
+	background: transparent url(../images/leftArrow.png) no-repeat 0 0;
+	top: 20em;
+	left: 2em;
+	height: 2.3em;
+	width: 2.3em;
+	@include box-shadow( inset -1px -1px 2px rgba(0, 0, 0, 0.35));
+}
+
+front_page #rightArrow {
+		position: absolute;
+		background: transparent url(../images/rightArrow.png) no-repeat 0 0;
+		top: 20em;
+		right: 1.5em;
+		height: 2.3em;
+		width: 2.3em;
+		@include box-shadow( inset -1px -1px 2px rgba(0, 0, 0, 0.35));
+}
+
+front_page #rightArrow:hover {
+		cursor: pointer;
+		@include box-shadow( inset 1px 1px 2px rgba(0, 0, 0, 0.35));
+		top: 20.1em;
+		right: 1.4em;
+}
+front_page #leftArrow:hover {
+		cursor: pointer;
+		@include box-shadow( inset 1px 1px 2px rgba(0, 0, 0, 0.35));
+		top: 20.1em;
+		left: 2.1em;
 }

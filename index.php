@@ -39,11 +39,15 @@ session_start();
        However, there is a blank style.css in the css directory should you prefer -->
     <link rel="stylesheet" href="css/gumby.css">
 	<link rel="stylesheet" href="css/jquery-ui.css">
+	<link rel='stylesheet' href="library/js/jquery-ui-multiselect-widget-master/jquery.multiselect.css">
+	<link rel='stylesheet' href="library/js/jquery-ui-multiselect-widget-master/jquery.multiselect.filter.css">
     <!-- <link rel="stylesheet" href="css/style.css"> -->
     <script src="js/libs/modernizr-2.6.2.min.js"></script>
 	<script src="js/libs/jquery-1.9.1.min.js"></script>
 	<script src="js/libs/ui/jquery-ui.min.js"></script>
 	<script src="library/js/jquery.spritely-0.6.1.js"></script>
+	<SCRIPT language	="JavaScript" src="library/js/jquery-ui-multiselect-widget-master/src/jquery.multiselect.js"></SCRIPT>
+<SCRIPT language	="JavaScript" src="library/js/jquery-ui-multiselect-widget-master/src/jquery.multiselect.filter.js"></SCRIPT>
 	<link REL='SHORTCUT ICON' HREF='".LOCALIMAGEPATH."favicon.ico'>
 </head>
 <?php
@@ -95,8 +99,8 @@ if($_GET["func"] == "logoff") {
 //echo "<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1' />"; 
 
 // echo "<link rel='StyleSheet' href='".JAVAPATH."jquery-ui/css/smoothness/jquery-ui-1.10.0.custom.css' type='text/css' media='screen'>";
-// echo "<link rel='stylesheet' href='".JAVAPATH."jquery-ui-multiselect-widget-master/jquery.multiselect.css>";
-// echo "<link rel='stylesheet' href='".JAVAPATH."jquery-ui-multiselect-widget-master/jquery.multiselect.filter.css>";
+//echo "<link rel='stylesheet' href='".JAVAPATH."jquery-ui-multiselect-widget-master/jquery.multiselect.css>";
+//echo "<link rel='stylesheet' href='".JAVAPATH."jquery-ui-multiselect-widget-master/jquery.multiselect.filter.css>";
 // echo "<link rel='stylesheet/css' href='".CSSPATH."nav.css' TYPE='text/css' media='screen'>";
 // echo "<link rel='stylesheet/less' href='".CSSPATH."sts.less' TYPE='text/css' media='screen'>"; 
 // echo "<SCRIPT src='".JAVAPATH."less/less-1.3.0.min.js'></SCRIPT>";
@@ -174,7 +178,6 @@ if($_GET["func"] == "confirm") { // security confirmation
 echo "<body>";
 
 if( $_SESSION["loggedIn"] == "true") {
-
 	display_menus();
 }
 //dropdown_loginForm();
@@ -290,7 +293,12 @@ if( $_SESSION["loggedIn"] == "true") {
 		echo "</main>";
 	}elseif( $_GET["func"] == "new_container_template"){
 		echo "<main><div id='container-main'>";
-		new_container_template();
+		new_container_template('new');
+		echo "</div>";
+		echo "</main>";
+	}elseif( $_GET["func"] == "edit_container_template"){
+		echo "<main><div id='container-main'>";
+		new_container_template('edit');
 		echo "</div>";
 		echo "</main>";
 	}elseif( $_GET["func"] == "new_container_type"){
@@ -298,7 +306,7 @@ if( $_SESSION["loggedIn"] == "true") {
 		new_container_type("new");
 		echo "</div>";
 		echo "</main>";
-	}elseif( $_GET["func"] == "edit_container_types"){
+	}elseif( $_GET["func"] == "edit_container_type"){
 		echo "<main><div id='container-main'>";
 		new_container_type("edit");
 		echo "</div>";
