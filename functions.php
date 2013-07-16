@@ -204,11 +204,6 @@ function show_frontpage() {
 									Biobank.";
 								echo "</div>";
 							echo "</div>";
-							/*echo "<BR><B>SCANNING</B><BR><BR>
-							The SAMPLE TRACKING SYSTEM uses mobile technology to scan items into and out of the Newcastle Biobank. The system works in real time and stores the sample in containers. Containers can be anything, 
-							from the room, the freezer, the shelf or the phial the sample resides in. All containers are linked so scanning a container identifies where it is and what it is automatically, you can even tell where it has been 
-							and when it was moved. The system is centrally controlled by a built-in Audit system so every movement is monitored and can be traced back to date and time of the action and the individual performing the action.";
-							*/
 					echo "</div>";
 					echo "<div id='picture-background2'>";
 							echo "<H1>Newcastle Biomedicine Biobank<BR>Sample Tracking System</H1>";
@@ -220,11 +215,6 @@ function show_frontpage() {
 									every container being able to be stored within another container following logical controls, you can see that this is a simple yet intuitive way to manage the sample locations.";
 								echo "</div>";
 							echo "</div>";
-							/*echo "<BR><B>SCANNING</B><BR><BR>
-							The SAMPLE TRACKING SYSTEM uses mobile technology to scan items into and out of the Newcastle Biobank. The system works in real time and stores the sample in containers. Containers can be anything, 
-							from the room, the freezer, the shelf or the phial the sample resides in. All containers are linked so scanning a container identifies where it is and what it is automatically, you can even tell where it has been 
-							and when it was moved. The system is centrally controlled by a built-in Audit system so every movement is monitored and can be traced back to date and time of the action and the individual performing the action.";
-							*/
 					echo "</div>";
 					echo "<div id='picture-background3'>";
 							echo "<H1>Newcastle Biomedicine Biobank<BR>Sample Tracking System</H1>";
@@ -235,17 +225,13 @@ function show_frontpage() {
 									system along with transferring samples to other locations and registering Aliquots against existing samples.";
 								echo "</div>";
 							echo "</div>";
-							/*echo "<BR><B>SCANNING</B><BR><BR>
-							The SAMPLE TRACKING SYSTEM uses mobile technology to scan items into and out of the Newcastle Biobank. The system works in real time and stores the sample in containers. Containers can be anything, 
-							from the room, the freezer, the shelf or the phial the sample resides in. All containers are linked so scanning a container identifies where it is and what it is automatically, you can even tell where it has been 
-							and when it was moved. The system is centrally controlled by a built-in Audit system so every movement is monitored and can be traced back to date and time of the action and the individual performing the action.";
-							*/
 					echo "</div>";
 				echo "</div>";
 				echo "<div id='leftArrow'></div>";
 				echo "<div id='rightArrow'></div>";
 			echo "</div>";
 		echo "</div>"; 
+		
 		echo "</front_page>";
 		?>
 		<script>
@@ -259,10 +245,10 @@ function show_frontpage() {
 					case 0:
 						
 						$("#picture-background1").animate({
-							left: "-2600px"
+							left: "-4000px"
 						}, 800);
 						$("#picture-background2").animate({
-							left: "-1300px"
+							left: "-2000px"
 						}, 800);
 						$("#picture-background3").animate({
 							left: "0"
@@ -274,10 +260,10 @@ function show_frontpage() {
 							left: "0px"
 						}, 400);
 						$("#picture-background2").animate({
-							left: "1300px"
+							left: "2000px"
 						}, 400);
 						$("#picture-background3").animate({
-							left: "2600px"
+							left: "4000px"
 						}, 400);
 						clicks--;
 						hidePicture("#picture-background3",0);
@@ -285,13 +271,13 @@ function show_frontpage() {
 					break;
 					case 2:
 						$("#picture-background1").animate({
-							left: "-1300px"
+							left: "-2000px"
 						}, 400);
 						$("#picture-background2").animate({
 							left: "0"
 						}, 400);
 						$("#picture-background3").animate({
-							left: "1300px"
+							left: "2000px"
 						}, 400);
 						clicks--
 						
@@ -308,10 +294,10 @@ function show_frontpage() {
 							left: "0"
 						}, 800);
 						$("#picture-background2").animate({
-							left: "1300px"
+							left: "2000px"
 						}, 800);
 						$("#picture-background3").animate({
-							left: "2600px"
+							left: "4000px"
 						}, 800);
 						clicks=0;
 						hidePicture("#picture-background3", 400);
@@ -320,10 +306,10 @@ function show_frontpage() {
 					case 1:
 						$("#picture-background3").show();
 						$("#picture-background1").animate({
-							left: "-2600px"
+							left: "-4000px"
 						}, 400);
 						$("#picture-background2").animate({
-							left: "-1300px"
+							left: "-2000px"
 						}, 400);
 						$("#picture-background3").animate({
 							left: "0px"
@@ -333,13 +319,13 @@ function show_frontpage() {
 					case 0:
 						$("#picture-background2").show();
 						$("#picture-background1").animate({
-							left: "-1300px"
+							left: "-2000px"
 						}, 400);
 						$("#picture-background2").animate({
 							left: "0"
 						}, 400);
 						$("#picture-background3").animate({
-							left: "1300"
+							left: "2000"
 						}, 400);
 						clicks++;
 						hidePicture("#picture-background3", 400);
@@ -358,10 +344,10 @@ function show_frontpage() {
 							left: "0"
 						}, 800);
 						$("#picture-background2").animate({
-							left: "1300px"
+							left: "2000px"
 						}, 800);
 						$("#picture-background3").animate({
-							left: "2600px"
+							left: "4000px"
 						}, 800);
 						clicks=0;
 						hidePicture("#picture-background3", 400);
@@ -370,10 +356,10 @@ function show_frontpage() {
 					case 1:
 						$("#picture-background3").show();
 						$("#picture-background1").animate({
-							left: "-2600px"
+							left: "-4000px"
 						}, 400);
 						$("#picture-background2").animate({
-							left: "-1300px"
+							left: "-2000px"
 						}, 400);
 						$("#picture-background3").animate({
 							left: "0px"
@@ -383,13 +369,13 @@ function show_frontpage() {
 					case 0:
 						$("#picture-background2").show();
 						$("#picture-background1").animate({
-							left: "-1300px"
+							left: "-2000px"
 						}, 400);
 						$("#picture-background2").animate({
 							left: "0"
 						}, 400);
 						$("#picture-background3").animate({
-							left: "1300"
+							left: "2000"
 						}, 400);
 						clicks++;
 						hidePicture("#picture-background3", 400);
@@ -893,6 +879,7 @@ function display_menus() {
                <li><a href="index.php?func=add_registration">Add Registration</a></li>
 				<li><a href="index.php?func=upload_sheet">Upload spreadsheet</a></li>
 				<li><a href="index.php?func=accept_samples">Accept samples</a></li>
+				<li><a href="index.php?func=sample_consent">Sample Consent</a></li>
             </ul>
 			
           </div>
@@ -926,10 +913,14 @@ function display_menus() {
 				<li><a href="#">Types</a>
 				<div class="dropdown">
 					<ul>
-							<li><a href="index.php?func=type_request">Request Type</a></li>
-							<li><a href="index.php?func=type_action">Action Type</a></li>
-							<li><a href="index.php?func=type_sample">Sample Type</a></li>
+							<li><a href="index.php?func=new_request_type">Request Type</a></li>
+							<li><a href="index.php?func=new_action_type">Action Type</a></li>
+							<li><a href="index.php?func=new_sample_type">Sample Type</a></li>
 							<li><a href="index.php?func=new_container_type">Container Type</a></li>
+							<li><a href="index.php?func=new_contact_type">Contact Type</a></li>
+							<li><a href="index.php?func=new_information_type">Information Type</a></li>
+							<li><a href="index.php?func=new_consent_type">Consent Type</a></li>
+							<li><a href="index.php?func=new_location_type">Location Type</a></li>
 					</ul>
 				</div></li>
 				<li><a href="#">Printer</a>
@@ -963,6 +954,10 @@ function display_menus() {
 							<li><a href="index.php?func=edit_action_type">Action Types</a></li>
 							<li><a href="index.php?func=edit_sample_type">Sample Types</a></li>
 							<li><a href="index.php?func=edit_container_type">Container Types</a></li>
+							<li><a href="index.php?func=edit_contact_type">Contact Types</a></li>
+							<li><a href="index.php?func=edit_information_type">Information Types</a></li>
+							<li><a href="index.php?func=edit_location_type">Location Types</a></li>
+							<li><a href="index.php?func=edit_consent_type">Consent Types</a></li>
 					</ul>
 				</div></li>
             </ul>
@@ -1408,7 +1403,7 @@ function add_registration() {
 		</script><?php
 		$types = dl::select("sample_types");
 		foreach($types as $type) {
-			$sample_types[] = $type["st_type"]; 
+			$sample_types[] = $type["name"]; 
 		}
 		$containers = dl::select("container_types");
 		foreach($containers as $container) {
@@ -2106,7 +2101,7 @@ function new_customer($option) {
 					echo "<li class='default label'>Contact Type</li>";
 					$contact_types = dl::select("contact_types");
 					foreach($contact_types as $ct){
-						$type_names[]= $ct["ct_type"];
+						$type_names[]= $ct["name"];
 					}
 					echo "<li class='field'>";
 						echo "<div class='picker'>";
@@ -2184,6 +2179,273 @@ function new_customer($option) {
 				});
 		</script>
 	<?php
+}
+
+function sample_consent() {
+	echo "<form>";
+		echo "<data_entry>";
+			echo "<div class='row'>";
+				echo "<fieldset class='six columns'>";
+					?>
+					<script>
+					globalValues = {};
+					</script>
+					<?php
+					echo "<legend><div id='legend_colour'>Sample Consent</div></legend>";
+					echo "<ul>";
+					$sample_list = dl::select("samples_list", "", "sl_date_uploaded DESC");
+					foreach($sample_list as $sl) {
+						$custs = dl::select("customers", "c_id = ".$sl["customer_id"]);
+						$arrCustomer[] = $custs[0]["c_name"]." ".$sl["sl_date_uploaded"]; 
+					}
+					echo "<li class='default label'>Samples List</li>";
+					echo "<li class='field'>";
+						echo "<div class='picker'>";
+						echo "<select id='samples_list' name='samples_list'>";
+						echo "<option value='#' disabled selected>Select a samples list...</option>";
+					foreach($arrCustomer as $cust) {
+						echo "<option>$cust</option>";
+					}
+					echo "</select>";
+					echo "</div>";
+					echo "<div id='show_id'></div>";
+					echo "</li>";
+					echo "<li class='prepend field'>";
+					echo "<span class='adjoined'><img src='library/images/date_picker.png'></span>";
+					echo "<input id='consent_date' class='wide text input' type='text' placeholder='Date of Consent'' />";
+					echo "</li>";
+					echo "<li class='field'>";
+					echo "<input id='taken_by' name='taken_by' class='wide text input' type='text' placeholder='Consent Taken By'' />";
+					echo "</li>";
+					echo "<li class='prepend field'>";
+					echo "<span class='adjoined'><img src='library/images/date_picker.png'></span>";
+					echo "<input id='consent_expiry_date' class='wide text input' type='text' placeholder='Consent Expiry Date'' />";
+					echo "</li>";
+					?>
+					<script language="JavaScript">			
+					$(document).ready(function() {
+						$("#samples_list").change(function() {
+							var func = "getSamplesListID";
+							$("#consent_date").val("");
+							$("#taken_by").val("");
+							$("#consent_expiry_date").val("");
+							$("#consent_type").val("#");
+							$.post(
+								"ajax.php",
+								{ func: func,
+									samples_list: $("#samples_list").val()
+								},
+								function (data) {
+									/*$('#show_id').html(data);*/
+									var json = $.parseJSON(data);
+									globalValues.slistID = json.listId;
+									var locations = json.location_info;
+									var html_show = "";
+									var line="";
+									if(jQuery.isEmptyObject(locations) == false) {
+										$.each(locations, function(index, value) {
+											var str = value;
+											var pos = str.search(",");
+											var type = str.substr(0,pos);
+											var str2 = str.substr(pos+1,str.length);
+											var pos = str2.search(",");
+											var detail = str2.substr(0,pos);
+											var id = str2.substr(pos+1, str2.length);
+											html_show = "<list-content><div id='content-container'><div id='content-header'>"+type+"</div><div id='content' style='width:15em;'>"+detail+"</div><div id='content-del'><a href='#' id='button"+id+"' border='0'><img src='images/DeleteRed.png' /></a></div></div></list-content>";
+											line = line.concat(html_show);
+										});
+										$('#showDocumentDetails').html(line);
+										$.each(locations, function(index, value) {
+											var str = value;
+											var pos = str.search(",");
+											var type = str.substr(0,pos);
+											var str2 = str.substr(pos+1,str.length);
+											var pos = str2.search(",");
+											var detail = str2.substr(0,pos);
+											var id = str2.substr(pos+1, str2.length);
+											$("#button"+id).click( function (){
+												var func = "del_location_details";
+												$.post(
+													"ajax.php",
+													{ func: func,
+														samples_list_id: globalValues.customer_id,
+														locId: id
+													},
+													function (data)
+													{
+														$('#showDocumentDetails').html(data);
+												});
+											});
+										});
+										if($('#showDocumentDetails').is(':hidden')) {
+											$('#showDocumentDetails').show("slide", {
+												direction: "up"
+											}, 500);
+										}
+									}
+									$("#consent_date").val(json.consent);
+									$("#taken_by").val(json.taken_by);
+									$("#consent_expiry_date").val(json.expiry);
+									$("#consent_type").val(json.consent_type);
+								}
+							);
+							
+						});
+						$("#consent_date").datepicker( {
+						dateFormat: 		'dd/mm/yy',
+						buttonImageOnly: 	true
+						});
+						$("#consent_expiry_date").datepicker( {
+						dateFormat: 		'dd/mm/yy',
+						buttonImageOnly: 	true
+						});
+						
+					});
+					</script>
+					<?php					
+					echo "<li class='default label'>Consent Type</li>";
+					$consent_types = dl::select("consent_types");
+					foreach($consent_types as $ct){
+						$type_names[]= $ct["name"];
+					}
+					echo "<li class='field'>";
+						echo "<div class='picker'>";
+						echo "<select id='consent_type' name='consent_type'>";
+						echo "<option value='#' disabled selected>Select a consent type...</option>";
+						foreach($type_names as $tn) {
+							echo "<option>$tn</option>";
+						}
+					echo "</select>";
+					echo "</div>";
+					echo "</li>";
+					echo "<h3>Documentation Location</h3>";
+					echo "<div id='showDocumentDetails'></div>";
+					echo "<li class='default label'>Location Types</li>";
+					$loc_types = dl::select("location_types");
+					foreach($loc_types as $lt){
+						$loc_names[]= $lt["name"];
+					}
+					echo "<li class='field'>";
+						echo "<div class='picker'>";
+						echo "<select id='location_type' name='location_type'>";
+						echo "<option value='#' disabled selected>Select a location type...</option>";
+						foreach($loc_names as $ln) {
+							echo "<option>$ln</option>";
+						}
+					echo "</select>";
+					echo "</div>";
+					// the jQuery script checks for a click on the select graphic and then focuses to the field and the drop down box appears.
+					echo "<li class='field'>";
+						echo "<textarea id='loc_detail' class='input textarea' placeholder='Location Information' rows='1'></textarea>";
+					echo "</li>";
+					echo "<div class='small pretty info icon-left btn icon-plus' id='add_locations'><a href='#'>Add Locations</a></div>";
+					echo "<hr id='hr_line'>";
+					echo "<div class='medium pretty primary icon-left btn icon-check' id='save_consent'><a href='#'>Save Consent</a></div>";
+					echo "<div id='showConsent_div'></div>";
+					echo "</ul>";
+				echo "</fieldset>";	
+			echo "</div>";
+		echo "</data_entry>";
+	echo "</form>";
+	?>
+		<script type="text/javascript">
+				$("#add_locations").click( function (){
+					var func = "new_location_details";
+					$.post(
+						"ajax.php",
+						{ func: func,
+							locType: $('#location_type').val(),
+							locDetail: $('#loc_detail').val(),
+							samples_list_id: globalValues.slistID
+						},
+						function (data)
+						{
+							if($('#showDocumentDetails').is(':hidden')) {
+								$('#showDocumentDetails').show("slide", {
+									direction: "up"
+								}, 500);
+							};
+							$('#showDocumentDetails').html(data);
+							$('#showConsent_div').html("Details added/changed, 'Save Consent' will add the record.");
+							$("#loc_detail").val("");
+							$('#loc_type').val("#");
+					});
+				});
+				$("#save_consent").click( function (){
+					var func = "save_consent_details";
+					$.post(
+						"ajax.php",
+						{ func: func,
+							samples_list_id: globalValues.slistID,
+							consentType: 	$('#consent_type').val(),
+							consentDate: 	$('#consent_date').val(),
+							consentExpiry: 	$('#consent_expiry_date').val(),
+							takenBy: 			$('#taken_by').val()
+						},
+						function (data)
+						{
+							$('#showConsent_div').html(data);
+							$("#consent_type").val("#");
+							$('#consent_date').val("");
+							$("#consent_expiry_date").val("");
+							$("#taken_by").val("");
+							$("#location_type").val("#");
+							$("#loc_detail").val("");
+							/*$('#showConsent_div').delay(200).fadeOut(2000);
+							$('#showConsent_div').show();*/
+							if($('#showDocumentDetails').is(':visible')) {
+								$('#showDocumentDetails').hide("slide", {
+									direction: "up"
+								}, 500);
+								$('#showDocumentDetails').show();
+							};
+					});
+				});
+		</script>
+	<?php
+}
+
+
+function new_information_type($option) {
+	$objType = new listTypes("information_types");
+	$objType->set_suffix_name("Information");
+	$objType->new_type($option);
+}
+
+function new_sample_type($option) {
+	$objType = new listTypes("sample_types");
+	$objType->set_suffix_name("Sample");
+	$objType->new_type($option);
+}
+
+function new_contact_type($option) {
+	$objType = new listTypes("contact_types");
+	$objType->set_suffix_name("Contact");
+	$objType->new_type($option);
+}
+
+function new_action_type($option) {
+	$objType = new listTypes("action_types");
+	$objType->set_suffix_name("Action");
+	$objType->new_type($option);
+}
+
+function new_request_type($option) {
+	$objType = new listTypes("request_types");
+	$objType->set_suffix_name("Request");
+	$objType->new_type($option);
+}
+
+function new_location_type($option) {
+	$objType = new listTypes("location_types");
+	$objType->set_suffix_name("Location");
+	$objType->new_type($option);
+}
+
+function new_consent_type($option) {
+	$objType = new listTypes("consent_types");
+	$objType->set_suffix_name("Consent");
+	$objType->new_type($option);
 }
 
 function accept_samples(){

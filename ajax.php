@@ -63,6 +63,43 @@ if($_POST["func"]== "login") {
 	}
 }
 
+if($_POST["func"] == "check_height"){
+	$_SESSION["screen_height"] = $_POST["height"];
+}
+
+if($_POST["func"] == "save_info_details") {
+	$fields = array("name", "description");
+	$values = array($_POST["infoType"], $_POST["infoDesc"]);
+	$writeLn = array_combine($fields, $values);
+	if($_POST["option"] == 'new') {
+		//this is a new record
+		//write the spreadsheet row into the database.
+		dl::insert($_POST["table"], $writeLn);
+		$itemId = dl::getId();
+		$audit = new audit("DATA MANAGEMENT", "RECORD ADDED", array($_SESSION["userId"], $_SESSION["user_name"]));
+		audit::create_action(array("table"=>$_POST["table"], "values"=>$writeLn), $itemId);
+		echo "Record added";
+	}else{
+		dl::update("information_types", $writeLn, "id = ".$_POST["infoId"]);
+		$itemId = $_POST["infoId"];
+		$audit = new audit("DATA MANAGEMENT", "RECORD UPDATED", array($_SESSION["userId"], $_SESSION["user_name"]));
+		audit::create_action(array("table"=>$_POST["table"], "values"=>$writeLn), $itemId);
+		echo "Record Updated";
+	}
+}
+
+if($_POST["func"] == "show_info_details") {	
+	$info = dl::select($_POST["table"], "name = '".$_POST["typeSelected"]."'");
+	$retArr = array("infoID"=>$info[0]["id"], "infoType"=>$info[0]["name"], "infoDesc"=>$info[0]["description"]);
+	echo json_encode($retArr);
+}
+
+if($_POST["func"] == "delete_listId") {
+		$audit = new audit("DATA MANAGEMENT", "RECORD DELETED", array($_SESSION["userId"], $_SESSION["user_name"]));
+		audit::create_action(array("table"=>$_POST["table"], "values"=>array("id"=>$_POST["id"], "name"=>$_POST["type"], "description"=>$_POST["desc"])), $_POST["id"]);
+		dl::delete($_POST["table"], "id = ".$_POST["id"]); 
+}
+
 if($_POST["func"] == "compare_spreadsheet"){
 	dl::$debug=true;
 	$matchedColumns = $_POST["list"];
@@ -221,10 +258,11 @@ if( $_POST["func"] == "new_container_type") {
 		audit::create_action(array("table"=>"container_types", "values"=>$combine), $newId);
 		echo "New container type has been created";
 	}else{
-		dl::update("container_types", $combine, "ct_id = ",$_SESSION["containerTypeID"]);
-		$newId = $_SESSION["containerTypeID"];
+		$type = dl::select("container_types", "ct_name = '".$_POST["typeName"]."'");
+		dl::update("container_types", $combine, "ct_id = ".$type[0]["ct_id"]);
+		$newId = $type[0]["ct_id"];
 		$audit = new audit("DATA MANAGEMENT", "RECORD UPDATED", array($_SESSION["userId"], $_SESSION["user_name"]));
-		audit::create_action(array("table"=>"container_types", "values"=>$combine), $_SESSION["containerTypeID"]);
+		audit::create_action(array("table"=>"container_types", "values"=>$combine), $newId);
 		echo "Container Type has been amended";
 		$containers = dl::select("allowed_containers", "types_id = ".$newId);
 		foreach($containers as $container) {
@@ -347,8 +385,8 @@ if( $_POST["func"] == "getCustomerValues") {
 	$contacts = dl::select("contact_details", "customers_id = ". $customerId[0]["c_id"]);
 	if(!empty($contacts)) {
 		foreach($contacts as $contact) {
-			$type = dl::select("contact_types", "ct_id = ".$contact["contact_type_id"]);
-			$contact_array[]= $type[0]["ct_type"].",".nl2br($contact["cd_detail"].",".$contact["cd_id"]);
+			$type = dl::select("contact_types", "id = ".$contact["contact_type_id"]);
+			$contact_array[]= $type[0]["name"].",".nl2br($contact["cd_detail"].",".$contact["cd_id"]);
 		}
 	}
 	echo json_encode(array("customerId"=>$cust_id, "business"=>$business, "registration"=>$registration, "contacts"=>$contact_array));
@@ -402,12 +440,12 @@ if( $_POST["func"] == "new_registration") {
 }
 
 if($_POST["func"] == "new_contact_details") {
-	$contact_types = dl::select("contact_types", "ct_type = \"".$_POST["conType"]."\"");
+	$contact_types = dl::select("contact_types", "name = \"".$_POST["conType"]."\"");
 	//add new details
-	dl::insert("contact_details", array("contact_type_id"=>$contact_types[0]["ct_id"], "cd_detail"=>$_POST["conDetail"]));
+	dl::insert("contact_details", array("contact_type_id"=>$contact_types[0]["id"], "cd_detail"=>$_POST["conDetail"]));
 	$newId = dl::getId();
 	$audit = new audit("DATA MANAGEMENT", "RECORD ADDED", array($_SESSION["userId"], $_SESSION["user_name"]));
-	audit::create_action(array("table"=>"contact_details", "values"=>array("contact_type_id"=>$contact_types[0]["ct_id"], "cd_detail"=>$_POST["conDetail"])), $newId);
+	audit::create_action(array("table"=>"contact_details", "values"=>array("contact_type_id"=>$contact_types[0]["id"], "cd_detail"=>$_POST["conDetail"])), $newId);
 	if($_POST["option"] == "new"){
 		$details = dl::select("contact_details", "customers_id=0", "cd_id ASC"); //if no customer id is set then the details haven't been properly saved yet
 	}else{
@@ -415,8 +453,8 @@ if($_POST["func"] == "new_contact_details") {
 	}
 	if(!empty($details)) {
 		foreach($details as $detail) {
-			$types = dl::select("contact_types", "ct_id=".$detail["contact_type_id"] );
-			echo "<list-content><div id='content-container'><div id='content-header'>".$types[0]["ct_type"]."</div><div id='content' style='width:15em;'>".nl2br($detail["cd_detail"])."</div><div id='content-del'><a href='#' id='button".$detail["cd_id"]."' border='0'><img src='images/DeleteRed.png' /></a></div></div></list-content>";
+			$types = dl::select("contact_types", "id=".$detail["contact_type_id"] );
+			echo "<list-content><div id='content-container'><div id='content-header'>".$types[0]["name"]."</div><div id='content' style='width:15em;'>".nl2br($detail["cd_detail"])."</div><div id='content-del'><a href='#' id='button".$detail["cd_id"]."' border='0'><img src='images/DeleteRed.png' /></a></div></div></list-content>";
 		}
 		echo "<br />";
 		//now setup the delete function for the buttons passed back by the above jQuery
@@ -453,8 +491,8 @@ if($_POST["func"] == "del_contact_details") {
 	}
 	if(!empty($details)) {
 		foreach($details as $detail) {
-			$types = dl::select("contact_types", "ct_id=".$detail["contact_type_id"] );
-			echo "<list-content><div id='content-container'><div id='content-header'>".$types[0]["ct_type"]."</div><div id='content' style='width:15em;'>".nl2br($detail["cd_detail"])."</div><div id='content-del'><a href='#' id='button".$detail["cd_id"]."' border='0'><img src='images/DeleteRed.png' /></a></div></div></list-content>";
+			$types = dl::select("contact_types", "id=".$detail["contact_type_id"] );
+			echo "<list-content><div id='content-container'><div id='content-header'>".$types[0]["name"]."</div><div id='content' style='width:15em;'>".nl2br($detail["cd_detail"])."</div><div id='content-del'><a href='#' id='button".$detail["cd_id"]."' border='0'><img src='images/DeleteRed.png' /></a></div></div></list-content>";
 		}
 		echo "<br />";
 		//now setup the delete function for the buttons passed back by the above jQuery
@@ -498,6 +536,129 @@ if($_POST["func"] == "save_contact_details") {
 	}
 	echo "Customer Details have been saved...";
 }
+
+if($_POST["func"] == "new_location_details") {
+	$location_types = dl::select("location_types", "name = \"".$_POST["locType"]."\"");
+	//add new details
+	dl::insert("location_details", array("location_type_id"=>$location_types[0]["id"], "l_detail"=>$_POST["locDetail"]));
+	$newId = dl::getId();
+	$audit = new audit("DATA MANAGEMENT", "RECORD ADDED", array($_SESSION["userId"], $_SESSION["user_name"]));
+	audit::create_action(array("table"=>"location_details", "values"=>array("location_type_id"=>$location_types[0]["id"], "l_detail"=>$_POST["locDetail"])), $newId);
+	$details = dl::select("location_details", "samples_list_id=0 or samples_list_id =".$_POST["samples_list_id"], "l_id ASC");
+	if(!empty($details)) {
+		foreach($details as $detail) {
+			$types = dl::select("location_types", "id=".$detail["location_type_id"] );
+			echo "<list-content><div id='content-container'><div id='content-header'>".$types[0]["name"]."</div><div id='content' style='width:15em;'>".nl2br($detail["l_detail"])."</div><div id='content-del'><a href='#' id='button".$detail["l_id"]."' border='0'><img src='images/DeleteRed.png' /></a></div></div></list-content>";
+		}
+		echo "<br />";
+		//now setup the delete function for the buttons passed back by the above jQuery
+		foreach($details as $d) {
+			?>
+			<script type="text/javascript">
+					$("#button<?php echo $d["l_id"]?>").click( function (){
+						var func = "del_location_details";
+						$.post(
+							"ajax.php",
+							{ func: func,
+								samples_list_id: <?php echo $_POST["samples_list_id"] ?>,
+								locId: <?php echo $d["l_id"]?>
+							},
+							function (data)
+							{
+								$('#showDocumentDetails').html(data);
+								$("#loc_detail").val("");
+								$('#loc_type').val("#");
+						});
+					});
+			</script>
+	<?php
+		}
+	}
+}
+if($_POST["func"] == "del_location_details") {
+	dl::delete("location_details", "l_id= ".$_POST["locId"]);
+	$details = dl::select("location_details", "samples_list_id=0 or samples_list_id=".$_POST["samples_list_id"], "l_id ASC");
+	if(!empty($details)) {
+		foreach($details as $detail) {
+			$types = dl::select("location_types", "id=".$detail["location_type_id"] );
+			echo "<list-content><div id='content-container'><div id='content-header'>".$types[0]["name"]."</div><div id='content' style='width:15em;'>".nl2br($detail["l_detail"])."</div><div id='content-del'><a href='#' id='button".$detail["l_id"]."' border='0'><img src='images/DeleteRed.png' /></a></div></div></list-content>";
+		}
+		echo "<br />";
+		//now setup the delete function for the buttons passed back by the above jQuery
+		foreach($details as $d) {
+			?>
+			<script type="text/javascript">
+					$("#button<?php echo $d["l_id"]?>").click( function (){
+						var func = "del_location_details";
+						$.post(
+							"ajax.php",
+							{ func: func,
+								samples_list_id: <?php echo $_POST["samples_list_id"] ?>,
+								locId: <?php echo $d["l_id"]?>
+							},
+							function (data)
+							{
+								$('#showDocumentDetails').html(data);
+								$("#loc_detail").val("");
+								$('#loc_type').val("#");
+						});
+					});
+			</script>
+	<?php
+		}
+	}
+}
+
+if($_POST["func"] == "save_consent_details") {
+	echo "<BR>";
+	//lets determine if this is a new consent or an update
+	$type = dl::select("consent_types", "name = '".$_POST["consentType"]."'");
+	$fields = array("c_samples_list", "c_consent_date", "c_taken_by", "c_expiry_date", "c_consent_type_id");
+	$values = array($_POST["samples_list_id"], date("Y-m-d", mktime(0, 0, 0, substr($_POST["consentDate"],3,2), substr($_POST["consentDate"],0,2), substr($_POST["consentDate"],6,4))), $_POST["takenBy"], date("Y-m-d", mktime(0, 0, 0, substr($_POST["consentExpiry"],3,2), substr($_POST["consentExpiry"],0,2), substr($_POST["consentExpiry"],6,4))), $type[0]["id"] );
+	$writeLn = array_combine($fields, $values);
+	$checkConsent = dl::select("consent", "c_samples_list = ".$_POST["samples_list_id"]);
+	if(empty($checkConsent)) {
+		dl::insert("consent", $writeLn);
+		$consent_id = dl::getId();
+		$audit = new audit("DATA AMENDMENT", "RECORD ADDED", array($_SESSION["userId"], $_SESSION["user_name"]));
+		audit::create_action(array("table"=>"consent", "values"=>$writeLn), $consent_id);
+		dl::update("location_details", array("samples_list_id"=>$consent_id), "samples_list_id=0");
+	}else{
+		dl::update("consent", $writeLn, "c_id = ".$checkConsent[0]["c_id"]);
+		$cust_id = dl::getId();
+		$audit = new audit("DATA AMENDMENT", "RECORD UPDATED", array($_SESSION["userId"], $_SESSION["user_name"]));
+		audit::create_action(array("table"=>"consent", "values"=>$writeLn), $checkConsent[0]["c_id"]);
+		dl::update("location_details", array("samples_list_id"=>$_POST["samples_list_id"]), "samples_list_id=0");
+	}
+	echo "Consent Details have been saved...";
+}
+
+if($_POST["func"] == "getSamplesListID") {
+	$customer_name = substr($_POST["samples_list"], 0, strlen($_POST["samples_list"])-19);
+	$uploadDate = substr($_POST["samples_list"], -19);
+	$customers = dl::select("customers", "c_name = \"".$customer_name."\"");
+	$sList = dl::select("samples_list", "customer_id=".$customers[0]["c_id"]." and sl_date_uploaded='".$uploadDate."'");
+	$consent = dl::select("consent", "c_samples_list = ".$sList[0]["sl_id"]);
+	$consent_type = dl::select("consent_types", "id = ". $consent[0]["c_id"]);
+	if(!empty($consent)) {
+		$consent_date = date("d/m/Y", mktime(0, 0, 0, substr($consent[0]["c_consent_date"],5,2), substr($consent[0]["c_consent_date"],8,2), substr($consent[0]["c_consent_date"],0,4)));
+		$expiry_date = date("d/m/Y", mktime(0, 0, 0, substr($consent[0]["c_expiry_date"],5,2), substr($consent[0]["c_expiry_date"],8,2), substr($consent[0]["c_expiry_date"],0,4)));
+		$locations = dl::select("location_details", "samples_list_id=".$sList[0]["sl_id"]);
+		if(!empty($locations)) {
+			foreach($locations as $loc) {
+				$types = dl::select("location_types", "id=".$loc["location_type_id"]);
+				$location_array[]= $types[0]["name"].",".nl2br($loc["l_detail"].",".$loc["l_id"]);
+			}
+			
+		}
+		$retArr = json_encode(array("listId"=>$sList[0]["sl_id"], "consent"=>$consent_date, "taken_by"=>$consent[0]["c_taken_by"], "expiry"=>$expiry_date, "consent_type"=> $consent_type[0]["name"], "location_info"=>$location_array));
+		echo $retArr;
+	}else{
+		$retArr = json_encode(array("listId"=>"", "consent"=>"", "taken_by"=>"", "expiry"=>"", "consent_type"=>"", "location_info"=>""));
+		echo $retArr;
+	}
+}
+
 
 if($_POST["func"] == "getContainerDetails") {
 	setContainerDetails();
@@ -1155,12 +1316,12 @@ if($_POST["func"] == "print_labels") {
 if($_POST["func"] == "findCustomer") {
 	$customer = dl::select("customers", "c_name = \"".$_POST["customer"]."\"");
 	$cust_id = $customer[0]["c_id"];
-	$sql = "select * from contact_details join contact_types on (contact_type_id=ct_id) 
+	$sql = "select * from contact_details join contact_types on (contact_type_id=id) 
 	where customers_id = ".$cust_id;
 	$customerDetails = dl::getQuery($sql);
 	if(!empty($customerDetails)) {
 		foreach( $customerDetails as $cd ){
-			switch($cd["ct_type"]) {
+			switch($cd["name"]) {
 				case "email":
 					$jsEmail = $cd["cd_detail"];
 					break;

@@ -5617,8 +5617,8 @@ home_page .titles, .printline {
 }
 
 home_page legend {
-  margin-top: -14px;
-  margin-bottom: -16px;
+  margin-top: -16px;
+  margin-bottom: -20px;
   color: #0080c0;
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.15);
 }
@@ -5626,9 +5626,9 @@ home_page legend {
 home_page fieldset {
   background-color: #c6e3f9;
   height: 18.5em;
-  -webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
-  -moz-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  -webkit-box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
+  -moz-box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
+  box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
   background: -webkit-gradient(linear, to bottom, to top, color-stop(10%, #c6e3f9), color-stop(100%, #ddeefb));
   background: -webkit-linear-gradient(to bottom, #c6e3f9 10%, #ddeefb 100%);
   background: -moz-linear-gradient(to bottom, #c6e3f9 10%, #ddeefb 100%);
@@ -5704,8 +5704,8 @@ home_page .printline {
 }
 
 data_entry legend {
-  margin-top: -14px;
-  margin-bottom: -16px;
+  margin-top: -16px;
+  margin-bottom: -20px;
   color: #0080c0;
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.15);
 }
@@ -5713,9 +5713,9 @@ data_entry legend {
 data_entry fieldset {
   background-color: #c6e3f9;
   height: 18.5em;
-  -webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
-  -moz-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  -webkit-box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
+  -moz-box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
+  box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
   background: -webkit-gradient(linear, to bottom, to top, color-stop(10%, #c6e3f9), color-stop(100%, #d8ecfb));
   background: -webkit-linear-gradient(to bottom, #c6e3f9 10%, #d8ecfb 100%);
   background: -moz-linear-gradient(to bottom, #c6e3f9 10%, #d8ecfb 100%);
@@ -5919,7 +5919,6 @@ audit #filter-title {
 front_page #picture-wrapper {
   width: 1200px;
   overflow: hidden;
-  height: 37.5em;
   margin-bottom: 1em;
 }
 
@@ -5935,7 +5934,7 @@ front_page #picture-background1 {
 
 front_page #picture-background2 {
   position: absolute;
-  left: 1300px;
+  left: 2000px;
   top: 0;
   width: 100%;
   height: 35.5em;
@@ -5946,7 +5945,7 @@ front_page #picture-background2 {
 
 front_page #picture-background3 {
   position: absolute;
-  left: 2600px;
+  left: 4000px;
   top: 0;
   width: 100%;
   height: 35.5em;
@@ -6017,4 +6016,15 @@ front_page #leftArrow:hover {
   box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.35);
   top: 20.1em;
   left: 2.1em;
+}
+
+@media only screen and (max-height: 2000px) {
+  front_page #picture-wrapper {
+    height: 44em;
+  }
+}
+@media only screen and (max-height: 920px) {
+  front_page #picture-wrapper {
+    height: 37.5em;
+  }
 }

@@ -23,8 +23,8 @@ home_page .titles, .printline {
 }
 
 home_page legend {
-	margin-top: -14px;
-	margin-bottom: -16px;
+	margin-top: -16px;
+	margin-bottom: -20px;
 	color: $home-legend-color;
 	@include text-shadow(1px 1px 1px rgba(0, 0, 0, 0.15));
 }
@@ -32,7 +32,7 @@ home_page legend {
 home_page fieldset {
 	background-color: $home-fieldset-background;
 	height: $home-fieldset-height;
-	@include box-shadow( 0 2px 4px rgba(0, 0, 0, 0.15));
+	@include box-shadow( 2px 2px 3px rgba(0, 0, 0, 0.15));
 	@include background(linear-gradient(to bottom, $home-fieldset-background 10%, lighten($home-fieldset-background, 5%) 100%));
 }
 
@@ -115,8 +115,8 @@ $data_entry_deleteImage: transparent url('../images/DeleteRed.png') no-repeat to
 $data_entry_imageSize: 1em;
 $data_entry_imageMargin: 5px;
 data_entry legend {
-	margin-top: -14px;
-	margin-bottom: -16px;
+	margin-top: -16px;
+	margin-bottom: -20px;
 	color: $home-legend-color;
 	@include text-shadow(1px 1px 1px rgba(0, 0, 0, 0.15));
 }
@@ -124,7 +124,7 @@ data_entry legend {
 data_entry fieldset {
 	background-color: $home-fieldset-background;
 	height: $home-fieldset-height;
-	@include box-shadow( 0 2px 4px rgba(0, 0, 0, 0.15));
+	@include box-shadow( 2px 2px 3px rgba(0, 0, 0, 0.15));
 	@include background(linear-gradient(to bottom, $home-fieldset-background 10%, lighten($home-fieldset-background, 4%) 100%));
 	height: 43em;
 }
@@ -322,7 +322,6 @@ $front-page-textBG: #F0F0F0;
 front_page #picture-wrapper {
 	width: 1200px;
 	overflow: hidden;
-	height: 37.5em;
 	margin-bottom: 1em;
 }
 front_page #picture-background1 {
@@ -337,7 +336,7 @@ front_page #picture-background1 {
 
 front_page #picture-background2 {
 	position: absolute;
-	left: 1300px;
+	left: 2000px;
 	top: 0;
 	width: 100%;
 	height: 35.5em;
@@ -348,7 +347,7 @@ front_page #picture-background2 {
 
 front_page #picture-background3 {
 	position: absolute;
-	left: 2600px;
+	left: 4000px;
 	top: 0;
 	width: 100%;
 	height: 35.5em;
@@ -411,3 +410,16 @@ front_page #leftArrow:hover {
 		top: 20.1em;
 		left: 2.1em;
 }
+
+@media only screen and (max-height: 2000px) {
+	front_page #picture-wrapper {
+		height: 44em;
+	}
+}
+
+@media only screen and (max-height: 920px) {
+	front_page #picture-wrapper {
+		height: 37.5em;
+	}
+}
+

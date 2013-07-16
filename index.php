@@ -81,6 +81,7 @@ require(CLASSPATH.				'search.class.php');
 require(CLASSPATH.				'questionnaire.class.php');
 require(CLASSPATH.				'addnote.class.php');
 require(CLASSPATH.				'list.deletion.class.php');
+require(CLASSPATH.				'type_edit.class.php');
 
 // required if email function is available.
 require(CLASSPATH.				'phpmailer/class.phpmailer.php');
@@ -373,6 +374,36 @@ if( $_SESSION["loggedIn"] == "true") {
 		audit_report();
 		echo "</div>";
 		echo "</audit>";
+	}elseif( $_GET["func"] == "new_information_type"){
+		new_information_type("new");
+	}elseif( $_GET["func"] == "edit_information_type"){
+		new_information_type("edit");
+	}elseif( $_GET["func"] == "new_sample_type"){
+		new_sample_type("new");
+	}elseif( $_GET["func"] == "edit_sample_type"){
+		new_sample_type("edit");
+	}elseif( $_GET["func"] == "new_contact_type"){
+		new_contact_type("new");
+	}elseif( $_GET["func"] == "edit_contact_type"){
+		new_contact_type("edit");
+	}elseif( $_GET["func"] == "new_action_type"){
+		new_action_type("new");
+	}elseif( $_GET["func"] == "edit_action_type"){
+		new_action_type("edit");
+	}elseif( $_GET["func"] == "new_request_type"){
+		new_request_type("new");
+	}elseif( $_GET["func"] == "edit_request_type"){
+		new_request_type("edit");
+	}elseif( $_GET["func"] == "new_location_type"){
+		new_location_type("new");
+	}elseif( $_GET["func"] == "edit_location_type"){
+		new_location_type("edit");
+	}elseif( $_GET["func"] == "new_consent_type"){
+		new_consent_type("new");
+	}elseif( $_GET["func"] == "edit_consent_type"){
+		new_consent_type("edit");
+	}elseif( $_GET["func"] == "sample_consent"){
+		sample_consent();
 	}else{
 		if($_GET["func"]   == "new") {
 			unset($_SESSION["Patient_No"] );

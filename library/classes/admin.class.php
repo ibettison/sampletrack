@@ -16,7 +16,7 @@ class editlist {
 	function __construct( $list_tablename, $list_id, $list_description ) {
 
 		$this->tablename 	= $list_tablename;
-		$this->id 			= $list_id;
+		$this->id 				= $list_id;
 		$this->description 	= $list_description;
 	}
 
