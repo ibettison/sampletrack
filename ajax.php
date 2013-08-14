@@ -520,6 +520,7 @@ if($_POST["func"] == "del_contact_details") {
 		}
 	}
 }
+
 if($_POST["func"] == "save_contact_details") {
 	if($_POST["option"] == "new"){
 		dl::insert("customers", array("c_name"=>$_POST["conCust"], "c_type_of_business"=>$_POST["conBus"], "c_registration_no"=>$_POST["conReg"]));
@@ -575,6 +576,7 @@ if($_POST["func"] == "new_location_details") {
 		}
 	}
 }
+
 if($_POST["func"] == "del_location_details") {
 	dl::delete("location_details", "l_id= ".$_POST["locId"]);
 	$details = dl::select("location_details", "samples_list_id=0 or samples_list_id=".$_POST["samples_list_id"], "l_id ASC");
@@ -654,7 +656,7 @@ if($_POST["func"] == "getSamplesListID") {
 		$retArr = json_encode(array("listId"=>$sList[0]["sl_id"], "consent"=>$consent_date, "taken_by"=>$consent[0]["c_taken_by"], "expiry"=>$expiry_date, "consent_type"=> $consent_type[0]["name"], "location_info"=>$location_array));
 		echo $retArr;
 	}else{
-		$retArr = json_encode(array("listId"=>"", "consent"=>"", "taken_by"=>"", "expiry"=>"", "consent_type"=>"", "location_info"=>""));
+		$retArr = json_encode(array("listId"=>"", "consent"=>"", "taken_by"=>"", "expiry"=>"", "consent_type"=>"#", "location_info"=>array()));
 		echo $retArr;
 	}
 }

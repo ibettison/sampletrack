@@ -5704,24 +5704,41 @@ home_page .printline {
 }
 
 data_entry legend {
-  margin-top: -16px;
-  margin-bottom: -20px;
+  margin-top: -20px;
+  margin-bottom: -14px;
   color: #0080c0;
-  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.15);
+  border: 1px #aaaaaa solid;
+  height: 2.5em;
+  background: #dddddd;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.25);
+  -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.15);
+  -moz-box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.15);
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.15);
+  background: -webkit-gradient(linear, to bottom, to top, color-stop(10%, #dddddd), color-stop(100%, #f1f1f1));
+  background: -webkit-linear-gradient(to bottom, #dddddd 10%, #f1f1f1 100%);
+  background: -moz-linear-gradient(to bottom, #dddddd 10%, #f1f1f1 100%);
+  background: -o-linear-gradient(to bottom, #dddddd 10%, #f1f1f1 100%);
+  background: linear-gradient(to bottom, #dddddd 10%, #f1f1f1 100%);
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
+  -ms-border-radius: 8px;
+  -o-border-radius: 8px;
+  border-radius: 8px;
 }
 
 data_entry fieldset {
   background-color: #c6e3f9;
   height: 18.5em;
+  display: table-column;
   -webkit-box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
   -moz-box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
   box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
-  background: -webkit-gradient(linear, to bottom, to top, color-stop(10%, #c6e3f9), color-stop(100%, #d8ecfb));
-  background: -webkit-linear-gradient(to bottom, #c6e3f9 10%, #d8ecfb 100%);
-  background: -moz-linear-gradient(to bottom, #c6e3f9 10%, #d8ecfb 100%);
-  background: -o-linear-gradient(to bottom, #c6e3f9 10%, #d8ecfb 100%);
-  background: linear-gradient(to bottom, #c6e3f9 10%, #d8ecfb 100%);
-  height: 43em;
+  height: auto;
+  background: -webkit-gradient(linear, to bottom, to top, color-stop(10%, #c6e3f9), color-stop(100%, #ddeefb));
+  background: -webkit-linear-gradient(to bottom, #c6e3f9 10%, #ddeefb 100%);
+  background: -moz-linear-gradient(to bottom, #c6e3f9 10%, #ddeefb 100%);
+  background: -o-linear-gradient(to bottom, #c6e3f9 10%, #ddeefb 100%);
+  background: linear-gradient(to bottom, #c6e3f9 10%, #ddeefb 100%);
 }
 
 data_entry .delete_this {
@@ -6022,9 +6039,17 @@ front_page #leftArrow:hover {
   front_page #picture-wrapper {
     height: 44em;
   }
+
+  data_entry {
+    height: 44em;
+  }
 }
 @media only screen and (max-height: 920px) {
   front_page #picture-wrapper {
+    height: 37.5em;
+  }
+
+  data_entry .screen-wrapper {
     height: 37.5em;
   }
 }

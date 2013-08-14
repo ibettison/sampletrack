@@ -27,7 +27,8 @@ class listTypes {
 	echo "<form>";
 	echo "<data_entry>";
 	echo "<div class='row'>";
-	echo "<fieldset class='six columns' style='height: 36.6em'>";
+	echo "<div class='screen-wrapper'>";
+	echo "<fieldset class='six columns'>";
 		echo "<legend><div id='legend_colour'>".$this->suffix_name." Type</div></legend>";
 		echo "<ul>";
 			if($option == "edit") {
@@ -56,6 +57,7 @@ class listTypes {
 		echo "</ul>";
 		echo "<div id='show_div'></div>";
 	echo "</fieldset>";
+	echo "</div>";
 	echo "</div>";
 	echo "<data_entry>";
 	echo "</form>";

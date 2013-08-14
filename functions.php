@@ -625,6 +625,7 @@ function upload_excel() {
 echo "<form ENCTYPE='multipart/form-data' id='upload_form' method='post' action='index.php?func=uploadFile'>";
 echo "<data_entry>";
 	echo "<div class='row'>";
+		echo "<div class='screen-wrapper'>";
 		echo "<fieldset class='six columns'>";
 			echo "<legend><div id='legend_colour'>Upload Spreadsheet</div></legend>"; 
 			echo "<p>Enter the file to upload and extract the sample information from. Make sure there are no empty columns before the headings start.</p>";
@@ -665,7 +666,8 @@ echo "<data_entry>";
 		<?php
 			$button = new fields("submit Button", "submit", "bluebutton", 10, "Upload File","submit");
 			echo $button->show_field();
-		echo "</fieldset>";	
+		echo "</fieldset>";
+		echo "</div>";
 	echo "</div>";
 	echo "</data_entry>";
 
@@ -1511,7 +1513,7 @@ function add_registration() {
 		}
 		echo "</li>";
 		
-		echo "<BR /><BR /></fieldset>";
+		echo "</fieldset>";
 		echo "<div id='show_registration_message'></div>";
 		echo "<div class='medium pretty primary btn icon-left entypo icon-install'><a id='newReg' href='#'>New Registration</a></div>";
 		
@@ -1864,6 +1866,7 @@ function new_container($function) {
 	echo "<form>";
 		echo "<data_entry>";
 		echo "<div class='row'>";
+			echo "<div class='screen-wrapper'>";
 			echo "<fieldset class='six columns'>";
 				if($function == "new") {
 					echo "<legend><div id='legend_colour'>New Container</div></legend>";
@@ -1937,6 +1940,7 @@ function new_container($function) {
 				echo "<div class='medium pretty primary icon-left btn icon-pencil' id='container_new'><a href='#'>$buttonval</a></div>";
 				echo "<div id='container_div'></div>";
 			echo "</fieldset>";
+			echo "</div>";
 		echo "</div>";
 		echo "</data_entry>";
 	echo "</form>";
@@ -1977,6 +1981,7 @@ function new_customer($option) {
 	echo "<form>";
 		echo "<data_entry>";
 			echo "<div class='row'>";
+				echo "<div class='screen-wrapper'>";
 				echo "<fieldset class='six columns'>";
 					?>
 					<script>
@@ -2122,6 +2127,7 @@ function new_customer($option) {
 					echo "<div id='showContact_div'></div>";
 					echo "</ul>";
 				echo "</fieldset>";	
+				echo "</div>";
 			echo "</div>";
 		echo "</data_entry>";
 	echo "</form>";
@@ -2185,6 +2191,7 @@ function sample_consent() {
 	echo "<form>";
 		echo "<data_entry>";
 			echo "<div class='row'>";
+				echo "<div class='screen-wrapper'>";
 				echo "<fieldset class='six columns'>";
 					?>
 					<script>
@@ -2210,13 +2217,16 @@ function sample_consent() {
 					echo "</div>";
 					echo "<div id='show_id'></div>";
 					echo "</li>";
+					echo "<li class='default label'>Consent Date</li>";
 					echo "<li class='prepend field'>";
 					echo "<span class='adjoined'><img src='library/images/date_picker.png'></span>";
 					echo "<input id='consent_date' class='wide text input' type='text' placeholder='Date of Consent'' />";
 					echo "</li>";
+					echo "<li class='default label'>Consent taken by</li>";
 					echo "<li class='field'>";
 					echo "<input id='taken_by' name='taken_by' class='wide text input' type='text' placeholder='Consent Taken By'' />";
 					echo "</li>";
+					echo "<li class='default label'>Consent expiry date</li>";
 					echo "<li class='prepend field'>";
 					echo "<span class='adjoined'><img src='library/images/date_picker.png'></span>";
 					echo "<input id='consent_expiry_date' class='wide text input' type='text' placeholder='Consent Expiry Date'' />";
@@ -2230,6 +2240,8 @@ function sample_consent() {
 							$("#taken_by").val("");
 							$("#consent_expiry_date").val("");
 							$("#consent_type").val("#");
+							$("#showDocumentDetails").html("");
+							
 							$.post(
 								"ajax.php",
 								{ func: func,
@@ -2268,7 +2280,7 @@ function sample_consent() {
 												$.post(
 													"ajax.php",
 													{ func: func,
-														samples_list_id: globalValues.customer_id,
+														samples_list_id: globalValues.slistID,
 														locId: id
 													},
 													function (data)
@@ -2343,7 +2355,8 @@ function sample_consent() {
 					echo "<div class='medium pretty primary icon-left btn icon-check' id='save_consent'><a href='#'>Save Consent</a></div>";
 					echo "<div id='showConsent_div'></div>";
 					echo "</ul>";
-				echo "</fieldset>";	
+				echo "</fieldset>";
+				echo "</div>";
 			echo "</div>";
 		echo "</data_entry>";
 	echo "</form>";
@@ -2385,6 +2398,7 @@ function sample_consent() {
 						function (data)
 						{
 							$('#showConsent_div').html(data);
+							$("#samples_list").val("#");
 							$("#consent_type").val("#");
 							$('#consent_date').val("");
 							$("#consent_expiry_date").val("");
@@ -2452,6 +2466,7 @@ function accept_samples(){
 	echo "<form>";
 	echo "<data_entry>";
 	echo "<div class='row'>";
+	echo "<div class='screen-wrapper'>";
 	echo "<fieldset class='six columns'>";
 		echo "<legend><div id='legend_colour'>Sample Information</div></legend>";
 		echo "<ul>";
@@ -2498,7 +2513,7 @@ function accept_samples(){
 			echo "<div id='container_details'></div>";
 		echo "</div>";
 		echo "</div>";
-	
+	echo "</div>";
 	echo "<div id='dialog1' style='display: none; font-size:1em;'>";
 		echo "Scan the sample container into the container location:<BR/><BR/>";
 		echo "<ul>";
@@ -3050,9 +3065,9 @@ function audit_report_body($actions) {
 	$row_count 						= 0;
 	$checkKey						= ""; // used to check that the returned detail is not repeated for each field in the record
 	foreach($actions as $act) { // this checks if the field aa_id is not the same as the previous record and if not adds the record to $arr (array) 
-		if($checkKey !== $act["aa_id"]) {
-			$arr[]=$act;
-			$checkKey = $act["aa_id"];
+		if($checkKey 				!== $act["aa_id"]) {
+			$arr[]						=$act;
+			$checkKey 				= $act["aa_id"];
 		}
 	}
 	$actions = $arr; //$actions has been cleansed of duplicate records and is now reassigned to continue the journey
@@ -3077,7 +3092,7 @@ function audit_report_body($actions) {
 			if(!empty($details)) {
 				$detailItems = dl::select("audit_details", "ad_id = ".$details[0]["audit_details_id"]);
 				echo "<div id='spacer'></div><div id='field-display'>Table affected:</div>";
-				echo "<div id='spacer'></div><div id='field-display'>".$detailItems[0]["ad_tables"]." with values [ </div>";
+				echo "<div id='spacer'></div><div id='field-display'><span id='value-display'>".strtoupper($detailItems[0]["ad_tables"])."</span> with values [ </div>";
 				foreach($details as $detail) {
 					$detailItems = dl::select("audit_details", "ad_id = ".$detail["audit_details_id"]);
 					foreach($detailItems as $detailItem){
