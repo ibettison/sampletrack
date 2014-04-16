@@ -31,19 +31,19 @@ class audit {
 		$identification (type: array) the details of the user performing the actions
 		*/
 		self::$audit_action_types		= $types;
-		self::$audit_actions				= $actions;
+		self::$audit_actions			= $actions;
 		self::$audit_identification		= $identification;		
-		self::$aat_id  						= self::getActionTypesId(self::$audit_action_types);
-		self::$aactions_id 					= self::getActionsId(self::$audit_actions);
+		self::$aat_id  					= self::getActionTypesId(self::$audit_action_types);
+		self::$aactions_id 				= self::getActionsId(self::$audit_actions);
 
 		//uses mysqli_datalayer.php to write the identification audit record
 		//dl::$debug=true;
 		dl::insert("audit_identification", self::prepare_identification(self::$audit_identification));
-		self::$ai_id 							= dl::getId(); // returns the id of the newly added identification record
+		self::$ai_id 					= dl::getId(); // returns the id of the newly added identification record
 		dl::insert("audit_timestamp", array("at_timestamp"=>date("Y-m-d H:i:s", strtotime("now"))));
-		self::$at_id 							= dl::getId();
+		self::$at_id 					= dl::getId();
 		dl::insert("audit_action", self::prepare_action());
-		self::$aaction_id 					= dl::getId();
+		self::$aaction_id 				= dl::getId();
 	}
 	
 	public static function create_action( array $action_array, $recordId) {
@@ -51,10 +51,10 @@ class audit {
 			array("table"=>"table_name", "values"=>array("key"=>"value", "key1"=>"value1", "key2"=>"value2", ...))
 			the $recordId parameter captures the id of the record being modified
 		*/
-		self::$audit_database_table = $action_array["table"];
+		self::$audit_database_table 	= $action_array["table"];
 		foreach($action_array["values"] as $keys=>$values) {
 			dl::insert("audit_details", self::prepare_details($keys, $values, self::$audit_database_table, $recordId) );
-			$detail_id = dl::getId();
+			$detail_id 					= dl::getId();
 			dl::insert("audit_details_actions", self::prepare_details_actions($detail_id));
 		}
 	}

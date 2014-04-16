@@ -1,5 +1,6 @@
 <?php 
 session_start();
+error_reporting(E_ALL);
 ?>
 <!doctype html>
 <!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
@@ -47,7 +48,7 @@ session_start();
 	<script src="js/libs/ui/jquery-ui.min.js"></script>
 	<script src="library/js/jquery.spritely-0.6.1.js"></script>
 	<SCRIPT language	="JavaScript" src="library/js/jquery-ui-multiselect-widget-master/src/jquery.multiselect.js"></SCRIPT>
-<SCRIPT language	="JavaScript" src="library/js/jquery-ui-multiselect-widget-master/src/jquery.multiselect.filter.js"></SCRIPT>
+    <SCRIPT language	="JavaScript" src="library/js/jquery-ui-multiselect-widget-master/src/jquery.multiselect.filter.js"></SCRIPT>
 	<link REL='SHORTCUT ICON' HREF='".LOCALIMAGEPATH."favicon.ico'>
 </head>
 <?php
@@ -60,18 +61,20 @@ updated by : Ian Bettison
 Purpose : To manage the creation of a Sample tracking system*/
 
 define( "LIBRARYPATH", 			"library/" );
-define( "LOCALIMAGEPATH", 	"images/" );
+define( "LOCALIMAGEPATH", 		"images/" );
 define( "IMAGEPATH", 			"library/images/" );
 define( "CSSPATH", 				"css/" );
 define( "CLASSPATH", 			"library/classes/" );
-define( "JAVAPATH", 				"library/js/");
+define( "JAVAPATH", 			"library/js/");
+define( "PROPEL",               "../vendor/propel/runtime/lib/");
+define( "BUILD",                "build/");
 
 require(LIBRARYPATH.			'mysqli_datalayer.php');
-require('Classes/'.						'PHPExcel.php');
+require('Classes/'.				'PHPExcel.php');
 require(CLASSPATH.				'field.class.php');
 require(CLASSPATH.				'audit.class.php');
 require(CLASSPATH.				'permission.class.php');
-include(									'connection.php');
+include(						'connection.php');
 require(CLASSPATH.				'login.class.php');
 require(CLASSPATH.				'form.class.php');
 require(CLASSPATH.				'tab.class.php');
@@ -82,16 +85,32 @@ require(CLASSPATH.				'questionnaire.class.php');
 require(CLASSPATH.				'addnote.class.php');
 require(CLASSPATH.				'list.deletion.class.php');
 require(CLASSPATH.				'type_edit.class.php');
+require_once(PROPEL.             'Propel.php');
+
+/*** initialisation for Propel ***/
+$projectPath    = realpath(dirname( __FILE__). DIRECTORY_SEPARATOR . '..');
+$schemaName     = 'sampletrack';
+$modelPath      = $projectPath . "\\${schemaName}\\build\\classes";
+Propel::init(BUILD."conf/${schemaName}-conf.php");
+set_include_path( $modelPath. PATH_SEPARATOR. get_include_path() );
+
+$bc = AuditDetailsQuery::create()
+    ->find();
+echo '<table>';
+foreach($bc as $bcs){
+    echo "<TR><TD style='padding:2px;'>".$bcs->getAdRecordId()."</TD><TD style='padding:2px;'>".$bcs->getAdKey()."</TD><TD style='padding:2px;'>".$bcs->getAdValue()."</TD><TD style='padding:2px;'>".$bcs->getAdTables()."</td></tr>";
+}
+echo "</table>";
 
 // required if email function is available.
 require(CLASSPATH.				'phpmailer/class.phpmailer.php');
-include(									"functions.php");
+include(						"functions.php");
 
-if($_GET["func"] == "logoff") {
-	$audit = new audit("SECURITY", "LOGOUT", array($_SESSION["userId"], $_SESSION["user_name"]));
+if($_GET["func"] 				== "logoff") {
+	$audit 						= new audit("SECURITY", "LOGOUT", array($_SESSION["userId"], $_SESSION["user_name"]));
 	session_destroy();
 	session_start();
-	$_SESSION["loggedIn"] = "";
+	$_SESSION["loggedIn"] 		= "";
 	//audit who has logged in
 	
 }
@@ -117,25 +136,25 @@ if(!isset($_SESSION["loggedIn"])) {
 	$_SESSION["loggedIn"] = "";
 }
 if($_POST["func"] == "login") { // attempt to login
-	$email											= strtolower(addslashes($_POST["email_address"]));
-	$id 												= dl::select("user", "user_email_address='".$email."'");
+	$email										= strtolower(addslashes($_POST["email_address"]));
+	$id 										= dl::select("user", "user_email_address='".$email."'");
 	$password									= $_POST["password"];
-	$login 											= new login( "user_id", $id[0]["user_id"], "user", "security", "security_password", $password, $id[0]["confirmed"]);
+	$login 										= new login( "user_id", $id[0]["user_id"], "user", "security", "security_password", $password, $id[0]["confirmed"]);
 	if( $login->check_password() ) {
 		//the userid and password are ok need to get the permissions
 		$permissions 							= new permission( "user_types", "user_types_name_id", $id[0]["user_id"], "user_id", "permission_id" );
-		$settings 									= $permissions->get_permissions( "permission_user", "permissions", "permission_name", "permission_value" );
-		$_SESSION["settings"] 				= $settings;
+		$settings 								= $permissions->get_permissions( "permission_user", "permissions", "permission_name", "permission_value" );
+		$_SESSION["settings"] 				    = $settings;
 		if(!$login->check_confirmation()) {
-			$_SESSION["notConfirmed"] 	= true;
-			$_SESSION["user_email"] 		= $id[0]["user_email_address"];
+			$_SESSION["notConfirmed"] 	        = true;
+			$_SESSION["user_email"] 		    = $id[0]["user_email_address"];
 		}else{
-			$_SESSION["notConfirmed"]	= false;
-			$_SESSION["loggedIn"] 		= "true";
-			$_SESSION["userId"] 			= $id[0]["user_id"];
-			$_SESSION["user_name"] 	= $id[0]["user_name"];
-			$_SESSION["user_email"] 		= $id[0]["user_email_address"];
-			$_SESSION["loggedInTime"] 	= date("d-m-Y H:i:s");
+			$_SESSION["notConfirmed"]	        = false;
+			$_SESSION["loggedIn"] 		        = "true";
+			$_SESSION["userId"] 			    = $id[0]["user_id"];
+			$_SESSION["user_name"] 	            = $id[0]["user_name"];
+			$_SESSION["user_email"] 		    = $id[0]["user_email_address"];
+			$_SESSION["loggedInTime"] 	        = date("d-m-Y H:i:s");
 			//audit who has logged in
 			$audit = new audit("SECURITY", "LOGIN", array($_SESSION["userId"], $_SESSION["user_name"]));
 		}

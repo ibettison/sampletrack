@@ -3066,7 +3066,7 @@ function audit_report_body($actions) {
 	$checkKey						= ""; // used to check that the returned detail is not repeated for each field in the record
 	foreach($actions as $act) { // this checks if the field aa_id is not the same as the previous record and if not adds the record to $arr (array) 
 		if($checkKey 				!== $act["aa_id"]) {
-			$arr[]						=$act;
+			$arr[]					=$act;
 			$checkKey 				= $act["aa_id"];
 		}
 	}
@@ -3075,13 +3075,13 @@ function audit_report_body($actions) {
 			$action_desc 			= dl::select("audit_actions", "aa_id = ". $action["audit_actions_id"]);
 			$types_desc 			= dl::select("audit_action_types", "aat_id = ".$action_desc["audit_action_types_id"]);
 			$typeDescription 		= $types_desc[0]["aat_list"];
-			$actionDescription 	= $action_desc[0]["aa_list"];
+			$actionDescription 		= $action_desc[0]["aa_list"];
 			$response 				= getResponse($actionDescription);
-			$id 							= dl::select("audit_identification", "ai_id = ".$action["audit_identification_id"]);
-			$ts 							= dl::select("audit_timestamp", "at_id = ".$action["audit_timestamp_id"]);
-			$identification 			= $id[0]["ai_username"]."</span> ]";
+			$id 					= dl::select("audit_identification", "ai_id = ".$action["audit_identification_id"]);
+			$ts 					= dl::select("audit_timestamp", "at_id = ".$action["audit_timestamp_id"]);
+			$identification 		= $id[0]["ai_username"]."</span> ]";
 			$timestamp				= $ts[0]["at_timestamp"];
-			$details						= dl::select("audit_details_actions", "audit_action_id = ".$action["aa_id"]);
+			$details				= dl::select("audit_details_actions", "audit_action_id = ".$action["aa_id"]);
 			if($row_count++ 		== 0) {
 				echo "<div id='row-even'>";
 			}else{

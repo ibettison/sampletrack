@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <log>
+        <type>file</type>
+        <name>/logs/propel.log</name>
+        <ident>sampletrack</ident>
+        <level>7</level>
+    </log>
+    <propel>
+        <datasources default="nsample">
+            <datasource id="nsample">
+                <adapter>mysql</adapter>
+                <connection>
+                    <dsn>mysql:host=crf88.ncl.ac.uk;dbname=nsample</dsn>
+                    <user>nsample</user>
+                    <password>jbwzc1bf</password>
+                </connection>
+            </datasource>
+        </datasources>
+    </propel>
+</config>
