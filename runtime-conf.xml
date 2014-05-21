@@ -11,7 +11,7 @@
             <datasource id="nsample">
                 <adapter>mysql</adapter>
                 <connection>
-                    <dsn>mysql:host=crf88.ncl.ac.uk;dbname=nsample</dsn>
+                    <dsn>mysql:host=database.ncl.ac.uk;dbname=nsample</dsn>
                     <user>nsample</user>
                     <password>jbwzc1bf</password>
                 </connection>

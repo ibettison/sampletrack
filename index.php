@@ -66,8 +66,6 @@ define( "IMAGEPATH", 			"library/images/" );
 define( "CSSPATH", 				"css/" );
 define( "CLASSPATH", 			"library/classes/" );
 define( "JAVAPATH", 			"library/js/");
-define( "PROPEL",               "../vendor/propel/runtime/lib/");
-define( "BUILD",                "build/");
 
 require(LIBRARYPATH.			'mysqli_datalayer.php');
 require('Classes/'.				'PHPExcel.php');
@@ -85,22 +83,6 @@ require(CLASSPATH.				'questionnaire.class.php');
 require(CLASSPATH.				'addnote.class.php');
 require(CLASSPATH.				'list.deletion.class.php');
 require(CLASSPATH.				'type_edit.class.php');
-require_once(PROPEL.             'Propel.php');
-
-/*** initialisation for Propel ***/
-$projectPath    = realpath(dirname( __FILE__). DIRECTORY_SEPARATOR . '..');
-$schemaName     = 'sampletrack';
-$modelPath      = $projectPath . "\\${schemaName}\\build\\classes";
-Propel::init(BUILD."conf/${schemaName}-conf.php");
-set_include_path( $modelPath. PATH_SEPARATOR. get_include_path() );
-
-$bc = AuditDetailsQuery::create()
-    ->find();
-echo '<table>';
-foreach($bc as $bcs){
-    echo "<TR><TD style='padding:2px;'>".$bcs->getAdRecordId()."</TD><TD style='padding:2px;'>".$bcs->getAdKey()."</TD><TD style='padding:2px;'>".$bcs->getAdValue()."</TD><TD style='padding:2px;'>".$bcs->getAdTables()."</td></tr>";
-}
-echo "</table>";
 
 // required if email function is available.
 require(CLASSPATH.				'phpmailer/class.phpmailer.php');
