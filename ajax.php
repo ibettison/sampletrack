@@ -6,7 +6,7 @@ date_default_timezone_set("Europe/London");
 /* index.php 
 Creation Date:12/07/2011
 updated by : Ian Bettison
-Purpose : To manage the Fetal Medicines database.*/
+Purpose : To manage the Sample Tracking database.*/
 
 define( "LIBRARYPATH", "./library/" );
 define( "LOCALIMAGEPATH", "/images/" );
